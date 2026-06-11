@@ -1,0 +1,15 @@
+# Raw scraped data never leaves this machine / the Actions runner.
+# Only the derived index (data/processed/index.json) is committed.
+data/raw/
+
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+*.log
+
+# OneDrive / Office noise
+.~lock.*
+~$*
+desktop.ini

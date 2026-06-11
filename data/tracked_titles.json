@@ -1,0 +1,26 @@
+{
+  "comment": "Seed list of tracked titles for the Premium Puzzles Index. Extend as data grows.",
+  "titles": [
+    {"title": "My Haven No.7: The Beach Hut", "brand": "Ravensburger", "piece_count": 1000, "stocked": true},
+    {"title": "My Haven No.1: The Craft Shed", "brand": "Ravensburger", "piece_count": 1000, "stocked": true},
+    {"title": "My Haven No.2: The Sewing Shed", "brand": "Ravensburger", "piece_count": 1000, "stocked": true},
+    {"title": "My Haven No.8: The Gardeners Shed", "brand": "Ravensburger", "piece_count": 1000, "stocked": true},
+    {"title": "My Haven No.9: The Tea House", "brand": "Ravensburger", "piece_count": 1000, "stocked": true},
+    {"title": "The Bizarre Bookshop", "brand": "Ravensburger", "artist": "Colin Thompson", "piece_count": 1000, "stocked": true},
+    {"title": "The Bizarre Bookshop No.2", "brand": "Ravensburger", "artist": "Colin Thompson", "piece_count": 1000, "stocked": true},
+    {"title": "The Craft Cupboard", "brand": "Ravensburger", "artist": "Colin Thompson", "piece_count": 1000, "stocked": true},
+    {"title": "Fantasy Bookshop", "brand": "Ravensburger", "artist": "Aimee Stewart", "piece_count": 1000, "stocked": true},
+    {"title": "Family Vacation", "brand": "Ravensburger", "artist": "Aimee Stewart", "piece_count": 1000, "stocked": true},
+    {"title": "World of Books", "brand": "Ravensburger", "artist": "Aimee Stewart", "piece_count": 2000, "stocked": true},
+    {"title": "Fireworks Over Sydney", "brand": "Ravensburger", "piece_count": 1000, "stocked": true},
+    {"title": "Windmill Country", "brand": "Ravensburger", "piece_count": 1000, "stocked": true},
+    {"title": "Magical Deer", "brand": "Ravensburger", "piece_count": 1000, "stocked": true},
+    {"title": "Grandiose Greece", "brand": "Ravensburger", "piece_count": 1000, "stocked": true},
+    {"title": "Cozy Retreat", "brand": "Ravensburger", "piece_count": 1000, "stocked": false},
+    {"title": "Cozy Cabana", "brand": "Ravensburger", "piece_count": 1000, "stocked": false},
+    {"title": "My Cozy Place", "brand": "Ravensburger", "piece_count": 1000, "stocked": false},
+    {"title": "Sarah's Stunning Stamps", "brand": "Funbox", "piece_count": 1000, "stocked": true},
+    {"title": "Sandy's Toy Shop", "brand": "Funbox", "piece_count": 1000, "stocked": true}
+  ],
+  "benchmark_brands": ["Cobble Hill", "Gibsons", "Blue Opal"]
+}
