@@ -199,13 +199,21 @@ def main() -> int:
     while len(products) < args.max_products and page <= 7:
         url = CATEGORY_SEARCH.format(page=page)
         print(f"Listing page {page} ...")
-        html = fetch(session, url, args.delay_min, args.delay_max)
-        if html is None:
-            print(f"  giving up on page {page}", file=sys.stderr)
-            break
-        batch = parse_listing_page(html)
+        # A 200 with zero product cards is a soft block (empty shell /
+        # unmarked CAPTCHA variant), not a layout change — retry it too.
+        batch = []
+        for attempt in range(1, 4):
+            html = fetch(session, url, args.delay_min, args.delay_max)
+            if html:
+                batch = parse_listing_page(html)
+                if batch:
+                    break
+            wait = random.uniform(30, 60) * attempt
+            print(f"  empty page {page} (attempt {attempt}/3), waiting {wait:.0f}s",
+                  file=sys.stderr)
+            time.sleep(wait)
         if not batch:
-            print(f"  no products parsed on page {page}, stopping", file=sys.stderr)
+            print(f"  giving up on page {page}", file=sys.stderr)
             break
         products.extend(batch)
         print(f"  +{len(batch)} products ({len(products)} total)")
