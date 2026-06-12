@@ -59,6 +59,6 @@ def clean_title_query(title: str) -> str:
 
     'My Haven No.7: The Beach Hut' -> 'The Beach Hut'
     """
-    t = re.sub(r"^My Haven No\.?\s*\d+\s*:?\s*", "", title, flags=re.IGNORECASE)
+    t = re.sub(r"^My Haven(\s+No\.?\s*\d+)?\s*:?\s*", "", title, flags=re.IGNORECASE)
     t = re.sub(r"[:,]", " ", t)
     return re.sub(r"\s+", " ", t).strip()

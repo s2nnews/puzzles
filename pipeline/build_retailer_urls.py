@@ -35,8 +35,10 @@ def match(title: str, urls: list[str]) -> list[str]:
     words = slug_words(clean_title_query(title))
     hits = []
     for url in urls:
-        slug = url.lower()
-        if all(w in slug for w in words):
+        # Compare against the de-hyphenated slug so possessives survive
+        # retailer slugifying ("artist's" -> "artist-s" -> "artists").
+        slug_flat = re.sub(r"[^a-z0-9]", "", url.lower())
+        if all(w in slug_flat for w in words):
             hits.append(url)
     return hits
 

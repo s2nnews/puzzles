@@ -14,6 +14,7 @@
   "My Haven No.8: The Gardeners Shed": {
     "bigw": [
       "https://www.bigw.com.au/product/1000pc-ravensburger-my-haven-no-8-the-gardeners-family-shed-puzzle-pieces-set/p/9900682189",
+      "https://www.bigw.com.au/product/ravensburger-my-haven-the-gardener-s-shed-puzzle-1000pc/p/9900993193",
       "https://www.bigw.com.au/product/my-haven-no-8-the-gardeners-shed-puzzle-1000pc/p/9901547102"
     ],
     "puzzlepalace": [
@@ -31,6 +32,7 @@
     ],
     "puzzlepalace": [
       "https://puzzlepalace.com.au/jigsaw_puzzles/house-of-puzzles-tea-and-tales-500-piece-puzzle/",
+      "https://puzzlepalace.com.au/jigsaw_puzzles/house-of-puzzles-taking-it-easy-250-large-piece-puzzle/",
       "https://puzzlepalace.com.au/jigsaw_puzzles/my-haven-no-9-the-tea-house-1000-piece-puzzle-ravensburger/",
       "https://puzzlepalace.com.au/jigsaw_puzzles/house-of-puzzles-steaming-along-4-x-500-piece-puzzle-set/"
     ]
@@ -69,7 +71,8 @@
   },
   "World of Books": {
     "bigw": [
-      "https://www.bigw.com.au/product/ravensburger-world-of-books-aimee-stewart-2000-pieces/p/320119"
+      "https://www.bigw.com.au/product/ravensburger-world-of-books-aimee-stewart-2000-pieces/p/320119",
+      "https://www.bigw.com.au/product/sassi-world-of-flowers-puzzle-book-set/p/9901523539"
     ]
   },
   "Fireworks Over Sydney": {
@@ -96,6 +99,25 @@
       "https://www.bigw.com.au/product/grandiose-greece-puzzle-1000pc/p/9901546968"
     ]
   },
+  "My Haven No.10: The Garden Kitchen": {
+    "bigw": [
+      "https://www.bigw.com.au/product/1000pc-ravensburger-my-haven-no10-the-garden-kitchen-family-jigsaw-puzzle/p/9900681397",
+      "https://www.bigw.com.au/product/ravensburger-my-haven-the-garden-kitchen-puzzle-1000pc/p/9900993393",
+      "https://www.bigw.com.au/product/my-haven-no-10-the-garden-kitchen-puzzle-1000pc/p/9901514355",
+      "https://www.bigw.com.au/product/my-haven-no-10-the-garden-kitchen-1000pc-ravensburger/p/9902786123"
+    ]
+  },
+  "My Haven No.12: The Tea Shed": {
+    "bigw": [
+      "https://www.bigw.com.au/product/1000pc-ravensburger-my-haven-no-12-the-tea-shed-family-jigsaw-puzzle-pieces-set/p/9900681577",
+      "https://www.bigw.com.au/product/my-haven-no-12-the-tea-shed-puzzle-1000pc/p/9902686341"
+    ]
+  },
+  "My Haven: The Artist's Shed": {
+    "bigw": [
+      "https://www.bigw.com.au/product/ravensburger-my-haven-the-artist-s-shed-puzzle-1000pc/p/9901328549"
+    ]
+  },
   "Cozy Retreat": {
     "bigw": [
       "https://www.bigw.com.au/product/300pc-ravensburger-cozy-retreat-theme-family-family-fun-jigsaw-puzzle-set/p/9900682241",
@@ -108,6 +130,11 @@
   "My Haven No.1: The Craft Shed": {
     "puzzlepalace": [
       "https://puzzlepalace.com.au/jigsaw_puzzles/my-haven-no-1-the-craft-shed-1000-piece-puzzle-ravensburger/"
+    ]
+  },
+  "My Haven No.12: Boho Retreat": {
+    "puzzlepalace": [
+      "https://puzzlepalace.com.au/jigsaw_puzzles/ravensburger-my-haven-no-12-boho-retreat-1000-piece-puzzle/"
     ]
   }
 }
