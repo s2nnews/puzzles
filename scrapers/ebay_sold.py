@@ -75,6 +75,10 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Sold-listing snapshot (source E)")
     ap.add_argument("--limit", type=int, default=None, help="only first N titles (smoke test)")
     ap.add_argument("--db", type=Path, default=DEFAULT_DB)
+    # The bot wall goes sticky after ~4-5 quick queries and then blocks for
+    # hours; 30-60s spacing keeps a 20-title daily run under it.
+    ap.add_argument("--delay-min", type=float, default=30.0)
+    ap.add_argument("--delay-max", type=float, default=60.0)
     args = ap.parse_args()
 
     titles = load_tracked_titles()
@@ -119,7 +123,7 @@ def main() -> int:
         written += 1
         print(f"  {t['title']:<40} sold30={len(last_30):<3} sold90={len(last_90):<3} "
               f"med=${median_30} (matched {len(items)}/{loose} listings)")
-        polite_sleep(3, 6)
+        polite_sleep(args.delay_min, args.delay_max)
     conn.close()
 
     print(f"Done: {written} titles written for {run_date} ({failed} failed) -> {args.db}")
