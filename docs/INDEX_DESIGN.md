@@ -14,6 +14,15 @@ also makes it instantly narratable in the newsletter.
 | Search interest (AU + worldwide) | Forward demand / awareness | Weekly | Worldwide series gives the "trending globally, not yet here" lead indicator. |
 | Competitor stock-outs | Demand pressure / scarcity | Daily | A title that goes and stays out of stock across retailers is being bought faster than it's replenished. |
 | Community mention velocity | Enthusiast attention | Weekly | Early-adopter signal; enthusiasts move before the mass market. |
+| Secondary-market sold listings | Realised transactions + residual value | Daily | The only source showing actual completed sales. Resale velocity = liquidity; resale price vs RRP = how well a title holds value ("residual value", like the used-car market). Strict title-match filter required: marketplace search is fuzzy and returns sibling titles (loose counts were ~10x inflated in testing). |
+
+Sources considered and parked:
+
+- **Facebook**: no public API since CrowdTangle shut down; group/page content
+  is login-walled and scraping a logged-in session risks the business
+  account. The chatter signal is largely duplicated by community + search
+  sources. Revisit only as an *owned-audience* series (own page insights
+  exported from Meta Business Suite).
 
 ## 2. Title score
 
@@ -29,6 +38,14 @@ title_score = 0.40 * rank_score        # inverted, log-scaled sales rank
 Each component is normalised to 0–100 cross-sectionally before weighting.
 Also computed per title: `momentum` (7-day change in score) and
 `global_signal` (worldwide search interest, the lead indicator).
+
+### Segment definition
+
+Day-1 data showed the category top-100 is dominated by children's puzzles
+(giant floor puzzles with 20k+ cumulative reviews). The Index is therefore
+computed on the **adult segment (≥300 pieces)** by default; the all-category
+aggregate is kept as a separate market-size gauge, not mixed into the
+headline index or its regime calls.
 
 ## 3. Index construction
 
