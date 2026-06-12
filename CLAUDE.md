@@ -3,7 +3,10 @@
 This repo is the **Premium Puzzles Index**: a market-intelligence pipeline
 that treats the AU jigsaw puzzle market like an asset market. Read
 `docs/INDEX_DESIGN.md` first — it is the authoritative model (signals,
-weights, index construction, build order).
+weights, index construction, build order). Before touching any scraper or
+adding a source, read `docs/SCRAPING_LEARNINGS.md` — per-source rate
+temperaments, the sitemap+JSON-LD architecture, and the parsing gotchas
+that produce silently-wrong data.
 
 This repo is **public**. Rules that follow from that:
 
