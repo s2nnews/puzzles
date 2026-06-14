@@ -181,20 +181,9 @@ def init_db(db_path: Path) -> sqlite3.Connection:
     return conn
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser(description="Snapshot puzzle demand signals (source A)")
-    ap.add_argument("--max-products", type=int, default=100)
-    ap.add_argument("--no-detail", action="store_true",
-                    help="skip product detail pages (no BSR, much faster)")
-    ap.add_argument("--db", type=Path, default=DEFAULT_DB)
-    ap.add_argument("--delay-min", type=float, default=2.0)
-    ap.add_argument("--delay-max", type=float, default=5.0)
-    args = ap.parse_args()
-
-    run_date = date.today().isoformat()
-    session = requests.Session()
+def collect_listings(session: requests.Session, args) -> list[dict]:
+    """Walk category listing pages for one pass. [] if the pass was blocked."""
     products: list[dict] = []
-
     page = 1
     while len(products) < args.max_products and page <= 7:
         url = CATEGORY_SEARCH.format(page=page)
@@ -219,11 +208,45 @@ def main() -> int:
         print(f"  +{len(batch)} products ({len(products)} total)")
         page += 1
         polite_sleep(args.delay_min, args.delay_max)
+    return products
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description="Snapshot puzzle demand signals (source A)")
+    ap.add_argument("--max-products", type=int, default=100)
+    ap.add_argument("--no-detail", action="store_true",
+                    help="skip product detail pages (no BSR, much faster)")
+    ap.add_argument("--db", type=Path, default=DEFAULT_DB)
+    ap.add_argument("--delay-min", type=float, default=2.0)
+    ap.add_argument("--delay-max", type=float, default=5.0)
+    ap.add_argument("--run-attempts", type=int, default=4,
+                    help="whole-pass retries; Amazon's empty-shell block is "
+                         "probabilistic, so a fresh session usually clears it")
+    args = ap.parse_args()
+
+    run_date = date.today().isoformat()
+
+    # Amazon's block is a per-request coin-flip (a 200 with an empty product
+    # shell), and it tends to land in streaks. Per-page retries lose when the
+    # streak is long, so retry the WHOLE listing pass with a fresh session and
+    # a cooldown between attempts. This is what manual re-runs were doing by
+    # hand for the first four days.
+    products: list[dict] = []
+    for run_attempt in range(1, args.run_attempts + 1):
+        session = requests.Session()
+        products = collect_listings(session, args)
+        if products:
+            break
+        if run_attempt < args.run_attempts:
+            cooldown = random.uniform(120, 240) * run_attempt
+            print(f"Listing pass {run_attempt}/{args.run_attempts} got nothing; "
+                  f"fresh session in {cooldown:.0f}s", file=sys.stderr)
+            time.sleep(cooldown)
 
     products = products[: args.max_products]
     if not products:
-        print("No products captured — layout change or hard block. Nothing written.",
-              file=sys.stderr)
+        print(f"No products after {args.run_attempts} passes — hard block or "
+              f"layout change. Nothing written.", file=sys.stderr)
         return 1
 
     if not args.no_detail:
