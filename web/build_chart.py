@@ -18,16 +18,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 INDEX = ROOT / "data" / "processed" / "index.json"
 TEMPLATE = ROOT / "web" / "template.html"
-LOGO = ROOT / "web" / "assets" / "premium-puzzles-logo.avif"
+LOGO = ROOT / "web" / "assets" / "premium-puzzles-logo.png"
 OUT = ROOT / "web" / "puzzle_index.html"
 
 
 def logo_data_uri() -> str:
-    """Base64 data URI for the logo so the page is fully self-contained."""
+    """Base64 PNG data URI for the logo so the page is fully self-contained.
+    PNG (not AVIF) for universal browser support, incl. data-URI rendering."""
     if not LOGO.exists():
         return ""
     b64 = base64.b64encode(LOGO.read_bytes()).decode("ascii")
-    return f"data:image/avif;base64,{b64}"
+    return f"data:image/png;base64,{b64}"
 
 
 def main() -> int:
