@@ -34,11 +34,11 @@ jobs:
         env:
           PYTHONIOENCODING: utf-8
 
-      - name: Commit refreshed index.json
+      - name: Commit refreshed Index + dashboard
         run: |
           git config user.name  "puzzle-index-bot"
           git config user.email "actions@github.com"
-          git add data/processed/index.json
+          git add data/processed/index.json web/puzzle_index.html
           if git diff --cached --quiet; then
             echo "No index change today."
           else

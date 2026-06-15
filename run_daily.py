@@ -81,6 +81,8 @@ def main() -> int:
     built = True
     if not args.no_build:
         built = run("aggregate", ["pipeline/aggregate.py"])
+        if built:
+            run("chart", ["web/build_chart.py"])  # non-critical: refresh the dashboard
 
     ok = sum(results.values())
     print(f"\nSummary {today}: {ok}/{len(results)} sources ok"

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Premium Puzzles Index</title>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<style>
+  :root{
+    --bg:#0b0e13; --panel:#141922; --line:#222a36; --ink:#e8edf4;
+    --muted:#8b97a8; --up:#36c692; --down:#e5604d; --accent:#c9a227;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 22px 60px}
+  header{display:flex;justify-content:space-between;align-items:flex-end;
+    flex-wrap:wrap;gap:16px;border-bottom:1px solid var(--line);padding-bottom:18px}
+  .brand h1{margin:0;font-size:23px;letter-spacing:.14em;font-weight:600}
+  .brand .tag{color:var(--muted);font-size:12.5px;letter-spacing:.05em;margin-top:6px}
+  .headline{text-align:right}
+  .headline .level{font-size:42px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+  .headline .sub{color:var(--muted);font-size:12.5px;margin-top:6px}
+  .regime{display:inline-block;margin-top:8px;padding:4px 10px;border-radius:999px;
+    font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:12px;margin:22px 0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .card .k{color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .card .v{font-size:24px;font-weight:600;margin-top:7px;font-variant-numeric:tabular-nums}
+  .card .n{color:var(--muted);font-size:11.5px;margin-top:3px}
+  .chart-head{display:flex;justify-content:space-between;align-items:baseline;
+    margin:14px 2px 4px}
+  .chart-head h2{font-size:14px;font-weight:600;letter-spacing:.04em;margin:0}
+  .chart-head .hint{color:var(--muted);font-size:11.5px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px}
+  svg{display:block;width:100%;height:auto}
+  .axis text{fill:var(--muted);font-size:11px}
+  .axis line,.axis path{stroke:var(--line)}
+  .quad{fill:var(--muted);font-size:10.5px;opacity:.5;letter-spacing:.1em;text-transform:uppercase}
+  .bub{stroke:#0b0e13;stroke-width:1;cursor:pointer;transition:opacity .15s}
+  .legend{display:flex;flex-wrap:wrap;gap:10px 16px;margin:14px 4px 0}
+  .legend .it{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+  .legend .sw{width:11px;height:11px;border-radius:3px}
+  .legend .bi{color:var(--ink);font-variant-numeric:tabular-nums}
+  .tip{position:fixed;pointer-events:none;background:#0d1218;border:1px solid var(--line);
+    border-radius:8px;padding:10px 12px;font-size:12px;max-width:260px;opacity:0;
+    transition:opacity .12s;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:10}
+  .tip b{color:var(--accent)}
+  .tip .row{color:var(--muted);margin-top:3px}
+  .tip .row span{color:var(--ink);float:right;margin-left:14px;font-variant-numeric:tabular-nums}
+  footer{color:var(--muted);font-size:11px;margin-top:26px;line-height:1.6}
+  .spark{height:38px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <h1>THE PREMIUM PUZZLES INDEX</h1>
+      <div class="tag">A global-macro read on the Australian jigsaw market &middot; titles are constituents, brands are sectors</div>
+    </div>
+    <div class="headline">
+      <div class="level" id="h-level">&mdash;</div>
+      <div class="sub" id="h-sub"></div>
+      <div class="regime" id="h-regime"></div>
+    </div>
+  </header>
+
+  <svg class="spark" id="spark" viewBox="0 0 1180 38" preserveAspectRatio="none"></svg>
+
+  <div class="cards" id="cards"></div>
+
+  <div class="chart-head">
+    <h2>The Market Map</h2>
+    <span class="hint">x: live demand strength &nbsp;&middot;&nbsp; y: market scale (reviews) &nbsp;&middot;&nbsp; size: price &nbsp;&middot;&nbsp; colour: brand</span>
+  </div>
+  <div class="panel">
+    <svg id="bubble" viewBox="0 0 1180 560"></svg>
+  </div>
+  <div class="legend" id="legend"></div>
+
+  <footer id="foot"></footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+const DATA = __INDEX_DATA__;
+const BUILT_AT = "__BUILT_AT__";
+const RAW_URL = "https://raw.githubusercontent.com/s2nnews/puzzles/main/data/processed/index.json";
+
+const BRAND_COLORS = {
+  "Ravensburger":"#4f86d6","Funbox":"#e08a3c","Cobble Hill":"#6bbf59",
+  "Gibsons":"#c0504d","Blue Opal":"#3fb6c4","Magic Puzzle Company":"#a06cd5",
+  "Melissa & Doug":"#d6a64f","Buffalo Games":"#5fa8a0","Galison":"#cf6f9b",
+  "Clementoni":"#7f9ad6","Educa":"#bf8b5f","Heye":"#9fbf4f","Schmidt":"#d65f7a",
+  "Eurographics":"#5fbf8f","White Mountain":"#b0795f","Other":"#566273"
+};
+const colorFor = b => BRAND_COLORS[b] || "#566273";
+const fmt = (n,d=2)=> n==null? "–" : (+n).toFixed(d);
+
+function render(d){
+  const m = d.market;
+  // ---- headline ----
+  const up = (m.index_mom||0) >= 0;
+  document.getElementById("h-level").textContent = fmt(m.index_level,2);
+  document.getElementById("h-level").style.color = up ? "var(--up)" : "var(--down)";
+  document.getElementById("h-sub").innerHTML =
+    `as of ${d.as_of} &middot; ${up?"+":""}${fmt(m.index_mom,2)} since inception (${d.days_of_history}d)`;
+  const reg = document.getElementById("h-regime");
+  reg.textContent = (m.regime||"").replace(/_/g," ");
+  reg.style.color = m.regime==="expansion"?"var(--up)":m.regime==="contraction"?"var(--down)":"var(--muted)";
+  reg.style.borderColor = reg.style.color;
+
+  // ---- internals cards ----
+  const concentrationNote = m.top7_share>0.6 ? "hit-driven market" : "broad-based";
+  const cards = [
+    ["Index Level", fmt(m.index_level,2), `equal-weight ${fmt(m.equal_weight_level,2)}`],
+    ["Cap vs Equal", (m.cap_vs_equal_spread>=0?"+":"")+fmt(m.cap_vs_equal_spread,2),
+       m.cap_vs_equal_spread<0?"big sellers lagging":"big sellers leading"],
+    ["Top-7 Share", Math.round(m.top7_share*100)+"%", concentrationNote],
+    ["Breadth", m.breadth_pct==null?"–":m.breadth_pct+"%", "titles gaining strength"],
+    ["Brand HHI", fmt(m.hhi_brands,3), "sector concentration"],
+    ["Universe", m.universe, `${m.constituents} index constituents`],
+  ];
+  document.getElementById("cards").innerHTML = cards.map(c=>
+    `<div class="card"><div class="k">${c[0]}</div><div class="v">${c[1]}</div><div class="n">${c[2]}</div></div>`
+  ).join("");
+
+  // ---- sparkline ----
+  drawSpark(d.index_series||[]);
+  // ---- bubble ----
+  drawBubble(d.titles||[]);
+  // ---- legend with brand sub-indices ----
+  const bi = m.brand_indices||{};
+  const brands = Object.keys(bi).filter(b=>b!=="Other").slice(0,10);
+  document.getElementById("legend").innerHTML = brands.map(b=>
+    `<div class="it"><span class="sw" style="background:${colorFor(b)}"></span>`+
+    `${b} <span class="bi">${fmt(bi[b],1)}</span></div>`).join("");
+
+  document.getElementById("foot").innerHTML =
+    `${d.disclaimer||""}<br>Built ${BUILT_AT}. Index inception ${d.inception} = 100. `+
+    `Demand strength derived from live sales rank; market scale from cumulative reviews.`;
+}
+
+function drawSpark(series){
+  const svg = d3.select("#spark"); svg.selectAll("*").remove();
+  if(series.length<2) return;
+  const W=1180,H=38, xs=d3.scaleLinear().domain([0,series.length-1]).range([2,W-2]);
+  const ys=d3.scaleLinear().domain(d3.extent(series,s=>s.level)).range([H-4,4]);
+  const up = series[series.length-1].level >= series[0].level;
+  const line=d3.line().x((s,i)=>xs(i)).y(s=>ys(s.level)).curve(d3.curveMonotoneX);
+  svg.append("path").attr("d",line(series)).attr("fill","none")
+     .attr("stroke",up?"var(--up)":"var(--down)").attr("stroke-width",1.6);
+}
+
+function drawBubble(titles){
+  const T = titles.filter(t=>t.index_score!=null && t.review_count>0);
+  const W=1180,H=560,M={t:24,r:18,b:46,l:54};
+  const svg=d3.select("#bubble"); svg.selectAll("*").remove();
+  const iw=W-M.l-M.r, ih=H-M.t-M.b;
+  const x=d3.scaleLinear().domain(d3.extent(T,t=>t.index_score)).nice().range([M.l,M.l+iw]);
+  const y=d3.scaleLog().domain([Math.max(1,d3.min(T,t=>t.review_count)),
+                                d3.max(T,t=>t.review_count)]).nice().range([M.t+ih,M.t]);
+  const r=d3.scaleSqrt().domain(d3.extent(T,t=>t.price_au||25)).range([5,26]);
+
+  // quadrant guides at medians
+  const mx=d3.median(T,t=>t.index_score), my=d3.median(T,t=>t.review_count);
+  svg.append("line").attr("x1",x(mx)).attr("x2",x(mx)).attr("y1",M.t).attr("y2",M.t+ih)
+     .attr("stroke","var(--line)").attr("stroke-dasharray","3 4");
+  svg.append("line").attr("x1",M.l).attr("x2",M.l+iw).attr("y1",y(my)).attr("y2",y(my))
+     .attr("stroke","var(--line)").attr("stroke-dasharray","3 4");
+  const quad=[["BIG & HOT — dominators",M.l+iw-6,M.t+12,"end"],
+              ["BREAKOUTS",M.l+iw-6,M.t+ih-8,"end"],
+              ["FADING GIANTS",M.l+6,M.t+12,"start"],
+              ["LONG TAIL",M.l+6,M.t+ih-8,"start"]];
+  quad.forEach(q=>svg.append("text").attr("class","quad").attr("x",q[1]).attr("y",q[2])
+     .attr("text-anchor",q[3]).text(q[0]));
+
+  // axes
+  svg.append("g").attr("class","axis").attr("transform",`translate(0,${M.t+ih})`)
+     .call(d3.axisBottom(x).ticks(6));
+  svg.append("g").attr("class","axis").attr("transform",`translate(${M.l},0)`)
+     .call(d3.axisLeft(y).ticks(5,"~s"));
+  svg.append("text").attr("class","quad").attr("x",M.l+iw/2).attr("y",H-8)
+     .attr("text-anchor","middle").text("LIVE DEMAND STRENGTH →");
+  svg.append("text").attr("class","quad").attr("transform",`translate(16,${M.t+ih/2}) rotate(-90)`)
+     .attr("text-anchor","middle").text("MARKET SCALE (REVIEWS) →");
+
+  const tip=d3.select("#tip");
+  svg.append("g").selectAll("circle").data(T).join("circle")
+    .attr("class","bub")
+    .attr("cx",t=>x(t.index_score)).attr("cy",t=>y(t.review_count))
+    .attr("r",t=>r(t.price_au||25))
+    .attr("fill",t=>colorFor(t.brand)).attr("fill-opacity",.78)
+    .on("mousemove",(e,t)=>{
+      tip.style("opacity",1).style("left",(e.clientX+16)+"px").style("top",(e.clientY+16)+"px")
+        .html(`<b>${t.title}</b>`+
+          `<div class="row">Brand <span>${t.brand}</span></div>`+
+          `<div class="row">Demand score <span>${fmt(t.index_score,1)}</span></div>`+
+          `<div class="row">Sales rank <span>${t.bsr??"–"}</span></div>`+
+          `<div class="row">Reviews <span>${(t.review_count||0).toLocaleString()}</span></div>`+
+          `<div class="row">Price <span>$${fmt(t.price_au,2)}</span></div>`+
+          (t.piece_count?`<div class="row">Pieces <span>${t.piece_count}</span></div>`:""));
+    })
+    .on("mouseleave",()=>tip.style("opacity",0));
+}
+
+render(DATA);
+// Auto-freshen from the live repo when served online (no-op offline).
+fetch(RAW_URL,{cache:"no-store"}).then(r=>r.ok?r.json():null)
+  .then(j=>{ if(j && j.as_of>=DATA.as_of) render(j); }).catch(()=>{});
+</script>
+</body>
+</html>
