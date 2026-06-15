@@ -1308,5 +1308,235 @@
       "brand_mentions_30d": null
     }
   ],
+  "global": {
+    "as_of": "2026-06-15",
+    "measure": "English-language search interest ('jigsaw puzzle', '1000 piece puzzle'), indexed to the strongest major market",
+    "au_rank": 3,
+    "au_value": 50.0,
+    "major_markets": 44,
+    "countries": [
+      {
+        "country": "United States",
+        "interest": 100.0,
+        "is_au": false
+      },
+      {
+        "country": "New Zealand",
+        "interest": 52.9,
+        "is_au": false
+      },
+      {
+        "country": "Australia",
+        "interest": 50.0,
+        "is_au": true
+      },
+      {
+        "country": "United Kingdom",
+        "interest": 47.1,
+        "is_au": false
+      },
+      {
+        "country": "Canada",
+        "interest": 37.9,
+        "is_au": false
+      },
+      {
+        "country": "Singapore",
+        "interest": 28.2,
+        "is_au": false
+      },
+      {
+        "country": "Ireland",
+        "interest": 26.4,
+        "is_au": false
+      },
+      {
+        "country": "Belgium",
+        "interest": 20.1,
+        "is_au": false
+      },
+      {
+        "country": "Romania",
+        "interest": 20.1,
+        "is_au": false
+      },
+      {
+        "country": "China",
+        "interest": 19.5,
+        "is_au": false
+      },
+      {
+        "country": "Hungary",
+        "interest": 19.5,
+        "is_au": false
+      },
+      {
+        "country": "South Korea",
+        "interest": 16.7,
+        "is_au": false
+      },
+      {
+        "country": "France",
+        "interest": 15.5,
+        "is_au": false
+      },
+      {
+        "country": "Finland",
+        "interest": 14.9,
+        "is_au": false
+      },
+      {
+        "country": "Greece",
+        "interest": 14.9,
+        "is_au": false
+      },
+      {
+        "country": "South Africa",
+        "interest": 14.9,
+        "is_au": false
+      },
+      {
+        "country": "Malaysia",
+        "interest": 14.4,
+        "is_au": false
+      },
+      {
+        "country": "Sweden",
+        "interest": 14.4,
+        "is_au": false
+      },
+      {
+        "country": "Denmark",
+        "interest": 13.8,
+        "is_au": false
+      },
+      {
+        "country": "Netherlands",
+        "interest": 13.8,
+        "is_au": false
+      },
+      {
+        "country": "Switzerland",
+        "interest": 13.2,
+        "is_au": false
+      },
+      {
+        "country": "Norway",
+        "interest": 12.6,
+        "is_au": false
+      },
+      {
+        "country": "Portugal",
+        "interest": 12.1,
+        "is_au": false
+      },
+      {
+        "country": "Czechia",
+        "interest": 11.5,
+        "is_au": false
+      },
+      {
+        "country": "Germany",
+        "interest": 11.5,
+        "is_au": false
+      },
+      {
+        "country": "Philippines",
+        "interest": 11.5,
+        "is_au": false
+      },
+      {
+        "country": "Austria",
+        "interest": 10.9,
+        "is_au": false
+      },
+      {
+        "country": "Israel",
+        "interest": 10.3,
+        "is_au": false
+      },
+      {
+        "country": "United Arab Emirates",
+        "interest": 10.3,
+        "is_au": false
+      },
+      {
+        "country": "Hong Kong",
+        "interest": 9.8,
+        "is_au": false
+      },
+      {
+        "country": "India",
+        "interest": 6.9,
+        "is_au": false
+      },
+      {
+        "country": "Poland",
+        "interest": 6.9,
+        "is_au": false
+      },
+      {
+        "country": "Spain",
+        "interest": 6.9,
+        "is_au": false
+      },
+      {
+        "country": "Italy",
+        "interest": 5.7,
+        "is_au": false
+      },
+      {
+        "country": "Chile",
+        "interest": 5.2,
+        "is_au": false
+      },
+      {
+        "country": "Taiwan",
+        "interest": 5.2,
+        "is_au": false
+      },
+      {
+        "country": "Vietnam",
+        "interest": 5.2,
+        "is_au": false
+      },
+      {
+        "country": "Thailand",
+        "interest": 4.6,
+        "is_au": false
+      },
+      {
+        "country": "Argentina",
+        "interest": 4.0,
+        "is_au": false
+      },
+      {
+        "country": "Indonesia",
+        "interest": 4.0,
+        "is_au": false
+      },
+      {
+        "country": "Saudi Arabia",
+        "interest": 4.0,
+        "is_au": false
+      },
+      {
+        "country": "Japan",
+        "interest": 3.4,
+        "is_au": false
+      },
+      {
+        "country": "Mexico",
+        "interest": 3.4,
+        "is_au": false
+      },
+      {
+        "country": "Brazil",
+        "interest": 2.3,
+        "is_au": false
+      }
+    ],
+    "note": "Measured on English search terms, so it reflects the English-speaking puzzle market (where Australia competes) and under-weights markets that search in their own language (Germany, France, Japan)."
+  },
   "disclaimer": "The Premium Puzzles Index is derived from multiple public data sources across retail, search, and community platforms."
 }

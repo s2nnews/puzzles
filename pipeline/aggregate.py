@@ -32,6 +32,22 @@ AMAZON_DB = RAW_DIR / "amazon_bsr.db"
 STOCK_DB = RAW_DIR / "retailer_stock.db"
 REDDIT_DB = RAW_DIR / "reddit_signals.db"
 
+# Substantial markets for the global view. interest_by_region ranks every
+# country (143 of them), but tiny territories spike on relative interest
+# (Dominica, Malta, Isle of Man...), so the headline "where does AU rank"
+# is read against this curated set of significant economies/populations.
+# The raw CSV keeps all countries; this only governs display.
+MAJOR_MARKETS = {
+    "United States", "United Kingdom", "Australia", "New Zealand", "Canada",
+    "Ireland", "Germany", "France", "Italy", "Spain", "Netherlands", "Belgium",
+    "Switzerland", "Austria", "Sweden", "Norway", "Denmark", "Finland",
+    "Poland", "Portugal", "Greece", "Czechia", "Hungary", "Romania",
+    "Japan", "South Korea", "China", "India", "Singapore", "Malaysia",
+    "Indonesia", "Philippines", "Thailand", "Vietnam", "Hong Kong", "Taiwan",
+    "South Africa", "Brazil", "Mexico", "Argentina", "Chile",
+    "United Arab Emirates", "Saudi Arabia", "Israel", "Turkey",
+}
+
 KNOWN_BRANDS = [
     "Ravensburger", "Funbox", "Cobble Hill", "Gibsons", "Blue Opal",
     "Clementoni", "Educa", "Schmidt", "Holdson", "Eurographics", "Galison",
@@ -100,6 +116,45 @@ def latest_mentions() -> dict[str, int]:
         "where run_date=? and entity_type='brand'", (day,))}
     conn.close()
     return out
+
+
+def build_global() -> dict | None:
+    """Global puzzle-demand block from the latest global_trends CSV: per-country
+    search interest, filtered to major markets, with Australia's world rank."""
+    files = sorted(RAW_DIR.glob("global_trends_*.csv"))
+    if not files:
+        return None
+    src = files[-1]
+    rows = []
+    with open(src, encoding="utf-8") as f:
+        next(f, None)  # header
+        for line in f:
+            country, interest = line.rsplit(",", 1)
+            rows.append((country.strip(), float(interest)))
+    majors = [(c, v) for c, v in rows if c in MAJOR_MARKETS]
+    if not majors:
+        return None
+    # Rescale so the strongest major market = 100 (clean bar axis).
+    top = max(v for _, v in majors) or 1.0
+    majors = sorted(((c, round(v / top * 100, 1)) for c, v in majors),
+                    key=lambda kv: -kv[1])
+    au_rank = next((i + 1 for i, (c, _) in enumerate(majors) if c == "Australia"), None)
+    au_val = next((v for c, v in majors if c == "Australia"), None)
+    as_of = src.stem.replace("global_trends_", "")
+    return {
+        "as_of": as_of,
+        "measure": "English-language search interest ('jigsaw puzzle', "
+                   "'1000 piece puzzle'), indexed to the strongest major market",
+        "au_rank": au_rank,
+        "au_value": au_val,
+        "major_markets": len(majors),
+        "countries": [{"country": c, "interest": v, "is_au": c == "Australia"}
+                      for c, v in majors],
+        "note": "Measured on English search terms, so it reflects the "
+                "English-speaking puzzle market (where Australia competes) and "
+                "under-weights markets that search in their own language "
+                "(Germany, France, Japan).",
+    }
 
 
 def main() -> int:
@@ -242,6 +297,7 @@ def main() -> int:
         },
         "index_series": index_series,
         "titles": titles,
+        "global": build_global(),
         "disclaimer": "The Premium Puzzles Index is derived from multiple "
                       "public data sources across retail, search, and "
                       "community platforms.",

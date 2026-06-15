@@ -41,6 +41,8 @@ JOBS = {
                lambda d: d.weekday() == 0),
     "trends": (["scrapers/google_trends.py"],
                lambda d: d.weekday() == 3),
+    "global": (["scrapers/global_trends.py"],
+               lambda d: d.weekday() == 4),  # Fri — a day off trends to spare rate limits
 }
 
 

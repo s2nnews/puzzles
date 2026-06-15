@@ -98,6 +98,17 @@
   </div>
   <div class="legend" id="legend"></div>
 
+  <div id="global-sec" style="display:none">
+    <div class="chart-head" style="margin-top:30px">
+      <h2>Where the World Puzzles <span id="global-rank" style="color:var(--accent);font-weight:600"></span></h2>
+      <span class="hint">relative search interest &middot; major markets &middot; indexed to the strongest</span>
+    </div>
+    <div class="panel">
+      <svg id="globalbars" viewBox="0 0 1180 470"></svg>
+    </div>
+    <div class="tag" id="global-note" style="margin:10px 4px 0"></div>
+  </div>
+
   <footer id="foot"></footer>
 </div>
 <div class="tip" id="tip"></div>
@@ -1413,9 +1424,239 @@ const DATA = {
       "brand_mentions_30d": null
     }
   ],
+  "global": {
+    "as_of": "2026-06-15",
+    "measure": "English-language search interest ('jigsaw puzzle', '1000 piece puzzle'), indexed to the strongest major market",
+    "au_rank": 3,
+    "au_value": 50.0,
+    "major_markets": 44,
+    "countries": [
+      {
+        "country": "United States",
+        "interest": 100.0,
+        "is_au": false
+      },
+      {
+        "country": "New Zealand",
+        "interest": 52.9,
+        "is_au": false
+      },
+      {
+        "country": "Australia",
+        "interest": 50.0,
+        "is_au": true
+      },
+      {
+        "country": "United Kingdom",
+        "interest": 47.1,
+        "is_au": false
+      },
+      {
+        "country": "Canada",
+        "interest": 37.9,
+        "is_au": false
+      },
+      {
+        "country": "Singapore",
+        "interest": 28.2,
+        "is_au": false
+      },
+      {
+        "country": "Ireland",
+        "interest": 26.4,
+        "is_au": false
+      },
+      {
+        "country": "Belgium",
+        "interest": 20.1,
+        "is_au": false
+      },
+      {
+        "country": "Romania",
+        "interest": 20.1,
+        "is_au": false
+      },
+      {
+        "country": "China",
+        "interest": 19.5,
+        "is_au": false
+      },
+      {
+        "country": "Hungary",
+        "interest": 19.5,
+        "is_au": false
+      },
+      {
+        "country": "South Korea",
+        "interest": 16.7,
+        "is_au": false
+      },
+      {
+        "country": "France",
+        "interest": 15.5,
+        "is_au": false
+      },
+      {
+        "country": "Finland",
+        "interest": 14.9,
+        "is_au": false
+      },
+      {
+        "country": "Greece",
+        "interest": 14.9,
+        "is_au": false
+      },
+      {
+        "country": "South Africa",
+        "interest": 14.9,
+        "is_au": false
+      },
+      {
+        "country": "Malaysia",
+        "interest": 14.4,
+        "is_au": false
+      },
+      {
+        "country": "Sweden",
+        "interest": 14.4,
+        "is_au": false
+      },
+      {
+        "country": "Denmark",
+        "interest": 13.8,
+        "is_au": false
+      },
+      {
+        "country": "Netherlands",
+        "interest": 13.8,
+        "is_au": false
+      },
+      {
+        "country": "Switzerland",
+        "interest": 13.2,
+        "is_au": false
+      },
+      {
+        "country": "Norway",
+        "interest": 12.6,
+        "is_au": false
+      },
+      {
+        "country": "Portugal",
+        "interest": 12.1,
+        "is_au": false
+      },
+      {
+        "country": "Czechia",
+        "interest": 11.5,
+        "is_au": false
+      },
+      {
+        "country": "Germany",
+        "interest": 11.5,
+        "is_au": false
+      },
+      {
+        "country": "Philippines",
+        "interest": 11.5,
+        "is_au": false
+      },
+      {
+        "country": "Austria",
+        "interest": 10.9,
+        "is_au": false
+      },
+      {
+        "country": "Israel",
+        "interest": 10.3,
+        "is_au": false
+      },
+      {
+        "country": "United Arab Emirates",
+        "interest": 10.3,
+        "is_au": false
+      },
+      {
+        "country": "Hong Kong",
+        "interest": 9.8,
+        "is_au": false
+      },
+      {
+        "country": "India",
+        "interest": 6.9,
+        "is_au": false
+      },
+      {
+        "country": "Poland",
+        "interest": 6.9,
+        "is_au": false
+      },
+      {
+        "country": "Spain",
+        "interest": 6.9,
+        "is_au": false
+      },
+      {
+        "country": "Italy",
+        "interest": 5.7,
+        "is_au": false
+      },
+      {
+        "country": "Chile",
+        "interest": 5.2,
+        "is_au": false
+      },
+      {
+        "country": "Taiwan",
+        "interest": 5.2,
+        "is_au": false
+      },
+      {
+        "country": "Vietnam",
+        "interest": 5.2,
+        "is_au": false
+      },
+      {
+        "country": "Thailand",
+        "interest": 4.6,
+        "is_au": false
+      },
+      {
+        "country": "Argentina",
+        "interest": 4.0,
+        "is_au": false
+      },
+      {
+        "country": "Indonesia",
+        "interest": 4.0,
+        "is_au": false
+      },
+      {
+        "country": "Saudi Arabia",
+        "interest": 4.0,
+        "is_au": false
+      },
+      {
+        "country": "Japan",
+        "interest": 3.4,
+        "is_au": false
+      },
+      {
+        "country": "Mexico",
+        "interest": 3.4,
+        "is_au": false
+      },
+      {
+        "country": "Brazil",
+        "interest": 2.3,
+        "is_au": false
+      }
+    ],
+    "note": "Measured on English search terms, so it reflects the English-speaking puzzle market (where Australia competes) and under-weights markets that search in their own language (Germany, France, Japan)."
+  },
   "disclaimer": "The Premium Puzzles Index is derived from multiple public data sources across retail, search, and community platforms."
 };
-const BUILT_AT = "2026-06-15 08:01 UTC";
+const BUILT_AT = "2026-06-15 08:16 UTC";
 const RAW_URL = "https://raw.githubusercontent.com/s2nnews/puzzles/main/data/processed/index.json";
 
 const BRAND_COLORS = {
@@ -1462,6 +1703,8 @@ function render(d){
   drawBrandMap(aggregateBrands(d.titles||[]));
   // ---- per-title bubble ----
   drawBubble(d.titles||[]);
+  // ---- global demand (optional section) ----
+  drawGlobal(d.global);
   // ---- legend with brand sub-indices ----
   const bi = m.brand_indices||{};
   const brands = Object.keys(bi).filter(b=>b!=="Other").slice(0,10);
@@ -1500,6 +1743,42 @@ function aggregateBrands(titles){
     });
   }
   return out.sort((a,b)=>b.total_reviews-a.total_reviews);
+}
+
+function drawGlobal(G){
+  const sec=document.getElementById("global-sec");
+  if(!G || !G.countries || !G.countries.length){ sec.style.display="none"; return; }
+  sec.style.display="block";
+  const ord=["th","st","nd","rd"], r=G.au_rank,
+        suffix=(r%100>=11&&r%100<=13)?"th":(ord[r%10]||"th");
+  document.getElementById("global-rank").textContent =
+    r ? `· Australia ranks ${r}${suffix} of ${G.major_markets} major markets` : "";
+  document.getElementById("global-note").textContent = G.note||"";
+
+  const C=G.countries.slice(0,15);
+  const W=1180,H=470,M={t:14,r:54,b:24,l:150};
+  const svg=d3.select("#globalbars"); svg.selectAll("*").remove();
+  const iw=W-M.l-M.r;
+  const y=d3.scaleBand().domain(C.map(c=>c.country)).range([M.t,H-M.b]).padding(.28);
+  const x=d3.scaleLinear().domain([0,100]).range([M.l,M.l+iw]);
+
+  svg.append("g").selectAll("rect").data(C).join("rect")
+    .attr("x",M.l).attr("y",c=>y(c.country)).attr("height",y.bandwidth())
+    .attr("width",c=>x(c.interest)-M.l).attr("rx",4)
+    .attr("fill",c=>c.is_au?"var(--accent)":"var(--navy)")
+    .attr("opacity",c=>c.is_au?1:.82);
+  // country names
+  svg.append("g").selectAll("text.cty").data(C).join("text").attr("class","cty")
+    .attr("x",M.l-10).attr("y",c=>y(c.country)+y.bandwidth()/2).attr("dy",".35em")
+    .attr("text-anchor","end").attr("font-size","12.5px")
+    .attr("font-weight",c=>c.is_au?"700":"500")
+    .attr("fill",c=>c.is_au?"var(--accent)":"var(--ink)").text(c=>c.country);
+  // value labels
+  svg.append("g").selectAll("text.val").data(C).join("text").attr("class","val")
+    .attr("x",c=>x(c.interest)+8).attr("y",c=>y(c.country)+y.bandwidth()/2).attr("dy",".35em")
+    .attr("font-size","12px").attr("font-variant-numeric","tabular-nums")
+    .attr("fill","var(--muted)").attr("font-weight",c=>c.is_au?"700":"400")
+    .text(c=>Math.round(c.interest));
 }
 
 function drawBrandMap(B){
@@ -1612,8 +1891,10 @@ function drawBubble(titles){
 
 render(DATA);
 // Auto-freshen from the live repo when served online (no-op offline).
+// Only override the embedded data when the live repo is strictly NEWER,
+// so a same-day remote copy never clobbers freshly-built local data.
 fetch(RAW_URL,{cache:"no-store"}).then(r=>r.ok?r.json():null)
-  .then(j=>{ if(j && j.as_of>=DATA.as_of) render(j); }).catch(()=>{});
+  .then(j=>{ if(j && j.as_of>DATA.as_of) render(j); }).catch(()=>{});
 </script>
 </body>
 </html>

@@ -98,6 +98,17 @@
   </div>
   <div class="legend" id="legend"></div>
 
+  <div id="global-sec" style="display:none">
+    <div class="chart-head" style="margin-top:30px">
+      <h2>Where the World Puzzles <span id="global-rank" style="color:var(--accent);font-weight:600"></span></h2>
+      <span class="hint">relative search interest &middot; major markets &middot; indexed to the strongest</span>
+    </div>
+    <div class="panel">
+      <svg id="globalbars" viewBox="0 0 1180 470"></svg>
+    </div>
+    <div class="tag" id="global-note" style="margin:10px 4px 0"></div>
+  </div>
+
   <footer id="foot"></footer>
 </div>
 <div class="tip" id="tip"></div>
@@ -151,6 +162,8 @@ function render(d){
   drawBrandMap(aggregateBrands(d.titles||[]));
   // ---- per-title bubble ----
   drawBubble(d.titles||[]);
+  // ---- global demand (optional section) ----
+  drawGlobal(d.global);
   // ---- legend with brand sub-indices ----
   const bi = m.brand_indices||{};
   const brands = Object.keys(bi).filter(b=>b!=="Other").slice(0,10);
@@ -189,6 +202,42 @@ function aggregateBrands(titles){
     });
   }
   return out.sort((a,b)=>b.total_reviews-a.total_reviews);
+}
+
+function drawGlobal(G){
+  const sec=document.getElementById("global-sec");
+  if(!G || !G.countries || !G.countries.length){ sec.style.display="none"; return; }
+  sec.style.display="block";
+  const ord=["th","st","nd","rd"], r=G.au_rank,
+        suffix=(r%100>=11&&r%100<=13)?"th":(ord[r%10]||"th");
+  document.getElementById("global-rank").textContent =
+    r ? `· Australia ranks ${r}${suffix} of ${G.major_markets} major markets` : "";
+  document.getElementById("global-note").textContent = G.note||"";
+
+  const C=G.countries.slice(0,15);
+  const W=1180,H=470,M={t:14,r:54,b:24,l:150};
+  const svg=d3.select("#globalbars"); svg.selectAll("*").remove();
+  const iw=W-M.l-M.r;
+  const y=d3.scaleBand().domain(C.map(c=>c.country)).range([M.t,H-M.b]).padding(.28);
+  const x=d3.scaleLinear().domain([0,100]).range([M.l,M.l+iw]);
+
+  svg.append("g").selectAll("rect").data(C).join("rect")
+    .attr("x",M.l).attr("y",c=>y(c.country)).attr("height",y.bandwidth())
+    .attr("width",c=>x(c.interest)-M.l).attr("rx",4)
+    .attr("fill",c=>c.is_au?"var(--accent)":"var(--navy)")
+    .attr("opacity",c=>c.is_au?1:.82);
+  // country names
+  svg.append("g").selectAll("text.cty").data(C).join("text").attr("class","cty")
+    .attr("x",M.l-10).attr("y",c=>y(c.country)+y.bandwidth()/2).attr("dy",".35em")
+    .attr("text-anchor","end").attr("font-size","12.5px")
+    .attr("font-weight",c=>c.is_au?"700":"500")
+    .attr("fill",c=>c.is_au?"var(--accent)":"var(--ink)").text(c=>c.country);
+  // value labels
+  svg.append("g").selectAll("text.val").data(C).join("text").attr("class","val")
+    .attr("x",c=>x(c.interest)+8).attr("y",c=>y(c.country)+y.bandwidth()/2).attr("dy",".35em")
+    .attr("font-size","12px").attr("font-variant-numeric","tabular-nums")
+    .attr("fill","var(--muted)").attr("font-weight",c=>c.is_au?"700":"400")
+    .text(c=>Math.round(c.interest));
 }
 
 function drawBrandMap(B){
@@ -301,8 +350,10 @@ function drawBubble(titles){
 
 render(DATA);
 // Auto-freshen from the live repo when served online (no-op offline).
+// Only override the embedded data when the live repo is strictly NEWER,
+// so a same-day remote copy never clobbers freshly-built local data.
 fetch(RAW_URL,{cache:"no-store"}).then(r=>r.ok?r.json():null)
-  .then(j=>{ if(j && j.as_of>=DATA.as_of) render(j); }).catch(()=>{});
+  .then(j=>{ if(j && j.as_of>DATA.as_of) render(j); }).catch(()=>{});
 </script>
 </body>
 </html>
