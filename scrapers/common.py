@@ -20,6 +20,20 @@ USER_AGENTS = [
 ]
 
 
+def make_soup(html: str):
+    """BeautifulSoup with lxml when available, else the stdlib parser.
+
+    lxml is faster but isn't guaranteed in every interpreter the cron/task
+    might use (the orchestrator runs under sys.executable, which may be a
+    venv without it). html.parser ships with Python, so this never hard-fails
+    on a missing dependency."""
+    from bs4 import BeautifulSoup
+    try:
+        return BeautifulSoup(html, "lxml")
+    except Exception:
+        return BeautifulSoup(html, "html.parser")
+
+
 def polite_sleep(min_s: float = 2.0, max_s: float = 5.0) -> None:
     time.sleep(random.uniform(min_s, max_s))
 

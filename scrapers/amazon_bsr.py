@@ -19,7 +19,9 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 import requests
-from bs4 import BeautifulSoup
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from common import make_soup  # noqa: E402
 
 BASE_URL = "https://www.amazon.com.au"
 CATEGORY_SEARCH = BASE_URL + "/s?rh=n%3A5030920051&s=review-rank&page={page}"
@@ -97,7 +99,7 @@ def parse_piece_count(title: str) -> int | None:
 
 
 def parse_listing_page(html: str) -> list[dict]:
-    soup = BeautifulSoup(html, "lxml")
+    soup = make_soup(html)
     products = []
     for card in soup.select('div[data-component-type="s-search-result"]'):
         asin = card.get("data-asin")
@@ -154,7 +156,7 @@ def parse_bsr(html: str) -> int | None:
     Must run on extracted text, not raw HTML: the category name sits inside
     an anchor tag, so the number and "in Jigsaw Puzzles" are split by markup.
     """
-    text = BeautifulSoup(html, "lxml").get_text(" ", strip=True)
+    text = make_soup(html).get_text(" ", strip=True)
     m = re.search(r"([\d,]+)\s+in\s+Jigsaw Puzzles", text)
     return int(m.group(1).replace(",", "")) if m else None
 

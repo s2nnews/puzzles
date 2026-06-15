@@ -19,10 +19,10 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
-from bs4 import BeautifulSoup
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import RAW_DIR, clean_title_query, fetch, load_tracked_titles, polite_sleep
+from common import (RAW_DIR, clean_title_query, fetch, load_tracked_titles,
+                    make_soup, polite_sleep)
 
 SEARCH_URL = "https://www.ebay.com.au/sch/i.html"
 DEFAULT_DB = RAW_DIR / "ebay_sold.db"
@@ -31,7 +31,7 @@ BLOCK_MARKERS = ("Pardon our interruption", "Reference ID:", "challenge-form")
 
 def parse_sold_listings(html: str) -> list[dict]:
     """Sold items: price + sold date, newest first."""
-    soup = BeautifulSoup(html, "lxml")
+    soup = make_soup(html)
     items = []
     for card in soup.select("li.s-item, li.s-card"):
         text = card.get_text(" ", strip=True)
