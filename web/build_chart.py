@@ -22,8 +22,9 @@ LOGO = ROOT / "web" / "assets" / "premium-puzzles-logo.png"
 # (template, output): the full dashboard and the basic brand-only version
 # (logo + title + Brand Dominance chart) for newsletters / early embeds.
 BUILDS = [
-    (ROOT / "web" / "template.html",       ROOT / "web" / "puzzle_index.html"),
-    (ROOT / "web" / "template_basic.html", ROOT / "web" / "puzzle_index_basic.html"),
+    (ROOT / "web" / "template.html",        ROOT / "web" / "puzzle_index.html"),
+    (ROOT / "web" / "template_basic.html",  ROOT / "web" / "puzzle_index_basic.html"),
+    (ROOT / "web" / "template_global.html", ROOT / "web" / "puzzle_index_global.html"),
 ]
 
 

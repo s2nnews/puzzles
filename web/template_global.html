@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Premium Puzzles Index — Global</title>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<style>
+  :root{
+    --bg:#ffffff; --panel:#f7f4ee; --line:#e4e0d6; --ink:#16294a;
+    --muted:#6b7685; --accent:#b8915f; --navy:#16294a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px 22px 40px}
+  header{display:flex;align-items:center;gap:16px;border-bottom:2px solid var(--navy);
+    padding-bottom:16px}
+  .logo{height:52px;width:auto;display:block}
+  h1{margin:0;font-size:21px;letter-spacing:.13em;font-weight:600;
+    font-family:Georgia,"Times New Roman",serif}
+  .tag{color:var(--muted);font-size:12.5px;margin-top:5px}
+  .chart-head{display:flex;justify-content:space-between;align-items:baseline;margin:20px 2px 6px}
+  .chart-head h2{font-size:17px;font-weight:600;margin:0;font-family:Georgia,"Times New Roman",serif}
+  .chart-head .rank{color:var(--accent);font-weight:600;font-size:15px}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;
+    box-shadow:0 1px 2px rgba(22,41,74,.04)}
+  svg{display:block;width:100%;height:auto}
+  footer{color:var(--muted);font-size:11.5px;margin-top:14px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img class="logo" src="__LOGO_DATA__" alt="Premium Puzzles">
+    <div>
+      <h1>THE PREMIUM PUZZLES INDEX</h1>
+      <div class="tag">A global-macro read on the jigsaw market &middot; where the world puzzles</div>
+    </div>
+  </header>
+
+  <div class="chart-head">
+    <h2>Where the World Puzzles</h2>
+    <span class="rank" id="rank"></span>
+  </div>
+  <div class="panel">
+    <svg id="globalbars" viewBox="0 0 1000 470"></svg>
+  </div>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const DATA = __INDEX_DATA__;
+
+function drawGlobal(G){
+  if(!G || !G.countries) return;
+  const ord=["th","st","nd","rd"], r=G.au_rank,
+        suffix=(r%100>=11&&r%100<=13)?"th":(ord[r%10]||"th");
+  document.getElementById("rank").textContent =
+    r ? `Australia ranks ${r}${suffix} of ${G.major_markets} major markets` : "";
+  document.getElementById("foot").textContent = G.note||"";
+
+  const C=G.countries.slice(0,15);
+  const W=1000,H=470,M={t:14,r:50,b:24,l:140};
+  const svg=d3.select("#globalbars"); svg.selectAll("*").remove();
+  const iw=W-M.l-M.r;
+  const y=d3.scaleBand().domain(C.map(c=>c.country)).range([M.t,H-M.b]).padding(.28);
+  const x=d3.scaleLinear().domain([0,100]).range([M.l,M.l+iw]);
+
+  svg.append("g").selectAll("rect").data(C).join("rect")
+    .attr("x",M.l).attr("y",c=>y(c.country)).attr("height",y.bandwidth())
+    .attr("width",c=>x(c.interest)-M.l).attr("rx",4)
+    .attr("fill",c=>c.is_au?"var(--accent)":"var(--navy)")
+    .attr("opacity",c=>c.is_au?1:.82);
+  svg.append("g").selectAll("text.cty").data(C).join("text").attr("class","cty")
+    .attr("x",M.l-10).attr("y",c=>y(c.country)+y.bandwidth()/2).attr("dy",".35em")
+    .attr("text-anchor","end").attr("font-size","12.5px")
+    .attr("font-weight",c=>c.is_au?"700":"500")
+    .attr("fill",c=>c.is_au?"#9a7635":"var(--ink)").text(c=>c.country);
+  svg.append("g").selectAll("text.val").data(C).join("text").attr("class","val")
+    .attr("x",c=>x(c.interest)+8).attr("y",c=>y(c.country)+y.bandwidth()/2).attr("dy",".35em")
+    .attr("font-size","12px").attr("fill","var(--muted)")
+    .attr("font-weight",c=>c.is_au?"700":"400")
+    .text(c=>Math.round(c.interest));
+}
+drawGlobal(DATA.global);
+</script>
+</body>
+</html>
