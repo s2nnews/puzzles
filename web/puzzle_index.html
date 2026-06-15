@@ -74,7 +74,15 @@
   <div class="cards" id="cards"></div>
 
   <div class="chart-head">
-    <h2>The Market Map</h2>
+    <h2>Brand Dominance</h2>
+    <span class="hint">x: live demand strength &nbsp;&middot;&nbsp; y: total market scale (reviews) &nbsp;&middot;&nbsp; size: titles in market &nbsp;&middot;&nbsp; one bubble per brand</span>
+  </div>
+  <div class="panel">
+    <svg id="brandmap" viewBox="0 0 1180 480"></svg>
+  </div>
+
+  <div class="chart-head" style="margin-top:26px">
+    <h2>The Market Map <span style="color:var(--muted);font-weight:400">&middot; every title</span></h2>
     <span class="hint">x: live demand strength &nbsp;&middot;&nbsp; y: market scale (reviews) &nbsp;&middot;&nbsp; size: price &nbsp;&middot;&nbsp; colour: brand</span>
   </div>
   <div class="panel">
@@ -1399,7 +1407,7 @@ const DATA = {
   ],
   "disclaimer": "The Premium Puzzles Index is derived from multiple public data sources across retail, search, and community platforms."
 };
-const BUILT_AT = "2026-06-15 06:16 UTC";
+const BUILT_AT = "2026-06-15 07:37 UTC";
 const RAW_URL = "https://raw.githubusercontent.com/s2nnews/puzzles/main/data/processed/index.json";
 
 const BRAND_COLORS = {
@@ -1442,7 +1450,10 @@ function render(d){
 
   // ---- sparkline ----
   drawSpark(d.index_series||[]);
-  // ---- bubble ----
+  // ---- brand dominance map (named brands only; 'Other' is a catch-all,
+  //      not a brand, so it's excluded here but kept in the title map) ----
+  drawBrandMap(aggregateBrands(d.titles||[]).filter(b=>b.brand!=="Other"));
+  // ---- per-title bubble ----
   drawBubble(d.titles||[]);
   // ---- legend with brand sub-indices ----
   const bi = m.brand_indices||{};
@@ -1465,6 +1476,66 @@ function drawSpark(series){
   const line=d3.line().x((s,i)=>xs(i)).y(s=>ys(s.level)).curve(d3.curveMonotoneX);
   svg.append("path").attr("d",line(series)).attr("fill","none")
      .attr("stroke",up?"var(--up)":"var(--down)").attr("stroke-width",1.6);
+}
+
+function aggregateBrands(titles){
+  const T = titles.filter(t=>t.index_score!=null && t.review_count>0);
+  const by = d3.group(T, t=>t.brand);
+  const out = [];
+  for(const [brand,rows] of by){
+    const totalRev = d3.sum(rows,r=>r.review_count);
+    // demand strength = review-weighted mean (where the volume actually is)
+    const demand = d3.sum(rows,r=>r.index_score*r.review_count)/totalRev;
+    out.push({
+      brand, titles:rows.length, total_reviews:totalRev, demand,
+      avg_price:d3.mean(rows,r=>r.price_au||0),
+      top:rows.slice().sort((a,b)=>(a.bsr||9e9)-(b.bsr||9e9))[0].title
+    });
+  }
+  return out.sort((a,b)=>b.total_reviews-a.total_reviews);
+}
+
+function drawBrandMap(B){
+  const W=1180,H=480,M={t:24,r:18,b:46,l:60};
+  const svg=d3.select("#brandmap"); svg.selectAll("*").remove();
+  if(!B.length) return;
+  const iw=W-M.l-M.r, ih=H-M.t-M.b;
+  const x=d3.scaleLinear().domain(d3.extent(B,b=>b.demand)).nice().range([M.l,M.l+iw]);
+  const y=d3.scaleLog().domain([Math.max(1,d3.min(B,b=>b.total_reviews)),
+                                d3.max(B,b=>b.total_reviews)]).nice().range([M.t+ih,M.t]);
+  const r=d3.scaleSqrt().domain([1,d3.max(B,b=>b.titles)]).range([10,46]);
+
+  svg.append("g").attr("class","axis").attr("transform",`translate(0,${M.t+ih})`)
+     .call(d3.axisBottom(x).ticks(6));
+  svg.append("g").attr("class","axis").attr("transform",`translate(${M.l},0)`)
+     .call(d3.axisLeft(y).ticks(5,"~s"));
+  svg.append("text").attr("class","quad").attr("x",M.l+iw/2).attr("y",H-8)
+     .attr("text-anchor","middle").text("LIVE DEMAND STRENGTH →");
+  svg.append("text").attr("class","quad").attr("transform",`translate(16,${M.t+ih/2}) rotate(-90)`)
+     .attr("text-anchor","middle").text("TOTAL MARKET SCALE (REVIEWS) →");
+  svg.append("text").attr("class","quad").attr("x",M.l+iw-6).attr("y",M.t+12)
+     .attr("text-anchor","end").text("DOMINANT — BIG & SELLING");
+
+  const tip=d3.select("#tip");
+  const g=svg.append("g").selectAll("g").data(B).join("g")
+    .attr("transform",b=>`translate(${x(b.demand)},${y(b.total_reviews)})`);
+  g.append("circle").attr("class","bub").attr("r",b=>r(b.titles))
+    .attr("fill",b=>colorFor(b.brand)).attr("fill-opacity",.72)
+    .on("mousemove",(e,b)=>{
+      tip.style("opacity",1).style("left",(e.clientX+16)+"px").style("top",(e.clientY+16)+"px")
+        .html(`<b>${b.brand}</b>`+
+          `<div class="row">Titles in market <span>${b.titles}</span></div>`+
+          `<div class="row">Total reviews <span>${b.total_reviews.toLocaleString()}</span></div>`+
+          `<div class="row">Demand strength <span>${fmt(b.demand,1)}</span></div>`+
+          `<div class="row">Avg price <span>$${fmt(b.avg_price,2)}</span></div>`+
+          `<div class="row">Top title <span>${b.top.slice(0,28)}</span></div>`);
+    })
+    .on("mouseleave",()=>tip.style("opacity",0));
+  // label brands inside/beside the bubble
+  g.append("text").attr("text-anchor","middle").attr("dy",b=>r(b.titles)>20?".32em":-r(b.titles)-5)
+    .attr("fill","var(--ink)").attr("font-size",b=>r(b.titles)>26?"12px":"11px")
+    .attr("font-weight","600").attr("pointer-events","none")
+    .style("opacity",.92).text(b=>b.brand==="Other"?"":b.brand);
 }
 
 function drawBubble(titles){
