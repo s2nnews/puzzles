@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Premium Puzzles Index</title>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<style>
+  :root{
+    --bg:#ffffff; --panel:#f7f4ee; --line:#e4e0d6; --ink:#16294a;
+    --muted:#6b7685; --accent:#b8915f; --navy:#16294a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px 22px 40px}
+  header{display:flex;align-items:center;gap:16px;border-bottom:2px solid var(--navy);
+    padding-bottom:16px}
+  .logo{height:52px;width:auto;display:block}
+  h1{margin:0;font-size:21px;letter-spacing:.13em;font-weight:600;
+    font-family:Georgia,"Times New Roman",serif}
+  .tag{color:var(--muted);font-size:12.5px;margin-top:5px}
+  .chart-head{display:flex;justify-content:space-between;align-items:baseline;margin:20px 2px 6px}
+  .chart-head h2{font-size:17px;font-weight:600;margin:0;font-family:Georgia,"Times New Roman",serif}
+  .chart-head .asof{color:var(--muted);font-size:12px}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;
+    box-shadow:0 1px 2px rgba(22,41,74,.04)}
+  svg{display:block;width:100%;height:auto}
+  .axis text{fill:var(--muted);font-size:11px}
+  .axis line,.axis path{stroke:var(--line)}
+  .quad{fill:var(--muted);font-size:10.5px;opacity:.6;letter-spacing:.1em;text-transform:uppercase}
+  .bub{stroke:#fff;stroke-width:1;cursor:pointer}
+  .tip{position:fixed;pointer-events:none;background:#fff;border:1px solid var(--line);
+    border-radius:8px;padding:10px 12px;font-size:12px;max-width:260px;opacity:0;
+    transition:opacity .12s;box-shadow:0 10px 28px rgba(22,41,74,.18);z-index:10}
+  .tip b{color:var(--accent)}
+  .tip .row{color:var(--muted);margin-top:3px}
+  .tip .row span{color:var(--ink);float:right;margin-left:14px;font-variant-numeric:tabular-nums}
+  footer{color:var(--muted);font-size:11px;margin-top:18px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img class="logo" src="__LOGO_DATA__" alt="Premium Puzzles">
+    <div>
+      <h1>THE PREMIUM PUZZLES INDEX</h1>
+      <div class="tag">A global-macro read on the Australian jigsaw market &middot; titles are constituents, brands are sectors</div>
+    </div>
+  </header>
+
+  <div class="chart-head">
+    <h2>Brand Dominance</h2>
+    <span class="asof" id="asof"></span>
+  </div>
+  <div class="panel">
+    <svg id="brandmap" viewBox="0 0 1000 520"></svg>
+  </div>
+
+  <footer id="foot"></footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+const DATA = __INDEX_DATA__;
+const BUILT_AT = "__BUILT_AT__";
+const BRAND_COLORS = {
+  "Ravensburger":"#4f86d6","Funbox":"#e08a3c","Cobble Hill":"#6bbf59",
+  "Gibsons":"#c0504d","Blue Opal":"#3fb6c4","Magic Puzzle Company":"#a06cd5",
+  "Melissa & Doug":"#d6a64f","Buffalo Games":"#5fa8a0","Galison":"#cf6f9b",
+  "Clementoni":"#7f9ad6","Educa":"#bf8b5f","Heye":"#9fbf4f","Schmidt":"#d65f7a",
+  "Eurographics":"#5fbf8f","White Mountain":"#b0795f","Other":"#566273"
+};
+const colorFor = b => BRAND_COLORS[b] || "#566273";
+const fmt = (n,d=2)=> n==null? "–" : (+n).toFixed(d);
+
+function aggregateBrands(titles){
+  const T = titles.filter(t=>t.index_score!=null && t.review_count>0);
+  const by = d3.group(T, t=>t.brand);
+  const out = [];
+  for(const [brand,rows] of by){
+    const totalRev = d3.sum(rows,r=>r.review_count);
+    const demand = d3.sum(rows,r=>r.index_score*r.review_count)/totalRev;
+    out.push({brand, titles:rows.length, total_reviews:totalRev, demand,
+      avg_price:d3.mean(rows,r=>r.price_au||0),
+      top:rows.slice().sort((a,b)=>(a.bsr||9e9)-(b.bsr||9e9))[0].title});
+  }
+  return out.sort((a,b)=>b.total_reviews-a.total_reviews);
+}
+
+function drawBrandMap(B){
+  const W=1000,H=520,M={t:24,r:18,b:46,l:60};
+  const svg=d3.select("#brandmap"); svg.selectAll("*").remove();
+  if(!B.length) return;
+  const iw=W-M.l-M.r, ih=H-M.t-M.b;
+  const x=d3.scaleLinear().domain(d3.extent(B,b=>b.demand)).nice().range([M.l,M.l+iw]);
+  const y=d3.scaleLog().domain([Math.max(1,d3.min(B,b=>b.total_reviews)),
+                                d3.max(B,b=>b.total_reviews)]).nice().range([M.t+ih,M.t]);
+  const r=d3.scaleSqrt().domain([1,d3.max(B,b=>b.titles)]).range([10,44]);
+
+  svg.append("g").attr("class","axis").attr("transform",`translate(0,${M.t+ih})`)
+     .call(d3.axisBottom(x).ticks(6));
+  svg.append("g").attr("class","axis").attr("transform",`translate(${M.l},0)`)
+     .call(d3.axisLeft(y).ticks(5,"~s"));
+  svg.append("text").attr("class","quad").attr("x",M.l+iw/2).attr("y",H-8)
+     .attr("text-anchor","middle").text("LIVE DEMAND STRENGTH →");
+  svg.append("text").attr("class","quad").attr("transform",`translate(16,${M.t+ih/2}) rotate(-90)`)
+     .attr("text-anchor","middle").text("TOTAL MARKET SCALE (REVIEWS) →");
+  svg.append("text").attr("class","quad").attr("x",M.l+iw-6).attr("y",M.t+12)
+     .attr("text-anchor","end").text("DOMINANT — BIG & SELLING");
+
+  const tip=d3.select("#tip");
+  const Bdraw = B.slice().sort((a,b)=>r(b.titles)-r(a.titles));
+  const g=svg.append("g").selectAll("g").data(Bdraw).join("g")
+    .attr("transform",b=>`translate(${x(b.demand)},${y(b.total_reviews)})`);
+  g.append("circle").attr("class","bub").attr("r",b=>r(b.titles))
+    .attr("fill",b=>colorFor(b.brand)).attr("fill-opacity",.82)
+    .attr("stroke",b=>colorFor(b.brand)).attr("stroke-width",1.6).attr("stroke-opacity",.95)
+    .on("mousemove",(e,b)=>{
+      tip.style("opacity",1).style("left",(e.clientX+16)+"px").style("top",(e.clientY+16)+"px")
+        .html(`<b>${b.brand}</b>`+
+          `<div class="row">Titles in market <span>${b.titles}</span></div>`+
+          `<div class="row">Total reviews <span>${b.total_reviews.toLocaleString()}</span></div>`+
+          `<div class="row">Demand strength <span>${fmt(b.demand,1)}</span></div>`);
+    })
+    .on("mouseleave",()=>tip.style("opacity",0));
+  const labels = B.map(b=>({text:b.brand, color:colorFor(b.brand),
+    x:x(b.demand), y:y(b.total_reviews)-r(b.titles)-7})).sort((a,b)=>a.y-b.y);
+  for(let i=1;i<labels.length;i++)
+    for(let j=0;j<i;j++)
+      if(Math.abs(labels[i].x-labels[j].x)<78 && Math.abs(labels[i].y-labels[j].y)<13)
+        labels[i].y = labels[j].y - 14;
+  svg.append("g").selectAll("text").data(labels).join("text")
+    .attr("x",d=>d.x).attr("y",d=>d.y).attr("text-anchor","middle")
+    .attr("font-size","11.5px").attr("font-weight","700").attr("pointer-events","none")
+    .attr("fill",d=>d.color).style("paint-order","stroke")
+    .attr("stroke","#ffffff").attr("stroke-width","3px").attr("stroke-linejoin","round")
+    .text(d=>d.text);
+}
+
+document.getElementById("asof").textContent = "as of " + DATA.as_of;
+document.getElementById("foot").innerHTML =
+  (DATA.disclaimer||"") + "<br>Bubble position: demand strength (live sales rank) vs total market "+
+  "scale (reviews). Size = number of titles a brand has in market.";
+drawBrandMap(aggregateBrands(DATA.titles||[]));
+</script>
+</body>
+</html>
