@@ -17,6 +17,8 @@
   .wrap{max-width:1180px;margin:0 auto;padding:28px 22px 60px}
   header{display:flex;justify-content:space-between;align-items:flex-end;
     flex-wrap:wrap;gap:16px;border-bottom:1px solid var(--line);padding-bottom:18px}
+  .brandrow{display:flex;align-items:center;gap:14px}
+  .logo{height:46px;width:auto;display:block}
   .brand h1{margin:0;font-size:23px;letter-spacing:.14em;font-weight:600}
   .brand .tag{color:var(--muted);font-size:12.5px;letter-spacing:.05em;margin-top:6px}
   .headline{text-align:right}
@@ -59,7 +61,10 @@
 <div class="wrap">
   <header>
     <div class="brand">
-      <h1>THE PREMIUM PUZZLES INDEX</h1>
+      <div class="brandrow">
+        <img class="logo" src="data:image/avif;base64,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" alt="Premium Puzzles">
+        <h1>THE PREMIUM PUZZLES INDEX</h1>
+      </div>
       <div class="tag">A global-macro read on the Australian jigsaw market &middot; titles are constituents, brands are sectors</div>
     </div>
     <div class="headline">
@@ -1407,7 +1412,7 @@ const DATA = {
   ],
   "disclaimer": "The Premium Puzzles Index is derived from multiple public data sources across retail, search, and community platforms."
 };
-const BUILT_AT = "2026-06-15 07:37 UTC";
+const BUILT_AT = "2026-06-15 07:46 UTC";
 const RAW_URL = "https://raw.githubusercontent.com/s2nnews/puzzles/main/data/processed/index.json";
 
 const BRAND_COLORS = {
@@ -1450,9 +1455,8 @@ function render(d){
 
   // ---- sparkline ----
   drawSpark(d.index_series||[]);
-  // ---- brand dominance map (named brands only; 'Other' is a catch-all,
-  //      not a brand, so it's excluded here but kept in the title map) ----
-  drawBrandMap(aggregateBrands(d.titles||[]).filter(b=>b.brand!=="Other"));
+  // ---- brand dominance map (aggregate titles -> brands) ----
+  drawBrandMap(aggregateBrands(d.titles||[]));
   // ---- per-title bubble ----
   drawBubble(d.titles||[]);
   // ---- legend with brand sub-indices ----
@@ -1517,10 +1521,13 @@ function drawBrandMap(B){
      .attr("text-anchor","end").text("DOMINANT — BIG & SELLING");
 
   const tip=d3.select("#tip");
-  const g=svg.append("g").selectAll("g").data(B).join("g")
+  // Draw biggest bubbles first (behind) so smaller brands stay visible on top.
+  const Bdraw = B.slice().sort((a,b)=>r(b.titles)-r(a.titles));
+  const g=svg.append("g").selectAll("g").data(Bdraw).join("g")
     .attr("transform",b=>`translate(${x(b.demand)},${y(b.total_reviews)})`);
   g.append("circle").attr("class","bub").attr("r",b=>r(b.titles))
-    .attr("fill",b=>colorFor(b.brand)).attr("fill-opacity",.72)
+    .attr("fill",b=>colorFor(b.brand)).attr("fill-opacity",.82)
+    .attr("stroke",b=>colorFor(b.brand)).attr("stroke-width",1.6).attr("stroke-opacity",.95)
     .on("mousemove",(e,b)=>{
       tip.style("opacity",1).style("left",(e.clientX+16)+"px").style("top",(e.clientY+16)+"px")
         .html(`<b>${b.brand}</b>`+
@@ -1531,11 +1538,21 @@ function drawBrandMap(B){
           `<div class="row">Top title <span>${b.top.slice(0,28)}</span></div>`);
     })
     .on("mouseleave",()=>tip.style("opacity",0));
-  // label brands inside/beside the bubble
-  g.append("text").attr("text-anchor","middle").attr("dy",b=>r(b.titles)>20?".32em":-r(b.titles)-5)
-    .attr("fill","var(--ink)").attr("font-size",b=>r(b.titles)>26?"12px":"11px")
-    .attr("font-weight","600").attr("pointer-events","none")
-    .style("opacity",.92).text(b=>b.brand==="Other"?"":b.brand);
+  // Labels coloured to match each bubble (so "Ravensburger" reads as the blue
+  // one), placed above the bubble, with a greedy vertical de-collision so
+  // overlapping brands don't stack on the same line.
+  const labels = B.map(b=>({text:b.brand, color:colorFor(b.brand),
+    x:x(b.demand), y:y(b.total_reviews)-r(b.titles)-7})).sort((a,b)=>a.y-b.y);
+  for(let i=1;i<labels.length;i++)
+    for(let j=0;j<i;j++)
+      if(Math.abs(labels[i].x-labels[j].x)<78 && Math.abs(labels[i].y-labels[j].y)<13)
+        labels[i].y = labels[j].y - 14;
+  svg.append("g").selectAll("text").data(labels).join("text")
+    .attr("x",d=>d.x).attr("y",d=>d.y).attr("text-anchor","middle")
+    .attr("font-size","11.5px").attr("font-weight","700").attr("pointer-events","none")
+    .attr("fill",d=>d.color).style("paint-order","stroke")
+    .attr("stroke","#0b0e13").attr("stroke-width","3.5px").attr("stroke-linejoin","round")
+    .text(d=>d.text);
 }
 
 function drawBubble(titles){

@@ -17,6 +17,8 @@
   .wrap{max-width:1180px;margin:0 auto;padding:28px 22px 60px}
   header{display:flex;justify-content:space-between;align-items:flex-end;
     flex-wrap:wrap;gap:16px;border-bottom:1px solid var(--line);padding-bottom:18px}
+  .brandrow{display:flex;align-items:center;gap:14px}
+  .logo{height:46px;width:auto;display:block}
   .brand h1{margin:0;font-size:23px;letter-spacing:.14em;font-weight:600}
   .brand .tag{color:var(--muted);font-size:12.5px;letter-spacing:.05em;margin-top:6px}
   .headline{text-align:right}
@@ -59,7 +61,10 @@
 <div class="wrap">
   <header>
     <div class="brand">
-      <h1>THE PREMIUM PUZZLES INDEX</h1>
+      <div class="brandrow">
+        <img class="logo" src="__LOGO_DATA__" alt="Premium Puzzles">
+        <h1>THE PREMIUM PUZZLES INDEX</h1>
+      </div>
       <div class="tag">A global-macro read on the Australian jigsaw market &middot; titles are constituents, brands are sectors</div>
     </div>
     <div class="headline">
@@ -139,9 +144,8 @@ function render(d){
 
   // ---- sparkline ----
   drawSpark(d.index_series||[]);
-  // ---- brand dominance map (named brands only; 'Other' is a catch-all,
-  //      not a brand, so it's excluded here but kept in the title map) ----
-  drawBrandMap(aggregateBrands(d.titles||[]).filter(b=>b.brand!=="Other"));
+  // ---- brand dominance map (aggregate titles -> brands) ----
+  drawBrandMap(aggregateBrands(d.titles||[]));
   // ---- per-title bubble ----
   drawBubble(d.titles||[]);
   // ---- legend with brand sub-indices ----
@@ -206,10 +210,13 @@ function drawBrandMap(B){
      .attr("text-anchor","end").text("DOMINANT — BIG & SELLING");
 
   const tip=d3.select("#tip");
-  const g=svg.append("g").selectAll("g").data(B).join("g")
+  // Draw biggest bubbles first (behind) so smaller brands stay visible on top.
+  const Bdraw = B.slice().sort((a,b)=>r(b.titles)-r(a.titles));
+  const g=svg.append("g").selectAll("g").data(Bdraw).join("g")
     .attr("transform",b=>`translate(${x(b.demand)},${y(b.total_reviews)})`);
   g.append("circle").attr("class","bub").attr("r",b=>r(b.titles))
-    .attr("fill",b=>colorFor(b.brand)).attr("fill-opacity",.72)
+    .attr("fill",b=>colorFor(b.brand)).attr("fill-opacity",.82)
+    .attr("stroke",b=>colorFor(b.brand)).attr("stroke-width",1.6).attr("stroke-opacity",.95)
     .on("mousemove",(e,b)=>{
       tip.style("opacity",1).style("left",(e.clientX+16)+"px").style("top",(e.clientY+16)+"px")
         .html(`<b>${b.brand}</b>`+
@@ -220,11 +227,21 @@ function drawBrandMap(B){
           `<div class="row">Top title <span>${b.top.slice(0,28)}</span></div>`);
     })
     .on("mouseleave",()=>tip.style("opacity",0));
-  // label brands inside/beside the bubble
-  g.append("text").attr("text-anchor","middle").attr("dy",b=>r(b.titles)>20?".32em":-r(b.titles)-5)
-    .attr("fill","var(--ink)").attr("font-size",b=>r(b.titles)>26?"12px":"11px")
-    .attr("font-weight","600").attr("pointer-events","none")
-    .style("opacity",.92).text(b=>b.brand==="Other"?"":b.brand);
+  // Labels coloured to match each bubble (so "Ravensburger" reads as the blue
+  // one), placed above the bubble, with a greedy vertical de-collision so
+  // overlapping brands don't stack on the same line.
+  const labels = B.map(b=>({text:b.brand, color:colorFor(b.brand),
+    x:x(b.demand), y:y(b.total_reviews)-r(b.titles)-7})).sort((a,b)=>a.y-b.y);
+  for(let i=1;i<labels.length;i++)
+    for(let j=0;j<i;j++)
+      if(Math.abs(labels[i].x-labels[j].x)<78 && Math.abs(labels[i].y-labels[j].y)<13)
+        labels[i].y = labels[j].y - 14;
+  svg.append("g").selectAll("text").data(labels).join("text")
+    .attr("x",d=>d.x).attr("y",d=>d.y).attr("text-anchor","middle")
+    .attr("font-size","11.5px").attr("font-weight","700").attr("pointer-events","none")
+    .attr("fill",d=>d.color).style("paint-order","stroke")
+    .attr("stroke","#0b0e13").attr("stroke-width","3.5px").attr("stroke-linejoin","round")
+    .text(d=>d.text);
 }
 
 function drawBubble(titles){
