@@ -31,6 +31,9 @@ The only data published from this repo is the derived index in
 
 ## Status
 
-Phase 1 (daily demand snapshots + SQLite storage) is built and validating
-locally. Index construction, breadth/concentration analytics, and the web
-visualisation follow. See `docs/INDEX_DESIGN.md` for the full model.
+Collection layer (four sources) and the Index scoring engine are built and
+running. `python run_daily.py` collects today's due sources and rebuilds
+`data/processed/index.json`. A daily local task + a GitHub Actions cron keep
+it fresh (see `docs/OPERATIONS.md`). The web visualisation is the remaining
+piece. Model: `docs/INDEX_DESIGN.md`. Hard-won scraping knowledge:
+`docs/SCRAPING_LEARNINGS.md`.

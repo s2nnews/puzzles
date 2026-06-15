@@ -75,8 +75,13 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Sold-listing snapshot (source E)")
     ap.add_argument("--limit", type=int, default=None, help="only first N titles (smoke test)")
     ap.add_argument("--db", type=Path, default=DEFAULT_DB)
-    # The bot wall goes sticky after ~4-5 quick queries and then blocks for
-    # hours; 30-60s spacing keeps a 20-title daily run under it.
+    # eBay's bot wall goes sticky after ~5 quick queries and blocks for hours.
+    # Sold-counts are 30/90-day windows, so a title doesn't need daily refresh:
+    # rotate a small slice each day (default 5) and the full set still cycles
+    # roughly weekly while staying under the wall. Slice is date-derived so
+    # it's deterministic and stateless (cron-safe).
+    ap.add_argument("--rotate", type=int, default=5,
+                    help="titles per run; 0 = all (set cycles ~weekly)")
     ap.add_argument("--delay-min", type=float, default=30.0)
     ap.add_argument("--delay-max", type=float, default=60.0)
     args = ap.parse_args()
@@ -84,6 +89,12 @@ def main() -> int:
     titles = load_tracked_titles()
     if args.limit:
         titles = titles[: args.limit]
+    elif args.rotate and args.rotate < len(titles):
+        n = len(titles)
+        start = (date.today().toordinal() * args.rotate) % n
+        idx = [(start + i) % n for i in range(args.rotate)]
+        titles = [titles[i] for i in idx]
+        print(f"Rotating: titles {idx} of {n} today")
 
     session = requests.Session()
     run_date = date.today().isoformat()
