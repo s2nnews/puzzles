@@ -1,16 +1,25 @@
 name: Daily Index
 
-# Fixed 20:00 UTC = 06:00 Sydney (AEST). A fixed scrape time also keeps the
-# BSR series comparable day-to-day (absolute sales rank drifts with time of
-# day). eBay is deliberately excluded — its bot wall punishes datacenter IPs
-# far harder than a residential one, so it runs locally (see run_daily.py).
+# SCHEDULE DISABLED (2026-06-16).
+#
+# The GitHub Actions runner is ephemeral and data/raw is gitignored, so a
+# scheduled run starts with ZERO history and can only build a one-day,
+# degenerate index (regime=insufficient_history) — which then overwrites the
+# good multi-day index built locally. That is exactly what happened on the
+# first scheduled run. Until the cloud path persists raw history (e.g. to R2
+# or a private store), the LOCAL Windows Task Scheduler is the engine
+# (persistent history + residential IP + all sources incl. eBay).
+#
+# Left here as workflow_dispatch only: safe to trigger MANUALLY against a
+# checkout that already has history, and the regression guard below refuses
+# to commit an index with less history than the committed one.
 on:
-  schedule:
-    - cron: "0 20 * * *"
-  workflow_dispatch: {}        # manual trigger from the Actions tab
+  # schedule:
+  #   - cron: "0 20 * * *"   # re-enable only once raw history persists in cloud
+  workflow_dispatch: {}
 
 permissions:
-  contents: write              # to commit the refreshed index.json
+  contents: write
 
 concurrency:
   group: daily-index
@@ -34,13 +43,29 @@ jobs:
         env:
           PYTHONIOENCODING: utf-8
 
-      - name: Commit refreshed Index + dashboard
+      - name: Commit refreshed Index + dashboard (guarded against regression)
         run: |
           git config user.name  "puzzle-index-bot"
           git config user.email "actions@github.com"
+          # Refuse to publish an index with LESS history than what's committed —
+          # stops an ephemeral/blank run from clobbering the real series.
+          # Decision via stdout so `set -e` never kills the step.
+          guard=$(python - <<'PY'
+          import json, subprocess
+          new = json.load(open("data/processed/index.json", encoding="utf-8"))
+          old = subprocess.run(["git", "show", "HEAD:data/processed/index.json"],
+                               capture_output=True, text=True).stdout
+          old_days = json.loads(old).get("days_of_history", 0) if old.strip() else 0
+          print("REGRESS" if new.get("days_of_history", 0) < old_days else "OK")
+          PY
+          )
+          if [ "$guard" = "REGRESS" ]; then
+            echo "Regression guard tripped (fewer days than committed) — not committing."
+            exit 0
+          fi
           git add data/processed/index.json web/puzzle_index.html
           if git diff --cached --quiet; then
-            echo "No index change today."
+            echo "No index change."
           else
             git commit -m "data: refresh Index $(date -u +%F)"
             git push
