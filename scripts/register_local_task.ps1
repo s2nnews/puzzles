@@ -1,16 +1,23 @@
 # Registers a daily Windows Scheduled Task that runs the FULL Index
 # collection locally — including eBay, which needs this PC's residential IP.
-# Run once, in an elevated PowerShell, from anywhere:
+# Run once from the repo root (no elevation needed for a per-user task):
 #     powershell -ExecutionPolicy Bypass -File scripts\register_local_task.ps1
 #
-# The task runs run_daily.py at 06:05 Sydney daily. run_daily.py decides which
+# The task runs run_daily.py at 06:05 local daily. run_daily.py decides which
 # sources are due (Amazon + eBay daily, stock Mon/Wed/Fri, Reddit Mon,
-# Trends Thu) and rebuilds index.json. It runs whether or not you're logged in,
-# as long as the PC is on and awake.
+# Trends Thu, Global Fri) and rebuilds index.json + the dashboards. It runs as
+# long as the PC is on and awake at the trigger time.
+#
+# Uses the project's .venv so dependencies are pinned and independent of
+# whatever Python is on PATH (a PATH mismatch is what broke the cloud run).
+# Create it first if missing:  python -m venv .venv ; .venv\Scripts\pip install -r requirements.txt
 
 $ErrorActionPreference = "Stop"
 $repo   = Split-Path -Parent $PSScriptRoot
-$python = (Get-Command python).Source
+$python = Join-Path $repo ".venv\Scripts\python.exe"
+if (-not (Test-Path $python)) {
+    throw "Missing $python. Create it: python -m venv .venv; .venv\Scripts\pip install -r requirements.txt"
+}
 $log    = Join-Path $repo "data\raw\run_daily.log"
 
 # Run through cmd so stdout+stderr land in a log for an unattended task.
