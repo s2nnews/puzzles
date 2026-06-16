@@ -3,7 +3,9 @@
 # Run once from the repo root (no elevation needed for a per-user task):
 #     powershell -ExecutionPolicy Bypass -File scripts\register_local_task.ps1
 #
-# The task runs run_daily.py at 06:05 local daily. run_daily.py decides which
+# The task runs run_daily.py at 10:30 local daily (inside normal working
+# hours so the PC is on; StartWhenAvailable catches up if you start later).
+# run_daily.py decides which
 # sources are due (Amazon + eBay daily, stock Mon/Wed/Fri, Reddit Mon,
 # Trends Thu, Global Fri) and rebuilds index.json + the dashboards. It runs as
 # long as the PC is on and awake at the trigger time.
@@ -24,9 +26,9 @@ $log    = Join-Path $repo "data\raw\run_daily.log"
 $action = New-ScheduledTaskAction -Execute "cmd.exe" `
     -Argument "/c `"`"$python`" run_daily.py >> `"$log`" 2>&1`"" `
     -WorkingDirectory $repo
-# 06:05 local; run_daily handles cadence. Adjust -At to taste.
-$trigger = New-ScheduledTaskTrigger -Daily -At 6:05AM
-# -StartWhenAvailable catches up if the PC was off at 06:05.
+# 10:30 local; run_daily handles cadence. Adjust -At to taste.
+$trigger = New-ScheduledTaskTrigger -Daily -At 10:30AM
+# -StartWhenAvailable catches up if the PC was off at 10:30.
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable `
     -DontStopOnIdleEnd -ExecutionTimeLimit (New-TimeSpan -Hours 2)
 
