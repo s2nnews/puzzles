@@ -26,14 +26,19 @@ $log    = Join-Path $repo "data\raw\run_daily.log"
 $action = New-ScheduledTaskAction -Execute "cmd.exe" `
     -Argument "/c `"`"$python`" run_daily.py >> `"$log`" 2>&1`"" `
     -WorkingDirectory $repo
-# 10:30 local; run_daily handles cadence. Adjust -At to taste.
-$trigger = New-ScheduledTaskTrigger -Daily -At 10:30AM
-# -StartWhenAvailable catches up if the PC was off at 10:30.
+# Two triggers for reliability on a machine that isn't always on at a set
+# time: a daily 10:30 run, AND an at-logon run (5 min after you sign in) so
+# it also fires whenever you start the PC. run_daily skips any source already
+# collected today, so whichever trigger fires first does the work and the
+# rest are cheap no-ops. StartWhenAvailable also catches up a missed run.
+$daily = New-ScheduledTaskTrigger -Daily -At 10:30AM
+$logon = New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"
+$logon.Delay = "PT5M"
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable `
     -DontStopOnIdleEnd -ExecutionTimeLimit (New-TimeSpan -Hours 2)
 
 Register-ScheduledTask -TaskName "PremiumPuzzlesIndex" `
-    -Action $action -Trigger $trigger -Settings $settings `
+    -Action $action -Trigger @($daily, $logon) -Settings $settings `
     -Description "Daily Premium Puzzles Index collection + build" -Force
 
 Write-Host "Registered task 'PremiumPuzzlesIndex' (daily 06:05)."

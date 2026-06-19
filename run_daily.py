@@ -55,6 +55,38 @@ def run(name: str, script_args: list[str]) -> bool:
     return ok
 
 
+def done_today(name: str) -> bool:
+    """True if this source already has data for today — so a re-trigger
+    (e.g. an at-logon run after the daily one) is a cheap no-op rather than
+    a redundant scrape. SQLite sources key on run_date; Trends write a dated
+    CSV."""
+    import sqlite3
+    today = date.today().isoformat()
+    db_table = {
+        "amazon": ("amazon_bsr.db", "bsr_snapshots"),
+        "ebay":   ("ebay_sold.db", "ebay_snapshots"),
+        "stock":  ("retailer_stock.db", "stock_snapshots"),
+        "reddit": ("reddit_signals.db", "reddit_snapshots"),
+    }
+    if name in db_table:
+        db, table = db_table[name]
+        path = ROOT / "data" / "raw" / db
+        if not path.exists():
+            return False
+        try:
+            con = sqlite3.connect(path)
+            n = con.execute(f"select count(*) from {table} where run_date=?",
+                            (today,)).fetchone()[0]
+            con.close()
+            return n > 0
+        except sqlite3.Error:
+            return False
+    if name in ("trends", "global"):
+        stem = "google_trends" if name == "trends" else "global_trends"
+        return (ROOT / "data" / "raw" / f"{stem}_{today}.csv").exists()
+    return False
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Daily Index collection + build")
     ap.add_argument("--only", choices=list(JOBS), help="run just this source")
@@ -74,7 +106,17 @@ def main() -> int:
         due = [n for n, (_, pred) in JOBS.items() if args.force or pred(today)]
     due = [n for n in due if n not in args.skip]
 
-    print(f"{today} ({today:%A}) — sources due: {', '.join(due) or 'none'}")
+    # Skip sources already collected today, so the task can fire often (daily
+    # trigger + at-logon) and only ever does the work that's still outstanding.
+    # --force / --only override this.
+    skipped_done = []
+    if not args.force and not args.only:
+        outstanding = [n for n in due if not done_today(n)]
+        skipped_done = [n for n in due if n not in outstanding]
+        due = outstanding
+
+    print(f"{today} ({today:%A}) — due: {', '.join(due) or 'none'}"
+          + (f" · already done: {', '.join(skipped_done)}" if skipped_done else ""))
     if args.dry_run:
         return 0
 
