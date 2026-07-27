@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Premium Puzzles — Marketing Dashboard</title>
+<style>
+  :root{
+    --bg:#0f1720; --panel:#16212e; --panel2:#1c2a3a; --line:#26374b;
+    --ink:#e8eef5; --muted:#8fa3b8; --faint:#5f7488;
+    --up:#34d39a; --down:#ff6b6b; --warn:#ffb020; --accent:#4f9cf9;
+    --g:#4f9cf9; --m:#a06bff; --email:#34d39a; --organic:#2dd4bf; --direct:#8fa3b8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0d141d,#0f1720);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.4}
+  .wrap{max-width:1500px;margin:0 auto;padding:24px 26px 60px}
+  .kpi.sm{padding:12px 14px}
+  .kpi.sm .val{font-size:22px;margin-top:5px}
+  .kpi.sm .label{font-size:11.5px}
+  header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;
+    border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:22px}
+  h1{font-size:26px;margin:0;letter-spacing:.2px;font-weight:700}
+  h1 span{color:var(--accent)}
+  .sub{color:var(--muted);font-size:13px;margin-top:6px}
+  .range{text-align:right;font-size:12.5px;color:var(--muted)}
+  .range b{color:var(--ink)}
+  .section-title{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);
+    margin:30px 2px 12px;display:flex;align-items:center;gap:10px}
+  .section-title::after{content:"";flex:1;height:1px;background:var(--line)}
+  .grid{display:grid;gap:14px}
+  .kpis{grid-template-columns:repeat(6,1fr)}
+  .kpis-2{grid-template-columns:repeat(6,1fr)}
+  @media(max-width:1100px){.kpis,.kpis-2{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:640px){.kpis,.kpis-2{grid-template-columns:repeat(2,1fr)}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 16px;position:relative}
+  .kpi .label{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px}
+  .kpi .val{font-size:27px;font-weight:700;margin-top:7px;letter-spacing:.3px}
+  .kpi .val small{font-size:15px;color:var(--muted);font-weight:600}
+  .kpi .foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:12px}
+  .chip{display:inline-flex;align-items:center;gap:3px;font-weight:700;border-radius:20px;padding:2px 8px;font-size:11.5px}
+  .chip.up{color:var(--up);background:rgba(52,211,154,.12)}
+  .chip.down{color:var(--down);background:rgba(255,107,107,.12)}
+  .chip.flat{color:var(--muted);background:rgba(143,163,184,.12)}
+  .prev{color:var(--muted)}
+  .flag{cursor:help;color:var(--warn);font-weight:700}
+  .accent-l{border-left:3px solid var(--accent)}
+  .warn-l{border-left:3px solid var(--warn)}
+  .cols{display:grid;gap:14px}
+  .c-2{grid-template-columns:1.35fr 1fr}
+  .c-2b{grid-template-columns:1fr 1fr}
+  .c-fun{grid-template-columns:1.1fr 1fr}
+  @media(max-width:960px){.c-2,.c-2b,.c-fun{grid-template-columns:1fr}}
+  .card h3{margin:0 0 2px;font-size:14.5px;font-weight:700}
+  .card .hint{color:var(--muted);font-size:11.5px;margin-bottom:12px}
+  /* funnel */
+  .funnel{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+  .frow{display:flex;align-items:center;gap:16px}
+  .fbar{color:#0b1017;font-weight:700;border-radius:8px;padding:10px 15px;min-width:118px;
+    display:flex;flex-direction:column;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+  .fbar .t{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;opacity:.8}
+  .fbar .n{font-size:21px;line-height:1.15}
+  .finfo{font-size:12px;color:var(--muted);white-space:nowrap;line-height:1.6}
+  .finfo .a{color:var(--accent);font-weight:800;font-size:13px}
+  .finfo .s{color:var(--ink);font-weight:600}
+  .legend{display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:12px;font-size:12px;color:var(--muted)}
+  .legend i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:6px;vertical-align:-1px}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}
+  th,td{text-align:right;padding:9px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+  td:first-child,th:first-child{text-align:left}
+  .orbar{display:inline-block;height:8px;border-radius:4px;background:var(--email);vertical-align:1px;margin-right:6px}
+  .tag{font-size:10.5px;color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+  .best{color:var(--up)}
+  .notes{margin-top:12px;font-size:12px;color:var(--muted)}
+  .notes li{margin:5px 0}
+  .src{color:var(--faint);font-size:11px}
+  .big2{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end}
+  .stat .v{font-size:30px;font-weight:800}
+  .stat .k{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+  .pill{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:700}
+  .pill.bad{color:var(--down);background:rgba(255,107,107,.13)}
+  .pill.ok{color:var(--up);background:rgba(52,211,154,.13)}
+  a.dot{color:var(--accent);text-decoration:none}
+  .foot-src{margin-top:26px;border-top:1px solid var(--line);padding-top:14px;color:var(--faint);font-size:11.5px}
+  /* profit waterfall */
+  #waterfall{margin-top:12px;display:flex;flex-direction:column;gap:9px}
+  .wf-row{display:grid;grid-template-columns:130px 1fr 92px;align-items:center;gap:12px}
+  .wf-lab{font-size:12px;color:var(--muted);text-align:right;white-space:nowrap}
+  .wf-track{position:relative;height:22px;background:rgba(143,163,184,.06);border-radius:6px}
+  .wf-bar{position:absolute;top:0;height:22px;border-radius:5px}
+  .wf-start{background:linear-gradient(90deg,#4f9cf9,#4f9cf9cc)}
+  .wf-sub{background:linear-gradient(90deg,#3ba7c4,#2dd4bf)}
+  .wf-neg{background:linear-gradient(90deg,#ff6b6b,#ff8a8a)}
+  .wf-end{background:linear-gradient(90deg,#34d39a,#2dd4bf)}
+  .wf-val{font-size:13px;font-weight:700;text-align:right;white-space:nowrap}
+  .wf-vneg{color:var(--down)}
+  .wf-vend{color:var(--up);font-size:14px}
+  .wf-row:nth-child(3) .wf-lab,.wf-row:last-child .wf-lab{color:var(--ink);font-weight:700}
+  @media(max-width:520px){.wf-row{grid-template-columns:96px 1fr 76px;gap:8px}.wf-lab{font-size:11px}}
+  /* date range picker */
+  .dr{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:4px}
+  .dr-presets{display:flex;gap:6px;flex-wrap:wrap}
+  .dr-chip{font-size:12px;padding:6px 12px;border-radius:8px;border:1px solid var(--line);
+    background:transparent;color:var(--muted);cursor:pointer;font-weight:600;font-family:inherit}
+  .dr-chip:hover{border-color:var(--accent);color:var(--ink)}
+  .dr-chip.active{background:var(--accent);color:#0b1017;border-color:var(--accent)}
+  .dr-dates{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+  .dr-dates input{background:var(--bg);border:1px solid var(--line);color:var(--ink);
+    border-radius:7px;padding:6px 9px;font-size:12px;font-family:inherit;color-scheme:dark}
+  .dr-apply{font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid var(--accent);
+    background:transparent;color:var(--accent);cursor:pointer;font-weight:700;font-family:inherit}
+  .dr-live{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--faint);white-space:nowrap}
+  .dr-live .dot{width:7px;height:7px;border-radius:50%;background:var(--faint)}
+  .dr-meta{width:100%;font-size:11px;color:var(--faint);margin-top:1px}
+  .dr-note{width:100%;font-size:11.5px;color:var(--warn);line-height:1.5;
+    background:rgba(255,176,32,.08);border:1px solid rgba(255,176,32,.25);border-radius:8px;padding:8px 11px;display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Premium Puzzles <span>Marketing Dashboard</span></h1>
+      <div class="sub">The one-page owner's view — sales, spend, funnel, margin &amp; the bottom line. Tracks contribution profit after COGS, shipping, packaging &amp; marketing. Live-pulled from Shopify, Google&nbsp;Ads, Meta&nbsp;Ads, ShipStation &amp; Omnisend.</div>
+    </div>
+  </header>
+
+  <!-- ===================== DATE RANGE PICKER ===================== -->
+  <div class="dr">
+    <div class="dr-presets">
+      <button class="dr-chip" data-r="7">Last 7 days</button>
+      <button class="dr-chip active" data-r="30">Last 30 days</button>
+      <button class="dr-chip" data-r="90">Last 90 days</button>
+      <button class="dr-chip" data-r="365">Last 12 months</button>
+      <button class="dr-chip" data-r="custom">Custom</button>
+    </div>
+    <div class="dr-dates">
+      <input type="date" id="dr-from" value="2026-06-28">
+      <span>→</span>
+      <input type="date" id="dr-to" value="2026-07-27">
+      <button class="dr-apply" id="dr-apply">Apply</button>
+      <span class="dr-live" id="dr-live"><span class="dot"></span>static snapshot</span>
+    </div>
+    <div class="dr-meta" id="period-label">vs previous period · AUD · snapshot 27 Jul 2026</div>
+    <div class="dr-note" id="dr-note"></div>
+  </div>
+
+  <!-- ===================== TOP LINE ===================== -->
+  <div class="section-title">The Snapshot — did we make money?</div>
+  <div class="grid kpis" id="kpis-money"></div>
+
+  <div class="section-title">Marketing efficiency — what did it cost?</div>
+  <div class="grid kpis-2" id="kpis-mktg"></div>
+
+  <div class="section-title">Profit — what's actually left after the real costs</div>
+  <div class="grid kpis-2" id="kpis-profit"></div>
+
+  <!-- ===================== PROFIT WATERFALL + CUSTOMER VALUE ===================== -->
+  <div class="cols c-2" style="margin-top:14px">
+    <div class="card">
+      <h3>Where the money goes — net sales to contribution profit</h3>
+      <div class="hint">Every dollar of the period's <b>$6,182</b> net sales, drained by the real costs of doing business. What's left — <b style="color:var(--up)">contribution profit</b> — is what pays overheads (rent, software, your time) and funds growth. Cost of goods is extrapolated from the 37% margin measured on the ~54% of sales with cost data loaded.</div>
+      <div id="waterfall"></div>
+      <div class="notes">Bottom line: after making and shipping the puzzles, boxing them and buying the traffic, you kept about <b style="color:var(--up)">$1,223</b> this period — roughly <b>$13 per order</b>, a <b>19.8% contribution margin</b>. That's the number to grow. The two biggest levers are cost of goods (load supplier costs on the other ~46% of SKUs so this stops being an estimate) and the shipping bleed (you eat ~$5.51 a parcel).</div>
+    </div>
+    <div class="card">
+      <h3>Customer value — do they come back?</h3>
+      <div class="hint">A repeat buyer costs nothing to acquire, so repeat rate and lifetime value are the quiet engine behind the whole P&amp;L.</div>
+      <div class="big2" style="margin:12px 0 4px">
+        <div class="stat"><div class="v">53.4%</div><div class="k">Repeat-customer rate <span class="pill bad">▼ from 62.3%</span></div></div>
+        <div class="stat"><div class="v" style="color:var(--up)">$82.70</div><div class="k">12-month customer value</div></div>
+      </div>
+      <div class="big2" style="margin:14px 0 4px">
+        <div class="stat"><div class="v" style="font-size:22px">1.26</div><div class="k">Orders / customer (12&nbsp;mo)</div></div>
+        <div class="stat"><div class="v" style="font-size:22px">$68.21</div><div class="k">Avg order value</div></div>
+      </div>
+      <div class="notes">LTV is a <b>trailing-12-month</b> figure: $116,697 net revenue across 1,411 active customers = <b>$82.70</b> each, at 1.26 orders apiece. The dip in repeat rate (62% → 53%) is worth watching — it's partly the Omnisend migration settling and the ~4k unengaged prune, but if it keeps sliding it means new buyers aren't coming back. Your inherited email list is the cheapest way to pull them back for order #2.</div>
+    </div>
+  </div>
+
+  <!-- ===================== FUNNEL + TRAFFIC ===================== -->
+  <div class="section-title">The funnel — visitors in, buyers out</div>
+  <div class="cols c-fun">
+    <div class="card">
+      <h3>Session → Purchase funnel</h3>
+      <div class="hint">Absolute numbers, % of all sessions, and step-to-step conversion. Previous-period figure in grey. The final step is <b>actual Shopify orders (94)</b> — the same number as the Orders tile up top, so there's one source of truth for a sale. It can slightly exceed session-tracked checkouts because some orders complete without a tracked web session (app, phone, repeat direct).</div>
+      <div class="funnel" id="funnel"></div>
+    </div>
+    <div class="card">
+      <h3>Where the traffic comes from</h3>
+      <div class="hint">Sessions by referrer source, last 30 days (5,875 total). Direct dominates — a tagging opportunity.</div>
+      <div id="traffic"></div>
+    </div>
+  </div>
+
+  <!-- ===================== TREND ===================== -->
+  <div class="section-title">Sales &amp; the story behind the numbers</div>
+  <div class="card">
+    <h3>Daily total sales — last 60 days</h3>
+    <div class="hint">The <b style="color:var(--warn)">27 May flash sale</b> ($15.5k / 201 orders in one day) sits in the <i>previous</i> comparison window — that's why the period-on-period deltas above read so red. Judge the trend, not just the delta.</div>
+    <div id="salestrend"></div>
+  </div>
+
+  <!-- ===================== SUBSCRIBERS ===================== -->
+  <div class="section-title">Subscribers — the free channel you protect</div>
+  <div class="cols c-2">
+    <div class="card warn-l">
+      <h3>List health</h3>
+      <div class="hint">Your best-ROI channel (inherited list, $0 acquisition). The number to protect is the <b>engaged</b> list &amp; open rate — not raw count.</div>
+      <div class="big2" style="margin:10px 0 4px">
+        <div class="stat"><div class="v">11,822</div><div class="k">Subscribed contacts (engaged)</div></div>
+        <div class="stat"><div class="v" style="color:var(--up)">~4,000</div><div class="k">Unengaged pruned <span class="pill ok">opens ↑</span></div></div>
+        <div class="stat"><div class="v" style="color:var(--warn)">−72</div><div class="k">Organic net 30d <span class="pill" style="color:var(--warn);background:rgba(255,176,32,.13)">watch</span></div></div>
+      </div>
+      <div id="subtrend" style="margin-top:8px"></div>
+      <div class="notes">The <b>7 Jul</b> spike was the <b>Klaviyo → Omnisend migration</b>. During warm-up you deliberately dropped <b>~4,000 unengaged</b> subscribers — which is exactly why opens jumped (Klaviyo ~53% across 12k → 64–85% on engaged Omnisend sends). That's healthy pruning, not loss. The <b>−72</b> organic net is the ongoing trickle to keep an eye on. Omnisend is the go-forward source of truth.</div>
+    </div>
+    <div class="card">
+      <h3>Revenue by channel <span class="tag">attribution-limited</span></h3>
+      <div class="hint">Attributed revenue by channel, each platform's own model. Email now includes the full Klaviyo history — it's your dominant channel by a wide margin. Figures overlap with direct/organic; exact splits need UTM tagging.</div>
+      <div id="channels"></div>
+    </div>
+  </div>
+
+  <!-- ===================== EMAIL ===================== -->
+  <div class="section-title">Email — opens are the leading indicator</div>
+  <div class="card">
+    <h3>Campaign performance — full history <span class="tag">opens re-measured to +72h after send</span></h3>
+    <div class="hint">Both platforms shown: <b style="color:#a06bff">Klaviyo</b> through early July, <b style="color:#2dd4bf">Omnisend</b> from mid-July (the migration). Email drove <b>$5,991</b> across 8 sends — your strongest channel. Bars show open rate. Note: Klaviyo revenue is placed-order attribution, Omnisend is its own model, so cross-platform totals are directional, not identical methodology.</div>
+    <table id="campaigns"></table>
+  </div>
+
+  <div class="section-title">Make it live — from snapshot to always-on website</div>
+  <div class="card accent-l">
+    <h3>How this becomes a live dashboard you can bookmark</h3>
+    <div class="hint">Right now this page is a fixed snapshot — the numbers are baked in at the moment it was generated. Three steps turn it into a self-updating website with a working date-range picker.</div>
+    <div class="notes" style="font-size:12.5px;line-height:1.7">
+      <b>1 · The data store (already built).</b> The Google Apps Script we set up writes one row per day — sales, units, funnel, subscribers, Meta spend, shipping cost/charged — into a Google Sheet, refreshed automatically every morning. That daily grain is the key: any date range is just a sum or filter over those rows, so no live API call is needed when you move the picker.<br>
+      <b>2 · Publish the data.</b> The Sheet is published as a read-only feed (a single JSON/CSV endpoint). The dashboard fetches it on load instead of using baked-in numbers.<br>
+      <b>3 · Host the page.</b> The HTML goes on a free static host (Cloudflare Pages / Netlify / GitHub Pages) at a URL you bookmark, or is served straight from Apps Script as a web app. The date-range picker and the previous-period comparison then compute live from the daily rows.<br>
+      <span style="color:var(--faint)">Net effect: you open one link, pick any range, and every tile, the funnel and the profit waterfall recompute from data that refreshed at breakfast — no exports, no rebuilds.</span>
+    </div>
+  </div>
+
+  <div class="foot-src" id="footnotes"></div>
+</div>
+
+<script>
+const fmt = (n,d=0)=>Number(n).toLocaleString('en-AU',{minimumFractionDigits:d,maximumFractionDigits:d});
+const money = (n,d=0)=>'$'+fmt(n,d);
+const pct = (n,d=1)=>fmt(n*100,d)+'%';
+const delta = (cur,prev)=>{ if(prev===0) return {t:'n/a',c:'flat'}; const p=(cur-prev)/Math.abs(prev);
+  return {t:(p>=0?'▲ ':'▼ ')+fmt(Math.abs(p)*100,0)+'%', c:p>0?'up':(p<0?'down':'flat')}; };
+
+/* ---------- MONEY KPIs ---------- */
+const moneyKpis=[
+  {label:'Total sales',val:money(7841.44),prev:19983.34,cur:7841.44,pv:money(19983.34)+' prev',flag:1},
+  {label:'Orders',val:'94',prev:269,cur:94,pv:'269 prev',flag:1},
+  {label:'Puzzles sold',val:'211 <small>units</small>',prev:null,cur:null,pv:'~80% 1000-pc · 2.2/order',flag:1},
+  {label:'Avg order value',val:money(68.21,2),prev:58.018,cur:68.213,pv:money(58.02,2)+' prev'},
+  {label:'Net sales',val:money(6182.05),prev:15341.75,cur:6182.05,pv:'after disc. + returns',flag:1},
+  {label:'Returns',val:money(264.58,0),prev:265.36,cur:264.58,pv:'4.1% of gross',invert:1},
+];
+const mktgKpis=[
+  {label:'Ad spend',val:money(400.44,2),prev:null,pv:'Google $177.69 · Meta $222.75',accent:1},
+  {label:'Blended ROAS (MER)',val:'19.6×',prev:null,pv:'total rev ÷ ad spend',accent:1,tip:'Total sales $7,841 ÷ total ad spend $400.44. Generous — paid only ran the back half of the period.'},
+  {label:'Cost per click',val:money(0.40,2),prev:null,pv:'Google $0.66 · Meta $0.31',accent:1},
+  {label:'Google / Meta ROAS',val:'3.25× / 0.25×',prev:null,pv:'platform-attributed'},
+  {label:'Paid CAC',val:money(43,0),prev:null,pv:'per new order · ≈9 paid',accent:1,tip:'Cost to acquire one paying customer via paid ads: ad spend $400.44 ÷ ~9 paid-attributed orders ($577 Google + $55 Meta attributed revenue ÷ $68.21 AOV). Per channel: Google ~$21/order (healthy), Meta ~$275/order (bleeding, 0.25× ROAS). Firms up once Google Ads conversion tracking feeds the daily sheet.'},
+  {label:'Conversion rate',val:pct(0.0160,2),prev:0.034894,cur:0.0160,pv:pct(0.034894,2)+' prev',flag:1,tip:'Orders ÷ sessions (94 ÷ 5,875). Uses actual Shopify orders — the same number as the Orders tile and the base of the funnel, so there is one source of truth for “a sale”.'},
+];
+const profitKpis=[
+  {label:'Gross margin',val:'36.9%',prev:null,pv:'on cost-tracked sales',sm:1,tip:'Gross profit ÷ net sales, measured on the ~54% of orders that have supplier cost loaded in Shopify ($1,229 profit on $3,328 tracked net sales). Load cost on the rest to firm this up.'},
+  {label:'Shipping bleed',val:'<span style="color:var(--down)">−'+money(594.70,0)+'</span>',prev:null,pv:'68% recovered · −$5.51/parcel',sm:1,tip:'ShipStation, 15 Jun–23 Jul: carrier cost $1,885 vs $1,290 collected = −$595 net. You recover ~68% of shipping cost from customers; the average parcel loses ~$5.50. Pulled daily from ShipStation.'},
+  {label:'Est. gross profit',val:money(2283,0),prev:null,pv:'net sales − COGS',sm:1,accent:1,tip:'36.9% margin applied to the full $6,182 net sales. An estimate until cost is loaded on all SKUs.'},
+  {label:'Contribution profit',val:'<span style="color:var(--up)">'+money(1223,0)+'</span>',prev:null,pv:'≈$13/order · 19.8%',sm:1,accent:1,tip:'What is left after COGS, the shipping bleed, packaging ($1.50/order) and marketing spend. This is the real bottom line before fixed overheads.'},
+  {label:'Repeat-customer rate',val:'53.4%',prev:0.623,cur:0.534,pv:'62.3% prev',sm:1},
+  {label:'12-mo customer value',val:money(82.70,2),prev:null,pv:'trailing 12m · 1.26 ord',sm:1,tip:'$116,697 net revenue ÷ 1,411 active customers over the trailing 12 months.'},
+];
+function kpiCard(k){
+  const d=(k.prev!=null&&k.cur!=null)?delta(k.cur,k.prev):null;
+  let chip='';
+  if(d){ let c=d.c; if(k.invert&&c!=='flat') c=(c==='up'?'down':'up'); chip=`<span class="chip ${c}">${d.t}</span>`; }
+  const flag=k.flag?` <span class="flag" title="Previous period includes the 27 May flash-sale spike ($15.5k / 201 orders in a single day), which inflates the comparison base.">⚑</span>`:'';
+  const tip=k.tip?` <span class="flag" title="${k.tip}">ⓘ</span>`:'';
+  return `<div class="card kpi ${k.sm?'sm':''} ${k.accent?'accent-l':''}">
+    <div class="label">${k.label}${flag}${tip}</div>
+    <div class="val">${k.val}</div>
+    <div class="foot"><span class="prev">${k.pv||''}</span>${chip}</div></div>`;
+}
+function paintMoney(a){document.getElementById('kpis-money').innerHTML=a.map(kpiCard).join('');}
+function paintMktg(a){document.getElementById('kpis-mktg').innerHTML=a.map(k=>kpiCard({...k,sm:1})).join('');}
+function paintProfit(a){document.getElementById('kpis-profit').innerHTML=a.map(kpiCard).join('');}
+paintMoney(moneyKpis); paintMktg(mktgKpis); paintProfit(profitKpis);
+
+/* ================= LIVE DATA LAYER =================
+   The web app (WebApp.gs) replaces the token below with the real Daily-tab
+   rows. When that data is present the date-range picker recomputes every
+   sheet-backed metric for the chosen range + the equal-length prior period.
+   When it's absent (opened as a static file) we keep the baked-in snapshot. */
+var DAILY_DATA = /*__DAILY_DATA__*/[];
+
+/* PUBLIC LIVE FEED — paste your Daily tab's "File → Share → Publish to web → CSV"
+   link between the quotes. With it set, this page pulls live numbers straight
+   from the sheet with NO login, so it works on GitHub Pages / any static host
+   and updates itself every morning. Leave blank to show the static snapshot. */
+var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSzdmaC7SAzqHutrEGDxKQ4OIEZTJWRTpXGn5fKRq0DeDnxX21qPy52naaM-Z_PLRDllnGPUdxTlMqO/pub?gid=0&single=true&output=csv';
+
+/* Minimal quote-aware CSV parser → array of row objects keyed by the header row. */
+function parseCSV(text){
+  const rows=[]; let i=0,f='',row=[],q=false;
+  const push=()=>{row.push(f);f='';}, pushRow=()=>{rows.push(row);row=[];};
+  while(i<text.length){const c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+    else { if(c==='"')q=true; else if(c===',')push(); else if(c==='\n'){push();pushRow();} else if(c!=='\r')f+=c; }
+    i++; }
+  if(f.length||row.length){push();pushRow();}
+  if(!rows.length) return [];
+  const head=rows[0].map(h=>h.trim());
+  const norm=(h,v)=>{ v=(v==null)?'':(''+v).trim();
+    if(h==='Date'){ if(/^\d{4}-\d{2}-\d{2}/.test(v)) return v.slice(0,10);
+      const d=new Date(v); return isNaN(d)?v:(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')); }
+    if(v==='') return null; const n=Number(v.replace(/[$,]/g,'')); return isNaN(n)?v:n; };
+  return rows.slice(1).filter(r=>r.length>1 && (''+(r[0]||'')).trim()!=='')
+    .map(r=>{const o={};head.forEach((h,j)=>o[h]=norm(h,r[j]));return o;})
+    .sort((a,b)=>a.Date<b.Date?-1:(a.Date>b.Date?1:0));
+}
+
+/* Non-daily inputs — "latest known", refreshed less often. Wire these to their
+   own daily columns later to make them range-aware too. */
+const CONFIG = {
+  googleSpend:177.69, googleRev:577.49, googleClicks:269, metaClicks:725,
+  marginPct:0.369, packagingPerOrder:1.50,
+  ltv:82.70, repeatRate:0.534, repeatPrev:0.623
+};
+
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const parseD = s => new Date(s+'T00:00:00');
+const isoD = d => d.toISOString().slice(0,10);
+const prettyD = s => { const d=parseD(s); return d.getDate()+' '+MONTHS[d.getMonth()]; };
+
+function aggregate(rows){
+  const S=k=>rows.reduce((a,r)=>a+(+r[k]||0),0);
+  const last=k=>{for(let i=rows.length-1;i>=0;i--) if(rows[i][k]!=null) return +rows[i][k]; return null;};
+  return {n:rows.length, rows,
+    orders:S('Orders'), gross:S('Gross sales'), disc:S('Discounts'), returns:S('Returns'),
+    net:S('Net sales'), total:S('Total sales'),
+    sessions:S('Sessions'), cart:S('Sessions with cart adds'),
+    checkout:S('Sessions reached checkout'), completed:S('Sessions completed checkout'),
+    subs:S('Email subscribes'), unsubs:S('Email unsubscribes'), netSub:S('Net subscriber growth'),
+    metaSpend:S('Meta spend'), metaRev:S('Meta conv value'), puzzles:S('Puzzles sold'),
+    listSize:last('Subscriber list size'),
+    shipCharged:S('Shipping charged'), shipCost:S('Shipping cost')};
+}
+
+function buildModel(a,p){
+  const adSpend=CONFIG.googleSpend+a.metaSpend;
+  const shipBleed=a.shipCost-a.shipCharged;                 // net loss on shipping
+  const estGP=a.net*CONFIG.marginPct;
+  const packaging=a.orders*CONFIG.packagingPerOrder;
+  const contribution=estGP-shipBleed-packaging-adSpend;
+  const aov=a.orders?a.net/a.orders:0, paov=p.orders?p.net/p.orders:0;
+  const conv=a.sessions?a.orders/a.sessions:0, pconv=p.sessions?p.orders/p.sessions:0;
+  const metaRoas=a.metaSpend?a.metaRev/a.metaSpend:0;
+  const paidRev=CONFIG.googleRev+a.metaRev, paidOrders=aov?paidRev/aov:0;
+  const cac=paidOrders?adSpend/paidOrders:0;
+  return {
+    money:[
+      {label:'Total sales',val:money(a.total),prev:p.total,cur:a.total,pv:money(p.total)+' prev'},
+      {label:'Orders',val:''+a.orders,prev:p.orders,cur:a.orders,pv:p.orders+' prev'},
+      {label:'Puzzles sold',val:fmt(a.puzzles)+' <small>units</small>',prev:null,cur:null,pv:(a.orders?(a.puzzles/a.orders).toFixed(1):'0')+' / order'},
+      {label:'Avg order value',val:money(aov,2),prev:paov,cur:aov,pv:money(paov,2)+' prev'},
+      {label:'Net sales',val:money(a.net),prev:p.net,cur:a.net,pv:'after disc. + returns'},
+      {label:'Returns',val:money(Math.abs(a.returns)),prev:Math.abs(p.returns),cur:Math.abs(a.returns),pv:(a.gross?pct(Math.abs(a.returns)/a.gross,1):'0%')+' of gross',invert:1},
+    ],
+    mktg:[
+      {label:'Ad spend',val:money(adSpend,2),prev:null,pv:'Google $'+fmt(CONFIG.googleSpend,2)+' · Meta $'+fmt(a.metaSpend,2),accent:1},
+      {label:'Blended ROAS (MER)',val:(adSpend?(a.total/adSpend):0).toFixed(1)+'×',prev:null,pv:'total rev ÷ ad spend',accent:1},
+      {label:'Cost per click',val:money((CONFIG.googleClicks+CONFIG.metaClicks)?adSpend/(CONFIG.googleClicks+CONFIG.metaClicks):0,2),prev:null,pv:'blended paid clicks',accent:1},
+      {label:'Google / Meta ROAS',val:(CONFIG.googleSpend?CONFIG.googleRev/CONFIG.googleSpend:0).toFixed(2)+'× / '+metaRoas.toFixed(2)+'×',prev:null,pv:'platform-attributed'},
+      {label:'Paid CAC',val:money(cac,0),prev:null,pv:'per new order · ≈'+Math.round(paidOrders)+' paid',accent:1,tip:'Ad spend ÷ paid-attributed orders (platform revenue ÷ AOV) for the selected range.'},
+      {label:'Conversion rate',val:pct(conv,2),prev:pconv,cur:conv,pv:pct(pconv,2)+' prev',tip:'Orders ÷ sessions — one source of truth for a sale.'},
+    ],
+    profit:[
+      {label:'Gross margin',val:pct(CONFIG.marginPct,1),prev:null,pv:'on cost-tracked sales',sm:1},
+      {label:'Shipping bleed',val:'<span style="color:var(--down)">−'+money(Math.max(shipBleed,0),0)+'</span>',prev:null,pv:(a.shipCost?pct(a.shipCharged/a.shipCost,0):'0%')+' recovered · −'+money(a.orders?shipBleed/a.orders:0,2)+'/parcel',sm:1},
+      {label:'Est. gross profit',val:money(estGP,0),prev:null,pv:'net sales × margin',sm:1,accent:1},
+      {label:'Contribution profit',val:'<span style="color:var(--up)">'+money(contribution,0)+'</span>',prev:null,pv:'≈'+money(a.orders?contribution/a.orders:0,0)+'/order · '+(a.net?pct(contribution/a.net,0):'0%'),sm:1,accent:1},
+      {label:'Repeat-customer rate',val:pct(CONFIG.repeatRate,1),prev:CONFIG.repeatPrev,cur:CONFIG.repeatRate,pv:pct(CONFIG.repeatPrev,1)+' prev',sm:1},
+      {label:'12-mo customer value',val:money(CONFIG.ltv,2),prev:null,pv:'trailing 12m',sm:1},
+    ],
+    funnel:[
+      {t:'Sessions',n:a.sessions,p:p.sessions,col:'#4f9cf9',w:56},
+      {t:'Added to cart',n:a.cart,p:p.cart,col:'#3ba7c4',w:42},
+      {t:'Reached checkout',n:a.checkout,p:p.checkout,col:'#2dd4bf',w:30},
+      {t:'Completed purchase',n:a.orders,p:p.orders,col:'#34d39a',w:20},
+    ],
+    wf:[
+      {t:'Net sales',v:Math.round(a.net),type:'start'},
+      {t:'Cost of goods',v:-Math.round(a.net-estGP),type:'neg'},
+      {t:'Gross profit',v:Math.round(estGP),type:'sub'},
+      {t:'Shipping (net bleed)',v:-Math.round(shipBleed),type:'neg'},
+      {t:'Packaging',v:-Math.round(packaging),type:'neg'},
+      {t:'Marketing',v:-Math.round(adSpend),type:'neg'},
+      {t:'Contribution profit',v:Math.round(contribution),type:'end'},
+    ],
+    sales:a.rows.map(r=>[prettyMD(r.Date), +r['Total sales']||0]),
+    subs:a.rows.map(r=>[prettyMD(r.Date), +r['Email subscribes']||0, +r['Email unsubscribes']||0]),
+    listSize:a.listSize, netSub:a.netSub, subsIn:a.subs, unsubs:a.unsubs
+  };
+}
+function prettyMD(s){const d=parseD(s);return String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+
+function renderModel(m){
+  paintMoney(m.money); paintMktg(m.mktg); paintProfit(m.profit);
+  renderFunnel(m.funnel); renderWaterfall(m.wf);
+  renderSalesTrend(m.sales); renderSubTrend(m.subs);
+}
+
+/* ---------- DATE RANGE PICKER ---------- */
+function initPicker(){
+  const chips=[...document.querySelectorAll('.dr-chip')];
+  const note=document.getElementById('dr-note');
+  const live=document.getElementById('dr-live');
+  const fromEl=document.getElementById('dr-from'), toEl=document.getElementById('dr-to');
+  const LIVE=DAILY_DATA && DAILY_DATA.length>0;
+
+  if(!LIVE){
+    // Static preview: keep the snapshot; the picker explains that live filtering
+    // activates once the web app injects the daily feed.
+    const MSG='Live range filtering activates when this page is served by the Apps Script web app (see “Make it live”, foot of page). Opened as a static file it shows the fixed 28 Jun – 27 Jul snapshot.';
+    const flash=()=>{note.innerHTML=MSG;note.style.display='block';live.querySelector('.dot').style.background='var(--warn)';};
+    chips.forEach(c=>c.addEventListener('click',()=>{chips.forEach(x=>x.classList.remove('active'));c.classList.add('active');
+      if(c.dataset.r==='30'){note.style.display='none';live.querySelector('.dot').style.background='var(--faint)';}else flash();}));
+    document.getElementById('dr-apply').addEventListener('click',flash);
+    return;
+  }
+
+  // LIVE mode
+  live.innerHTML='<span class="dot" style="background:var(--up)"></span>live';
+  const minDate=DAILY_DATA[0].Date, maxDate=DAILY_DATA[DAILY_DATA.length-1].Date;
+  fromEl.min=toEl.min=minDate; fromEl.max=toEl.max=maxDate;
+
+  function apply(fromS,toS){
+    const inR=DAILY_DATA.filter(r=>r.Date>=fromS && r.Date<=toS);
+    if(!inR.length){note.innerHTML='No data in that range yet — the sheet has '+minDate+' to '+maxDate+'.';note.style.display='block';return;}
+    const days=Math.round((parseD(toS)-parseD(fromS))/86400000)+1;
+    const prevTo=isoD(new Date(parseD(fromS)-86400000));
+    const prevFrom=isoD(new Date(parseD(prevTo)-86400000*(days-1)));
+    const prevR=DAILY_DATA.filter(r=>r.Date>=prevFrom && r.Date<=prevTo);
+    renderModel(buildModel(aggregate(inR), aggregate(prevR)));
+    document.getElementById('period-label').innerHTML='vs previous '+days+' days · AUD · <span style="color:var(--up)">live</span> from your daily sheet · '+prettyD(maxDate)+' latest';
+    fromEl.value=fromS; toEl.value=toS;
+    note.style.display= prevR.length? 'none' : 'block';
+    if(!prevR.length){note.innerHTML='Showing '+days+' days. Not enough history yet for a full previous-period comparison — deltas fill in as the sheet grows.';}
+  }
+  function preset(nDays){ const to=maxDate; const from=isoD(new Date(parseD(to)-86400000*(nDays-1))); apply(from,to); }
+
+  chips.forEach(c=>c.addEventListener('click',()=>{
+    chips.forEach(x=>x.classList.remove('active')); c.classList.add('active');
+    const r=c.dataset.r;
+    if(r==='custom'){ note.innerHTML='Pick From and To dates above, then Apply.'; note.style.display='block'; return; }
+    preset(+r);
+  }));
+  document.getElementById('dr-apply').addEventListener('click',()=>{
+    if(fromEl.value && toEl.value && fromEl.value<=toEl.value){ chips.forEach(x=>x.classList.remove('active')); apply(fromEl.value,toEl.value); }
+  });
+
+  // initial live paint: default 30 days ending at latest row
+  preset(30);
+}
+
+/* ---------- BOOT: pick the data source (injected → public CSV → static) ---------- */
+(function(){
+  const haveInjected = DAILY_DATA && DAILY_DATA.length;
+  if(!haveInjected && SHEET_CSV_URL){
+    const live=document.getElementById('dr-live');
+    live.innerHTML='<span class="dot" style="background:var(--warn)"></span>loading…';
+    fetch(SHEET_CSV_URL).then(r=>r.text()).then(t=>{
+      try{ const rows=parseCSV(t); if(rows && rows.length) DAILY_DATA=rows; }catch(e){}
+      initPicker();
+    }).catch(()=>{ live.innerHTML='<span class="dot"></span>feed offline'; initPicker(); });
+  } else {
+    initPicker();
+  }
+})();
+
+/* ---------- PROFIT WATERFALL ---------- */
+const wf=[
+  {t:'Net sales',v:6182,type:'start'},
+  {t:'Cost of goods',v:-3899,type:'neg'},
+  {t:'Gross profit',v:2283,type:'sub'},
+  {t:'Shipping (net bleed)',v:-519,type:'neg'},
+  {t:'Packaging',v:-141,type:'neg'},
+  {t:'Marketing',v:-400,type:'neg'},
+  {t:'Contribution profit',v:1223,type:'end'},
+];
+function renderWaterfall(wf){
+  const max=wf[0].v, W=100; // percent scale
+  let run=0, html='';
+  wf.forEach(s=>{
+    let left, width, cls, labelVal;
+    if(s.type==='start'){ left=0; width=s.v/max*W; run=s.v; cls='wf-start'; labelVal=money(s.v,0); }
+    else if(s.type==='sub'||s.type==='end'){ left=0; width=s.v/max*W; run=s.v; cls=(s.type==='end'?'wf-end':'wf-sub'); labelVal=money(s.v,0); }
+    else { // negative floating bar
+      const start=run; run=run+s.v; width=Math.abs(s.v)/max*W; left=run/max*W; cls='wf-neg'; labelVal='−'+money(Math.abs(s.v),0); }
+    const pctOf = Math.round(s.v/max*100);
+    html+=`<div class="wf-row">
+      <div class="wf-lab">${s.t}</div>
+      <div class="wf-track">
+        <div class="wf-bar ${cls}" style="left:${left}%;width:${Math.max(width,0.6)}%"></div>
+      </div>
+      <div class="wf-val ${s.v<0?'wf-vneg':(s.type==='end'?'wf-vend':'')}">${labelVal}</div>
+    </div>`;
+  });
+  document.getElementById('waterfall').innerHTML=html;
+}
+renderWaterfall(wf);
+
+/* ---------- FUNNEL ---------- */
+const funnel=[
+  {t:'Sessions',n:5875,p:7709,col:'#4f9cf9',w:56},
+  {t:'Added to cart',n:290,p:766,col:'#3ba7c4',w:42},
+  {t:'Reached checkout',n:159,p:441,col:'#2dd4bf',w:30},
+  {t:'Completed purchase',n:94,p:269,col:'#34d39a',w:20},
+];
+function renderFunnel(F){
+  let fh='';
+  F.forEach((s,i)=>{
+    const ofSess=s.n/F[0].n;
+    const step=i===0?null:s.n/F[i-1].n;
+    const d=delta(s.n,s.p);
+    fh+=`<div class="frow">
+      <div class="fbar" style="width:${s.w}%;background:linear-gradient(90deg,${s.col},${s.col}cc)">
+        <span class="t">${s.t}</span><span class="n">${fmt(s.n)}</span></div>
+      <div class="finfo"><span class="a">${pct(ofSess,1)}</span> of sessions${step!=null?` &nbsp;·&nbsp; <span class="s">${pct(step,0)} step-through</span>`:''}<br>
+        prev ${fmt(s.p)} <span class="chip ${d.c}" style="padding:1px 6px">${d.t}</span></div>
+    </div>`;
+  });
+  document.getElementById('funnel').innerHTML=fh;
+}
+renderFunnel(funnel);
+
+/* ---------- TRAFFIC donut ---------- */
+const traffic=[
+  {k:'Direct',v:3690,c:'#8fa3b8'},{k:'Search (organic + paid)',v:1721,c:'#4f9cf9'},
+  {k:'Social',v:272,c:'#a06bff'},{k:'Email',v:158,c:'#34d39a'},{k:'Unknown',v:34,c:'#3a4c61'}];
+(function(){
+  const tot=traffic.reduce((a,b)=>a+b.v,0),R=64,r=40,cx=80,cy=80;let a0=-Math.PI/2,seg='';
+  traffic.forEach(t=>{const a1=a0+2*Math.PI*t.v/tot;
+    const x0=cx+R*Math.cos(a0),y0=cy+R*Math.sin(a0),x1=cx+R*Math.cos(a1),y1=cy+R*Math.sin(a1);
+    const xi1=cx+r*Math.cos(a1),yi1=cy+r*Math.sin(a1),xi0=cx+r*Math.cos(a0),yi0=cy+r*Math.sin(a0);
+    const big=(a1-a0)>Math.PI?1:0;
+    seg+=`<path d="M${x0} ${y0} A${R} ${R} 0 ${big} 1 ${x1} ${y1} L${xi1} ${yi1} A${r} ${r} 0 ${big} 0 ${xi0} ${yi0} Z" fill="${t.c}"/>`;
+    a0=a1;});
+  let leg=traffic.map(t=>`<div style="display:flex;justify-content:space-between;font-size:12.5px;margin:7px 0">
+    <span><i style="display:inline-block;width:11px;height:11px;border-radius:3px;background:${t.c};margin-right:8px;vertical-align:-1px"></i>${t.k}</span><b>${fmt(t.v)} · ${pct(t.v/tot,0)}</b></div>`).join('');
+  document.getElementById('traffic').innerHTML=
+    `<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+      <svg width="160" height="160" viewBox="0 0 160 160">${seg}
+      <text x="80" y="76" text-anchor="middle" fill="#e8eef5" font-size="20" font-weight="700">${fmt(tot)}</text>
+      <text x="80" y="94" text-anchor="middle" fill="#8fa3b8" font-size="10">sessions</text></svg>
+      <div style="flex:1;min-width:150px">${leg}</div></div>`;
+})();
+
+/* ---------- SALES TREND (60d) ---------- */
+const sales=[["05-27",15459.85],["05-28",1180.2],["05-29",282.2],["05-30",170.5],["05-31",56.85],["06-01",40.85],["06-02",-93.75],["06-03",-85.7],["06-04",40.85],["06-05",806.9],["06-06",0],["06-07",63.8],["06-08",83.7],["06-09",20.9],["06-10",54.3],["06-11",111.7],["06-12",0],["06-13",0],["06-14",0],["06-15",95.33],["06-16",153.18],["06-17",1016.81],["06-18",0],["06-19",174.67],["06-20",19.9],["06-21",158.56],["06-22",117.8],["06-23",0],["06-24",0],["06-25",0],["06-26",53.94],["06-27",0],["06-28",277.79],["06-29",931.39],["06-30",329.72],["07-01",82.59],["07-02",176.52],["07-03",202.62],["07-04",0],["07-05",203.58],["07-06",70.89],["07-07",1335.29],["07-08",380.7],["07-09",225.27],["07-10",56.94],["07-11",90.94],["07-12",0],["07-13",0],["07-14",584.31],["07-15",324.35],["07-16",410.41],["07-17",0],["07-18",25.86],["07-19",0],["07-20",0],["07-21",417.51],["07-22",324.54],["07-23",202.82],["07-24",556.7],["07-25",84.93],["07-26",557.55]];
+function renderSalesTrend(sales){
+  const W=1300,H=210,pad=34,max=Math.max(...sales.map(s=>s[1]),1),n=sales.length;
+  const bw=(W-pad*2)/n;
+  let bars='';
+  sales.forEach((s,i)=>{const h=Math.max(0,s[1])/max*(H-40);const x=pad+i*bw;const spike=s[0]==='05-27';
+    bars+=`<rect x="${x+1}" y="${H-20-h}" width="${Math.max(bw-2,0.5)}" height="${h}" rx="1.5" fill="${spike?'#ffb020':'#4f9cf9'}" opacity="${spike?1:.85}"><title>${s[0]}: ${money(s[1],0)}</title></rect>`;
+    if(spike) bars+=`<text x="${x+bw/2}" y="${H-24-h}" text-anchor="middle" fill="#ffb020" font-size="10" font-weight="700">27 May flash sale · ${money(15459,0)}</text>`;});
+  const ticks=sales.filter((_,i)=>i%7===0).map((s,i)=>`<text x="${pad+sales.indexOf(s)*bw+bw/2}" y="${H-5}" text-anchor="middle" fill="#5f7488" font-size="9.5">${s[0]}</text>`).join('');
+  document.getElementById('salestrend').innerHTML=`<svg width="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="max-height:220px">${bars}${ticks}</svg>`;
+}
+renderSalesTrend(sales);
+
+/* ---------- SUBSCRIBER TREND (30d net) ---------- */
+const subs=[["06-27",0,0],["06-28",0,0],["06-29",0,11],["06-30",0,1],["07-01",0,0],["07-02",0,0],["07-03",0,0],["07-04",0,0],["07-05",0,2],["07-06",0,0],["07-07",24059,21007],["07-08",0,0],["07-09",4,55],["07-10",4,1],["07-11",2,0],["07-12",4,0],["07-13",56,3],["07-14",6,8],["07-15",2,25],["07-16",7,28],["07-17",3,5],["07-18",0,4],["07-19",1,0],["07-20",0,1],["07-21",0,26],["07-22",4,8],["07-23",5,6],["07-24",5,1],["07-25",2,1],["07-26",9,0]];
+function renderSubTrend(subs){
+  // cap the 7 Jul migration so the organic signal stays readable
+  const W=1300,H=150,pad=34,mid=H/2, n=subs.length, bw=(W-pad*2)/n;
+  const capped=subs.map(s=>({d:s[0],net:s[0]==='07-07'?null:s[1]-s[2]}));
+  const mx=Math.max(...capped.filter(c=>c.net!=null).map(c=>Math.abs(c.net)),30);
+  let bars=`<line x1="${pad}" y1="${mid}" x2="${W-pad}" y2="${mid}" stroke="#26374b"/>`;
+  capped.forEach((c,i)=>{const x=pad+i*bw;
+    if(c.net==null){bars+=`<rect x="${x+1}" y="10" width="${bw-2}" height="${H-30}" fill="#26374b" opacity=".5"/>
+      <text x="${x+bw/2}" y="${mid-4}" text-anchor="middle" fill="#8fa3b8" font-size="9">7 Jul migration ±23k (off-scale)</text>`;return;}
+    const h=Math.abs(c.net)/mx*(mid-14);
+    bars+=`<rect x="${x+1}" y="${c.net>=0?mid-h:mid}" width="${bw-2}" height="${h||0.5}" rx="1" fill="${c.net>=0?'#34d39a':'#ff6b6b'}"><title>${c.d}: ${c.net>=0?'+':''}${c.net} net</title></rect>`;});
+  const ticks=capped.filter((_,i)=>i%6===0).map((c,i)=>`<text x="${pad+capped.indexOf(c)*bw+bw/2}" y="${H-3}" text-anchor="middle" fill="#5f7488" font-size="9">${c.d}</text>`).join('');
+  document.getElementById('subtrend').innerHTML=`<div class="hint" style="margin:0 0 4px">Daily net subscribers (green +, red −). More red than green = erosion.</div><svg width="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="max-height:150px">${bars}${ticks}</svg>`;
+}
+renderSubTrend(subs);
+
+/* ---------- REVENUE BY CHANNEL ---------- */
+(function(){
+  const email=1671.05+1277.80+1280.75+901.11+124.8+367.19+233.25+134.78; // 5990.73 across both platforms
+  const gAds=577.49, mAds=54.94;
+  const rows=[
+    {k:'Email — Klaviyo + Omnisend',v:email,c:'#34d39a',note:'8 sends · best ROI · free list'},
+    {k:'Paid — Google Search',v:gAds,c:'#4f9cf9',note:'ROAS 3.25×'},
+    {k:'Paid — Meta',v:mAds,c:'#a06bff',note:'ROAS 0.25×'},
+  ];
+  const mx=Math.max(...rows.map(r=>r.v));
+  document.getElementById('channels').innerHTML=rows.map(r=>`
+    <div style="margin:12px 0">
+      <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px">
+        <span><i style="width:9px;height:9px;border-radius:2px;background:${r.c};display:inline-block;margin-right:7px"></i>${r.k}</span>
+        <span><b>${money(r.v,0)}</b> <span class="src">${r.note}</span></span></div>
+      <div style="height:9px;background:#0e1620;border-radius:5px;overflow:hidden"><div style="width:${r.v/mx*100}%;height:100%;background:${r.c}"></div></div>
+    </div>`).join('') + `<div class="notes" style="font-size:11.5px">Each figure is that platform's own attribution — they overlap with Shopify's direct/organic and aren't a clean split of the $7,895 total. <b style="color:var(--up)">Email is comfortably your biggest attributed channel.</b> Direct is 63% of traffic and still untagged, so true splits need UTMs.</div>`;
+})();
+
+/* ---------- CAMPAIGNS ---------- */
+const camps=[
+  {n:'Eurographics + Puzzle Journal',d:'21 Jul',pf:'Omnisend',sent:7962,open:0.6748,click:0.04647,ord:8,rev:901.11},
+  {n:'Warm-up Day 4 — Clementoni (v2)',d:'16 Jul',pf:'Omnisend',sent:4141,open:0.0640,click:0.01401,ord:2,rev:134.78,lowopen:1},
+  {n:'Warm-up Day 3 — Clementoni (v2)',d:'15 Jul',pf:'Omnisend',sent:4763,open:0.6378,click:0.05753,ord:4,rev:233.25},
+  {n:'Warm-up Day 2 — Clementoni',d:'14 Jul',pf:'Omnisend',sent:1999,open:0.8484,click:0.04752,ord:6,rev:367.19},
+  {n:'Warm-up Day 1 — Clementoni',d:'13 Jul',pf:'Omnisend',sent:999,open:0.8368,click:0.06406,ord:1,rev:124.8},
+  {n:'Newsletter July — Thames &amp; Hudson launch',d:'7 Jul',pf:'Klaviyo',sent:6082,open:0.5114,click:0.0355,ord:15,rev:1671.05,best:1},
+  {n:'Newsletter June — 2nd letter',d:'29 Jun',pf:'Klaviyo',sent:6685,open:0.5600,click:0.0376,ord:15,rev:1277.80},
+  {n:'Newsletter June — New Owner Intro',d:'17 Jun',pf:'Klaviyo',sent:6578,open:0.5471,click:0.0572,ord:14,rev:1280.75},
+];
+(function(){
+  const pfCol={Klaviyo:'#a06bff',Omnisend:'#2dd4bf'};
+  let h=`<tr><th>Campaign</th><th>Platform</th><th>Sent</th><th>Open rate</th><th>Click rate</th><th>Orders</th><th>Attributed rev</th><th>Rev / email</th></tr>`;
+  camps.forEach(c=>{
+    const ow=Math.round(c.open*120);
+    h+=`<tr>
+      <td>${c.best?'★ ':''}${c.n} <span class="tag">${c.d}</span></td>
+      <td><span class="tag" style="border-color:${pfCol[c.pf]};color:${pfCol[c.pf]}">${c.pf}</span></td>
+      <td>${fmt(c.sent)}</td>
+      <td><span class="orbar" style="width:${ow}px;background:${c.lowopen?'#ff6b6b':'#34d39a'}"></span><b style="color:${c.lowopen?'#ff6b6b':'#e8eef5'}">${pct(c.open,1)}</b></td>
+      <td>${pct(c.click,1)}</td><td>${c.ord}</td>
+      <td class="${c.best?'best':''}"><b>${money(c.rev,0)}</b></td>
+      <td>${money(c.rev/c.sent,2)}</td></tr>`;
+  });
+  const kl=camps.filter(c=>c.pf==='Klaviyo'), om=camps.filter(c=>c.pf==='Omnisend');
+  const sum=a=>({s:a.reduce((x,y)=>x+y.sent,0),r:a.reduce((x,y)=>x+y.rev,0),o:a.reduce((x,y)=>x+y.ord,0)});
+  const K=sum(kl),O=sum(om),T=sum(camps);
+  const totRow=(lbl,x)=>`<tr style="border-top:1px solid #26374b;color:var(--muted)"><td><b>${lbl}</b></td><td></td><td>${fmt(x.s)}</td><td></td><td></td><td><b>${x.o}</b></td><td><b>${money(x.r,0)}</b></td><td></td></tr>`;
+  h+=totRow('Klaviyo subtotal (3)',K)+totRow('Omnisend subtotal (5)',O);
+  h+=`<tr style="border-top:2px solid #26374b"><td><b>All email (8 sends, both platforms)</b></td><td></td><td><b>${fmt(T.s)}</b></td><td></td><td></td><td><b>${T.o}</b></td><td><b style="color:var(--up)">${money(T.r,0)}</b></td><td></td></tr>`;
+  document.getElementById('campaigns').innerHTML=h;
+})();
+
+/* ---------- FOOTNOTES ---------- */
+document.getElementById('footnotes').innerHTML=`
+<b>Data sources &amp; caveats.</b>
+Sales, orders, units, funnel, shipping &amp; traffic — Shopify (live). Google Ads $177.69 / 269 clicks / ROAS 3.25 — Google Ads connector.
+Meta $222.75 / 725 clicks — Meta; Meta only retains ~30 days, so history is being archived to a permanent sheet going forward (fixes the connector's rolling window).
+Subscribers &amp; campaigns — Omnisend. &nbsp;•&nbsp;
+<b>⚑ 27 May</b> flash sale (201 orders / $15.5k) inflates the previous-period comparison base. &nbsp;•&nbsp;
+<b>7 Jul</b> list migration (+24k / −21k) excluded from organic subscriber net. &nbsp;•&nbsp;
+Both paid campaigns launched mid-July, so 30-day paid figures are concentrated in the back half. &nbsp;•&nbsp;
+Channel revenue splits are attribution-limited (UTM tagging sparse); "Direct/Organic" is a residual. &nbsp;•&nbsp;
+Shipping bleed (−$595) is from your ShipStation export (15 Jun–23 Jul): carrier cost $1,885 vs $1,290 collected, ~68% recovered — now wired to pull daily. &nbsp;•&nbsp;
+<b>One source of truth for a sale:</b> Orders, funnel base and conversion rate all use the same Shopify order count (94), not the sessions report. &nbsp;•&nbsp;
+<b>Paid CAC</b> = ad spend $400.44 ÷ ~9 paid-attributed orders (platform-attributed revenue ÷ AOV); Google ~$21, Meta ~$275. Firms up when Google Ads conversions feed the daily sheet. &nbsp;•&nbsp;
+Gross profit &amp; contribution are estimates — Shopify has supplier cost on ~54% of sales; the 36.9% tracked margin is extrapolated to the full base. Loading cost on all SKUs makes these exact.`;
+</script>
+</body>
+</html>
