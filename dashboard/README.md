@@ -5,64 +5,48 @@ funnel, margin, the profit waterfall, subscribers and email — with a date-rang
 picker that recomputes every sheet-backed metric for any range and its previous
 period.
 
-**Live:** https://s2nnews.github.io/puzzles/  *(after the one-time setup below)*
+**Live:** https://s2nnews.github.io/puzzles/dashboard/
 
-It's a single static `index.html` — no server, no build step. It reads its
-numbers from a Google Sheet that a daily Apps Script keeps current, so the page
-refreshes itself every morning. Anyone with the link can open it (great for
-family and collaborators); there's no login.
+It's a single static `index.html` — no server, no build step. It fetches its
+numbers from a **published CSV** of the "Cockpit Daily" Google Sheet, so the
+date picker can recompute any range in the browser. Anyone with the link can
+open it (no login) — good for family and collaborators.
 
-## One-time setup (~5 min)
+> **Read the docs before changing anything:** `ARCHITECTURE.md` (the whole
+> system + all IDs/URLs), `DATA-SOURCES.md` (which column comes from where),
+> `STATUS.md` (current state, gaps, next steps, credential boundary).
 
-**1 · Publish the sheet's data as a public CSV**
-In the Google Sheet that the daily script writes to: **File → Share → Publish to
-web**. Under *Link*, choose the **Daily** tab and **Comma-separated values
-(.csv)**, then **Publish**. Copy the URL it gives you (it looks like
-`https://docs.google.com/spreadsheets/d/e/…/pub?gid=…&single=true&output=csv`).
+## Current state (read this — it's honest)
+- The **dashboard is live** and correctly reads the sheet's published CSV.
+- **But the sheet is currently a static snapshot** (frozen to values, stuck at
+  26 Jul 2026). The daily auto-refresh that would keep it live **has not been
+  deployed yet** — so it does *not* refresh every morning today. Making it
+  self-updating is the open task; see `STATUS.md`.
+- Three columns (Meta spend/conv, Puzzles sold, Shipping cost) are still blank
+  for the same reason — the refresh that fills them hasn't run.
 
-**2 · Paste that URL into `index.html`**
-Near the top of the `<script>` block, find:
-
-```js
-var SHEET_CSV_URL = '';
-```
-
-and put your CSV link between the quotes:
-
-```js
-var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/…/output=csv';
-```
-
-**3 · Enable GitHub Pages**
-Repo **Settings → Pages → Build and deployment → Source: Deploy from a branch →
-Branch: `main` / `/root` → Save.** After a minute the site is live at
-`https://s2nnews.github.io/puzzles/`. Share that link with anyone.
-
-That's it. The daily 6am trigger appends a row to the sheet; the published CSV
-updates automatically; the page shows current numbers on every open. You only
-touch the repo again if you want to change the dashboard itself.
+## Data sources (see DATA-SOURCES.md for the column map)
+- **Shopify** — sales, orders, AOV, session funnel, units
+- **Omnisend** — subscribers, campaigns
+- **Meta → Porter** (free, rolling 30-day) — the *only* thing Porter is used for
+- **Google Ads** — native connector / "latest known" in the dashboard CONFIG
+- **ShipStation** — carrier shipping cost (the "bleed")
 
 ## What's live vs. "latest known"
+Fully range-aware from the daily sheet (once it's refreshing): total sales,
+orders, net sales, AOV, returns, the funnel, conversion rate, subscribers, the
+shipping bleed, Meta spend/ROAS, the contribution waterfall and both trend
+charts. Carried as "latest known" CONFIG constants until they get their own
+daily columns: Google Ads spend/ROAS, gross-margin %, 12-month LTV, repeat rate,
+the email campaign table, revenue-by-channel and the traffic donut.
 
-Fully range-aware from the daily sheet: total sales, orders, net sales, AOV,
-returns, the funnel, conversion rate, subscribers, the shipping bleed, Meta
-spend/ROAS, the contribution waterfall and both trend charts.
-
-Shown as "latest known" until they get their own daily columns (a clean phase 2):
-Google Ads spend/ROAS, gross-margin %, 12-month LTV, repeat rate, the email
-campaign table, revenue-by-channel and the traffic donut.
-
-## Privacy
-
-The Pages URL and the published CSV are both reachable by anyone who has the
-link — that's what makes no-login sharing possible. The numbers aren't indexed
-or advertised, but they aren't access-controlled either. If you later want to
-gate it, a passphrase layer or Cloudflare Access can sit in front without
-changing any of this.
+## Setup (already done)
+1. Sheet's Daily tab published to web as CSV — done.
+2. CSV URL pasted into `index.html` (`var SHEET_CSV_URL = '…'`) — done.
+3. GitHub Pages enabled (Deploy from branch `main` / root) — done.
 
 ## Files
-
-- `index.html` — the dashboard (this is what Pages serves).
-- `apps-script/MarketingDashboardRefresh.gs` — the daily refresh that populates
-  the sheet (already running in your Apps Script project; kept here for
-  reference/version history).
+- `index.html` — the dashboard (what Pages serves).
+- `ARCHITECTURE.md`, `DATA-SOURCES.md`, `STATUS.md` — the docs.
+- `apps-script/MarketingDashboardRefresh.gs` — the daily-refresh script, **drafted
+  but not yet deployed** (kept for when we stand up the live refresh).
