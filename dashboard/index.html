@@ -473,19 +473,18 @@ function initPicker(){
   preset(30);
 }
 
-/* ---------- BOOT: pick the data source (injected → public CSV → static) ---------- */
+/* ---------- BOOT: pick the data source (injected → data.json → static) ----------
+   data.json lives beside this file in the repo, refreshed daily by collect.py. */
+var DATA_JSON_URL = './data.json';
 (function(){
   const haveInjected = DAILY_DATA && DAILY_DATA.length;
-  if(!haveInjected && SHEET_CSV_URL){
-    const live=document.getElementById('dr-live');
-    live.innerHTML='<span class="dot" style="background:var(--warn)"></span>loading…';
-    fetch(SHEET_CSV_URL).then(r=>r.text()).then(t=>{
-      try{ const rows=parseCSV(t); if(rows && rows.length) DAILY_DATA=rows; }catch(e){}
-      initPicker();
-    }).catch(()=>{ live.innerHTML='<span class="dot"></span>feed offline'; initPicker(); });
-  } else {
+  if(haveInjected){ initPicker(); return; }
+  const live=document.getElementById('dr-live');
+  live.innerHTML='<span class="dot" style="background:var(--warn)"></span>loading…';
+  fetch(DATA_JSON_URL, {cache:'no-store'}).then(r=>r.json()).then(rows=>{
+    if(rows && rows.length) DAILY_DATA=rows;
     initPicker();
-  }
+  }).catch(()=>{ live.innerHTML='<span class="dot"></span>data offline'; initPicker(); });
 })();
 
 /* ---------- PROFIT WATERFALL ---------- */
