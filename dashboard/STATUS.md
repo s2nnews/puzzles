@@ -1,6 +1,6 @@
 # Status & next steps
 
-_Snapshot: 28 Jul 2026. Update this whenever state changes._
+_Snapshot: 28 Jul 2026 (evening). Update this whenever state changes._
 
 ## What's working right now
 - **Dashboard is LIVE and public:** https://s2nnews.github.io/puzzles/dashboard/
@@ -17,11 +17,16 @@ _Snapshot: 28 Jul 2026. Update this whenever state changes._
 
 ## The gap
 1. **Actions secrets not yet set.** The nightly workflow needs repo secrets
-   `SHOPIFY_STORE`, `SHOPIFY_TOKEN` (scopes `read_orders` + `read_reports`),
-   `OMNISEND_API_KEY`, `SHIPSTATION_API_KEY`, `SHIPSTATION_API_SECRET`,
-   optional `META_CSV`. Until they're set the nightly run fails and the data
-   stays at 28 Jul.
-2. **Shipping cost is blank** — fills on the first run with ShipStation keys.
+   `SHOPIFY_STORE`, `SHOPIFY_TOKEN`, `OMNISEND_API_KEY`,
+   `SHIPSTATION_API_KEY`, `SHIPSTATION_API_SECRET`, optional `META_CSV`.
+   All keys are validated and working locally (dashboard/.env). Until the
+   repo secrets are set the nightly run fails and the data stays at 28 Jul.
+2. **Sessions funnel is frozen at 28 Jul.** `shopifyqlQuery` is denied to
+   third-party apps on the Basic plan (it demands Level 2 protected
+   customer data, which Basic cannot grant). Sales are now DERIVED from
+   the Orders API instead (validated to 0.07% vs ShopifyQL history);
+   sessions have no API source on Basic. Next step: GA4 as the funnel
+   source. The merge logic preserves all existing funnel history.
 3. **Meta spend / conv value are blank** — needs a Porter → Sheets/CSV export
    (columns: date,spend,conv_value) and its URL in `META_CSV`.
 4. **Subscriber list size is blank** — no daily source wired yet (candidate:

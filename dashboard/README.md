@@ -19,11 +19,13 @@ this README describes the current system.
 ## How the data flows
 
 1. `collect.py` pulls the daily series from the source APIs:
-   sales and the sessions funnel via ShopifyQL, units sold via the Orders
-   API (bucketed by Sydney day), subscriber growth from the email platform,
-   and shipping cost per ship date from ShipStation. Meta spend and
-   conversion value come from an optional CSV export (`META_CSV`); those two
-   columns stay blank until it's configured.
+   sales metrics and units derived from the Shopify Orders API (bucketed by
+   Sydney day; ShopifyQL is tried first but is denied to third-party apps
+   on the Basic plan), subscriber growth from the email platform, and
+   shipping cost per ship date from ShipStation. Meta spend and conversion
+   value come from an optional CSV export (`META_CSV`); those two columns
+   stay blank until it's configured. The sessions funnel has no API source
+   on Basic — its history is preserved and GA4 is the planned source.
 2. It writes `data.json` (sorted by Date ascending, blanks = ""; the page
    treats blanks as 0).
 3. `.github/workflows/dashboard.yml` runs the collector nightly (~06:00

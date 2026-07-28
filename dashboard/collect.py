@@ -6,6 +6,17 @@ from Shopify (sales, sessions funnel, units), Omnisend (subscriber growth),
 ShipStation (shipping cost) and an optional Porter CSV export (Meta spend /
 conversion value). The dashboard page fetches ./data.json directly.
 
+Shopify strategy: ShopifyQL (the sales/sessions datasets) is tried first,
+but on the Basic plan third-party apps are denied `shopifyqlQuery` (it
+requires Level 2 protected-customer-data access, which Basic doesn't offer).
+When denied, daily sales metrics are DERIVED from the Orders API instead
+(validated against ShopifyQL history), and the sessions funnel is left
+blank — it has no API source on Basic; existing values in data.json are
+preserved, and GA4 is the intended future source.
+
+Merged output never overwrites an existing non-blank value with a blank,
+so one source having an outage (or no API) doesn't erase history.
+
 Reads config from environment variables, falling back to dashboard/.env
 (KEY=VALUE lines). Fails loudly on API errors rather than writing partial
 garbage; sources whose keys are absent leave their columns blank ("").
@@ -28,6 +39,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_PATH = os.path.join(HERE, "data.json")
 SYDNEY = ZoneInfo("Australia/Sydney")
 SHOPIFY_API_VERSION = "2025-07"
+GST = 1.1  # AU prices are GST-inclusive; ShopifyQL reports amounts ex-GST
 
 COLUMNS = [
     "Date", "Orders", "Gross sales", "Discounts", "Returns", "Net sales",
@@ -37,6 +49,10 @@ COLUMNS = [
     "Net subscriber growth", "Meta spend", "Meta conv value", "Puzzles sold",
     "Subscriber list size", "Shipping charged", "Shipping cost",
 ]
+
+
+class ShopifyAccessDenied(Exception):
+    pass
 
 
 def die(msg):
@@ -80,7 +96,32 @@ def to_num(value):
     return int(f) if f == int(f) else round(f, 2)
 
 
+def sydney_day(iso_ts):
+    ts = datetime.fromisoformat(iso_ts.replace("Z", "+00:00"))
+    return ts.astimezone(SYDNEY).date().isoformat()
+
+
 # ---------------------------------------------------------------- Shopify
+
+def shopify_token_from_client_credentials(store, client_id, client_secret):
+    """Exchange client credentials for a 24h Admin token (Dev Dashboard apps).
+
+    Requires the app to have its access scopes configured and to be installed
+    on the store. Tokens expire after 24 hours, so every run exchanges anew.
+    """
+    resp = http_retry(lambda: requests.post(
+        "https://%s/admin/oauth/access_token" % store,
+        data={"client_id": client_id, "client_secret": client_secret,
+              "grant_type": "client_credentials"},
+        timeout=60))
+    if resp.status_code != 200:
+        die("Shopify client-credentials exchange failed (HTTP %s): %s\n"
+            "Check the app's scopes are configured and it is installed on the store."
+            % (resp.status_code, resp.text[:300]))
+    body = resp.json()
+    print("Shopify token via client credentials, scopes: %s" % body.get("scope", "?"))
+    return body["access_token"]
+
 
 def shopify_graphql(store, token, query, variables=None):
     url = "https://%s/admin/api/%s/graphql.json" % (store, SHOPIFY_API_VERSION)
@@ -90,8 +131,11 @@ def shopify_graphql(store, token, query, variables=None):
     if resp.status_code != 200:
         die("Shopify HTTP %s: %s" % (resp.status_code, resp.text[:400]))
     data = resp.json()
-    if data.get("errors"):
-        die("Shopify GraphQL errors: %s" % json.dumps(data["errors"])[:600])
+    errors = data.get("errors")
+    if errors:
+        if all(e.get("extensions", {}).get("code") == "ACCESS_DENIED" for e in errors):
+            raise ShopifyAccessDenied(errors[0].get("message", "access denied"))
+        die("Shopify GraphQL errors: %s" % json.dumps(errors)[:600])
     return data["data"]
 
 
@@ -101,7 +145,8 @@ def shopifyql(store, token, ql):
     On API version 2025-07 shopifyqlQuery returns { parseErrors,
     tableData { columns, rows } } directly (no TableResponse fragment);
     rows is a JSON scalar: a list of dicts keyed by column name, values
-    as strings (or null).
+    as strings (or null). Raises ShopifyAccessDenied on plans/apps without
+    Level 2 protected-customer-data access.
     """
     gql = ("query($q: String!) { shopifyqlQuery(query: $q) { parseErrors "
            "tableData { columns { name } rows } } }")
@@ -112,44 +157,137 @@ def shopifyql(store, token, ql):
     return table.get("rows") or []
 
 
-def fetch_sales(store, token, days):
+def fetch_shopifyql_sales(store, token, days):
     ql = ("FROM sales SHOW orders, gross_sales, discounts, returns, "
           "net_sales, total_sales, average_order_value, shipping_charges "
           "TIMESERIES day SINCE -%dd UNTIL today" % days)
-    out = {}
-    for row in shopifyql(store, token, ql):
-        out[row["day"][:10]] = row
-    if not out:
-        die("Shopify sales query returned no rows")
-    return out
+    return {row["day"][:10]: row for row in shopifyql(store, token, ql)}
 
 
-def fetch_sessions(store, token, days):
+def fetch_shopifyql_sessions(store, token, days):
     ql = ("FROM sessions SHOW sessions, sessions_with_cart_additions, "
           "sessions_that_reached_checkout, sessions_that_completed_checkout "
           "TIMESERIES day SINCE -%dd UNTIL today" % days)
     return {row["day"][:10]: row for row in shopifyql(store, token, ql)}
 
 
-def fetch_units(store, token, since):
-    """Sum line-item units per Sydney day from the Orders API."""
-    gql = ("query($q: String!, $cursor: String) { "
-           "orders(first: 250, query: $q, after: $cursor) { "
-           "pageInfo { hasNextPage endCursor } "
-           "nodes { createdAt currentSubtotalLineItemsQuantity } } }")
-    # created_at filters in UTC; go a day wide and bucket by Sydney date.
-    q = "created_at:>=%s" % (since - timedelta(days=1)).isoformat()
-    units, cursor = {}, None
+ORDERS_GQL = (
+    "query($q: String!, $cursor: String) { "
+    "orders(first: 100, query: $q, after: $cursor) { "
+    "pageInfo { hasNextPage endCursor } "
+    "nodes { createdAt test taxesIncluded "
+    "currentSubtotalLineItemsQuantity "
+    "subtotalPriceSet { shopMoney { amount } } "
+    "totalDiscountsSet { shopMoney { amount } } "
+    "totalPriceSet { shopMoney { amount } } "
+    "totalTaxSet { shopMoney { amount } } "
+    "totalShippingPriceSet { shopMoney { amount } } "
+    "refunds { createdAt totalRefundedSet { shopMoney { amount } } "
+    "refundLineItems(first: 50) { nodes { "
+    "subtotalSet { shopMoney { amount } } "
+    "totalTaxSet { shopMoney { amount } } } } "
+    "refundShippingLines(first: 10) { nodes { "
+    "subtotalAmountSet { shopMoney { amount } } } } } } } }")
+
+
+def _money(node, key):
+    return float(((node.get(key) or {}).get("shopMoney") or {}).get("amount") or 0)
+
+
+def fetch_orders(store, token, since):
+    """One pass over the Orders API: units + derived daily sales metrics.
+
+    Buckets by Sydney day, replicating ShopifyQL's sales-dataset
+    conventions (validated against its history): gross/discounts/returns/
+    net/shipping are ex-GST, total is GST-inclusive, discounts and returns
+    are negative. Orders (including cancelled ones) book their ORIGINAL
+    amounts on the creation day; refunds land on the refund date, with
+    refunded products going to returns (line subtotals are GST-inclusive,
+    tax split out per line), refunded shipping netting off shipping_charges
+    (its subtotal is already ex-GST), and line-less custom refunds booked
+    in full to returns. The window reaches 90 days behind `since` so
+    refunds against older orders are captured on their refund date.
+    """
+    q = "created_at:>=%s" % (since - timedelta(days=90)).isoformat()
+    days = {}
+
+    def bucket(day):
+        return days.setdefault(day, {
+            "orders": 0, "units": 0, "gross": 0.0, "discounts": 0.0,
+            "returns": 0.0, "total": 0.0, "shipping": 0.0})
+
+    cursor, n = None, 0
     while True:
-        data = shopify_graphql(store, token, gql, {"q": q, "cursor": cursor})
+        data = shopify_graphql(store, token, ORDERS_GQL, {"q": q, "cursor": cursor})
         conn = data["orders"]
         for node in conn["nodes"]:
-            created = datetime.fromisoformat(node["createdAt"].replace("Z", "+00:00"))
-            day = created.astimezone(SYDNEY).date().isoformat()
-            units[day] = units.get(day, 0) + (node["currentSubtotalLineItemsQuantity"] or 0)
+            if node.get("test"):
+                continue
+            for refund in node.get("refunds") or []:
+                amount = _money(refund, "totalRefundedSet")
+                lines = (refund.get("refundLineItems") or {}).get("nodes") or []
+                ships = (refund.get("refundShippingLines") or {}).get("nodes") or []
+                prod_ex = sum(_money(li, "subtotalSet") - _money(li, "totalTaxSet")
+                              for li in lines)
+                ship_ex = sum(_money(sl, "subtotalAmountSet") for sl in ships)
+                if not lines and not ships and amount:
+                    prod_ex = amount  # custom-amount refund: all to returns
+                if amount or prod_ex or ship_ex:
+                    rb = bucket(sydney_day(refund["createdAt"]))
+                    rb["total"] -= amount
+                    rb["returns"] -= prod_ex
+                    rb["shipping"] -= ship_ex
+            n += 1
+            b = bucket(sydney_day(node["createdAt"]))
+            b["orders"] += 1
+            b["units"] += node["currentSubtotalLineItemsQuantity"] or 0
+            prod_incl = _money(node, "subtotalPriceSet")
+            disc_incl = _money(node, "totalDiscountsSet")
+            ship_incl = _money(node, "totalShippingPriceSet")
+            tax = _money(node, "totalTaxSet")
+            if node.get("taxesIncluded") and tax > 0:
+                ship_ex = ship_incl / GST
+                tax_prod = tax - (ship_incl - ship_ex)
+                prod_ex = prod_incl - tax_prod
+                disc_ex = disc_incl / GST
+            else:
+                prod_ex, disc_ex, ship_ex = prod_incl, disc_incl, ship_incl
+            b["gross"] += prod_ex + disc_ex
+            b["discounts"] -= disc_ex
+            b["shipping"] += ship_ex
+            b["total"] += _money(node, "totalPriceSet")
         if not conn["pageInfo"]["hasNextPage"]:
-            return units
+            break
         cursor = conn["pageInfo"]["endCursor"]
+    print("Orders API: %d orders scanned across %d days" % (n, len(days)))
+    return days
+
+
+def derived_sales_rows(order_days, since, today):
+    """Shape Orders-API buckets like ShopifyQL sales rows for the merger."""
+    out = {}
+    day, one = since, timedelta(days=1)
+    while day <= today:
+        iso = day.isoformat()
+        b = order_days.get(iso)
+        if b:
+            net = b["gross"] + b["discounts"] + b["returns"]
+            out[iso] = {
+                "orders": b["orders"],
+                "gross_sales": round(b["gross"], 2),
+                "discounts": round(b["discounts"], 2),
+                "returns": round(b["returns"], 2),
+                "net_sales": round(net, 2),
+                "total_sales": round(b["total"], 2),
+                "average_order_value": round(net / b["orders"], 3) if b["orders"] else None,
+                "shipping_charges": round(b["shipping"], 2),
+            }
+        else:
+            out[iso] = {"orders": 0, "gross_sales": 0, "discounts": 0,
+                        "returns": 0, "net_sales": 0, "total_sales": 0,
+                        "average_order_value": None, "shipping_charges": 0}
+        day += one
+    return out
 
 
 # --------------------------------------------------------------- Omnisend
@@ -159,13 +297,15 @@ def fetch_omnisend(api_key, since, today):
 
     The API takes {queries:[...]} with a required timestamp dimension; at day
     granularity a query spans at most 60 days and must not cross a calendar
-    year, so the window is chunked. `to` is exclusive.
+    year, so the window is chunked. `to` is exclusive. Chunks are 59 days,
+    not 60: an AEDT→AEST transition inside a chunk adds an hour to the
+    absolute span, which the API rejects as "greater than 60 days".
     """
     out = {}
     start, end = since, today + timedelta(days=1)
     while start < end:
         year_end = date(start.year + 1, 1, 1)
-        stop = min(start + timedelta(days=60), end, year_end)
+        stop = min(start + timedelta(days=59), end, year_end)
         frm = datetime.combine(start, dtime.min, SYDNEY).isoformat()
         if stop == year_end and stop != end:
             to = datetime.combine(stop - timedelta(days=1), dtime(23, 59, 59), SYDNEY).isoformat()
@@ -254,24 +394,74 @@ def fetch_meta(src):
 
 # ------------------------------------------------------------------- main
 
+def merge_previous(rows):
+    """Blank-preserving merge with the existing data.json.
+
+    Any "" in a new row is filled from the previous file's value for that
+    day; days present before but outside the new window are kept as-is.
+    This is what preserves the sessions funnel history (no API source on
+    the Basic plan) and rides out single-source outages.
+    """
+    if not os.path.exists(OUT_PATH):
+        return rows
+    try:
+        with open(OUT_PATH, encoding="utf-8") as f:
+            old = {r["Date"]: r for r in json.load(f)}
+    except (ValueError, KeyError):
+        return rows
+    filled = 0
+    by_date = {}
+    for row in rows:
+        prev = old.get(row["Date"])
+        if prev:
+            for col in COLUMNS:
+                if row[col] == "" and prev.get(col, "") != "":
+                    row[col] = prev[col]
+                    filled += 1
+        by_date[row["Date"]] = row
+    kept = [r for d, r in old.items() if d not in by_date]
+    if filled or kept:
+        print("Merged previous data.json: %d blanks filled, %d older days kept"
+              % (filled, len(kept)))
+    merged = kept + rows
+    merged.sort(key=lambda r: r["Date"])
+    return merged
+
+
 def main():
     load_dotenv()
     store = os.environ.get("SHOPIFY_STORE", "").strip()
     token = os.environ.get("SHOPIFY_TOKEN", "").strip()
-    if not store or not token:
-        die("SHOPIFY_STORE and SHOPIFY_TOKEN are required (dashboard/.env or env)")
+    client_id = os.environ.get("SHOPIFY_CLIENT_ID", "").strip()
+    client_secret = os.environ.get("SHOPIFY_CLIENT_SECRET", "").strip()
+    if not store or not (token or (client_id and client_secret)):
+        die("SHOPIFY_STORE plus either SHOPIFY_TOKEN or SHOPIFY_CLIENT_ID + "
+            "SHOPIFY_CLIENT_SECRET are required (dashboard/.env or env)")
     if "." not in store:
         store += ".myshopify.com"
+    if not token:
+        token = shopify_token_from_client_credentials(store, client_id, client_secret)
     days = int(os.environ.get("DAYS") or 120)
     today = datetime.now(SYDNEY).date()
     since = today - timedelta(days=days)
 
     print("Collecting %d days (%s to %s) for %s" % (days, since, today, store))
-    sales = fetch_sales(store, token, days)
-    sessions = fetch_sessions(store, token, days)
-    units = fetch_units(store, token, since)
-    print("Shopify: %d sales days, %d session days, %d unit days"
-          % (len(sales), len(sessions), len(units)))
+
+    sales = sessions = None
+    try:
+        sales = fetch_shopifyql_sales(store, token, days)
+        sessions = fetch_shopifyql_sessions(store, token, days)
+        print("Shopify: ShopifyQL OK (%d sales days)" % len(sales))
+    except ShopifyAccessDenied as exc:
+        print("ShopifyQL denied (%s...). Deriving sales from the Orders API; "
+              "sessions funnel has no source on this plan." % str(exc)[:80])
+
+    order_days = fetch_orders(store, token, since)
+    units = {d: b["units"] for d, b in order_days.items()}
+    if sales is None:
+        sales = derived_sales_rows(order_days, since, today)
+    if sessions is None:
+        sessions = {}
 
     omni_key = os.environ.get("OMNISEND_API_KEY", "").strip()
     omni = fetch_omnisend(omni_key, since, today) if omni_key else {}
@@ -322,6 +512,8 @@ def main():
             "Shipping cost": ship.get(day, ""),
         }
         rows.append({k: row[k] for k in COLUMNS})
+
+    rows = merge_previous(rows)
 
     with open(OUT_PATH, "w", encoding="utf-8", newline="\n") as f:
         json.dump(rows, f, indent=1)

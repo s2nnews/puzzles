@@ -2,10 +2,10 @@
  {
   "Date": "2026-03-30",
   "Orders": 5,
-  "Gross sales": 584.66,
-  "Discounts": -49,
+  "Gross sales": 584.68,
+  "Discounts": -49.02,
   "Returns": 0,
-  "Net sales": 535.66,
+  "Net sales": 535.67,
   "Total sales": 653.98,
   "AOV": 107.13,
   "Sessions": 844,
@@ -20,16 +20,16 @@
   "Meta conv value": "",
   "Puzzles sold": 17,
   "Subscriber list size": "",
-  "Shipping charged": 58.87,
-  "Shipping cost": ""
+  "Shipping charged": 58.86,
+  "Shipping cost": 74.28
  },
  {
   "Date": "2026-03-31",
   "Orders": 2,
-  "Gross sales": 91.68,
+  "Gross sales": 91.67,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 91.68,
+  "Net sales": 91.67,
   "Total sales": 126.75,
   "AOV": 45.84,
   "Sessions": 152,
@@ -44,8 +44,8 @@
   "Meta conv value": "",
   "Puzzles sold": 3,
   "Subscriber list size": "",
-  "Shipping charged": 23.54,
-  "Shipping cost": ""
+  "Shipping charged": 23.55,
+  "Shipping cost": 8.77
  },
  {
   "Date": "2026-04-01",
@@ -55,7 +55,7 @@
   "Returns": 0,
   "Net sales": 49,
   "Total sales": 68.85,
-  "AOV": 49,
+  "AOV": 49.0,
   "Sessions": 161,
   "Sessions with cart adds": 6,
   "Sessions reached checkout": 2,
@@ -79,7 +79,7 @@
   "Returns": 0,
   "Net sales": 87.13,
   "Total sales": 120.75,
-  "AOV": 43.56,
+  "AOV": 43.57,
   "Sessions": 95,
   "Sessions with cart adds": 8,
   "Sessions reached checkout": 5,
@@ -93,7 +93,7 @@
   "Puzzles sold": 3,
   "Subscriber list size": "",
   "Shipping charged": 22.64,
-  "Shipping cost": ""
+  "Shipping cost": 112.84
  },
  {
   "Date": "2026-04-03",
@@ -127,7 +127,7 @@
   "Returns": 0,
   "Net sales": 188,
   "Total sales": 216.75,
-  "AOV": 188,
+  "AOV": 188.0,
   "Sessions": 67,
   "Sessions with cart adds": 1,
   "Sessions reached checkout": 3,
@@ -194,10 +194,10 @@
  {
   "Date": "2026-04-07",
   "Orders": 3,
-  "Gross sales": 233.36,
+  "Gross sales": 233.37,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 233.36,
+  "Net sales": 233.37,
   "Total sales": 286.55,
   "AOV": 77.79,
   "Sessions": 90,
@@ -212,16 +212,16 @@
   "Meta conv value": "",
   "Puzzles sold": 6,
   "Subscriber list size": "",
-  "Shipping charged": 27.15,
-  "Shipping cost": ""
+  "Shipping charged": 27.14,
+  "Shipping cost": 161.26
  },
  {
   "Date": "2026-04-08",
   "Orders": 2,
-  "Gross sales": 59,
+  "Gross sales": 59.01,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 59,
+  "Net sales": 59.01,
   "Total sales": 84.8,
   "AOV": 29.5,
   "Sessions": 107,
@@ -236,8 +236,8 @@
   "Meta conv value": "",
   "Puzzles sold": 2,
   "Subscriber list size": "",
-  "Shipping charged": 18.1,
-  "Shipping cost": ""
+  "Shipping charged": 18.09,
+  "Shipping cost": 12.09
  },
  {
   "Date": "2026-04-09",
@@ -261,7 +261,7 @@
   "Puzzles sold": 1,
   "Subscriber list size": "",
   "Shipping charged": 13.59,
-  "Shipping cost": ""
+  "Shipping cost": 126.35
  },
  {
   "Date": "2026-04-10",
@@ -285,7 +285,7 @@
   "Puzzles sold": 1,
   "Subscriber list size": "",
   "Shipping charged": 13.59,
-  "Shipping cost": ""
+  "Shipping cost": 26.64
  },
  {
   "Date": "2026-04-11",
@@ -314,10 +314,10 @@
  {
   "Date": "2026-04-12",
   "Orders": 2,
-  "Gross sales": 150.77,
+  "Gross sales": 150.78,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 150.77,
+  "Net sales": 150.78,
   "Total sales": 185.75,
   "AOV": 75.39,
   "Sessions": 78,
@@ -332,7 +332,7 @@
   "Meta conv value": "",
   "Puzzles sold": 3,
   "Subscriber list size": "",
-  "Shipping charged": 18.1,
+  "Shipping charged": 18.09,
   "Shipping cost": ""
  },
  {
@@ -357,15 +357,15 @@
   "Puzzles sold": 3,
   "Subscriber list size": "",
   "Shipping charged": 14.5,
-  "Shipping cost": ""
+  "Shipping cost": 55.64
  },
  {
   "Date": "2026-04-14",
   "Orders": 67,
-  "Gross sales": 4269.32,
+  "Gross sales": 4269.42,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 4269.32,
+  "Net sales": 4269.42,
   "Total sales": 5507.7,
   "AOV": 63.72,
   "Sessions": 1014,
@@ -380,16 +380,16 @@
   "Meta conv value": "",
   "Puzzles sold": 198,
   "Subscriber list size": "",
-  "Shipping charged": 737.96,
-  "Shipping cost": ""
+  "Shipping charged": 737.86,
+  "Shipping cost": 56.34
  },
  {
   "Date": "2026-04-15",
   "Orders": 29,
-  "Gross sales": 1836.88,
+  "Gross sales": 1836.92,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 1836.88,
+  "Net sales": 1836.92,
   "Total sales": 2376.05,
   "AOV": 63.34,
   "Sessions": 412,
@@ -404,8 +404,8 @@
   "Meta conv value": "",
   "Puzzles sold": 88,
   "Subscriber list size": "",
-  "Shipping charged": 323.27,
-  "Shipping cost": ""
+  "Shipping charged": 323.23,
+  "Shipping cost": 24.04
  },
  {
   "Date": "2026-04-16",
@@ -429,15 +429,15 @@
   "Puzzles sold": 46,
   "Subscriber list size": "",
   "Shipping charged": 183.82,
-  "Shipping cost": ""
+  "Shipping cost": 487.76
  },
  {
   "Date": "2026-04-17",
   "Orders": 8,
-  "Gross sales": 562.6,
+  "Gross sales": 562.63,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 562.6,
+  "Net sales": 562.63,
   "Total sales": 701.44,
   "AOV": 70.33,
   "Sessions": 168,
@@ -452,18 +452,18 @@
   "Meta conv value": "",
   "Puzzles sold": 24,
   "Subscriber list size": "",
-  "Shipping charged": 75.12,
-  "Shipping cost": ""
+  "Shipping charged": 75.09,
+  "Shipping cost": 974.61
  },
  {
   "Date": "2026-04-18",
   "Orders": 11,
-  "Gross sales": 890.37,
+  "Gross sales": 890.4,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 890.37,
+  "Net sales": 890.4,
   "Total sales": 1101.8,
-  "AOV": 80.94,
+  "AOV": 80.95,
   "Sessions": 132,
   "Sessions with cart adds": 20,
   "Sessions reached checkout": 13,
@@ -476,16 +476,16 @@
   "Meta conv value": "",
   "Puzzles sold": 45,
   "Subscriber list size": "",
-  "Shipping charged": 111.35,
+  "Shipping charged": 111.32,
   "Shipping cost": ""
  },
  {
   "Date": "2026-04-19",
   "Orders": 8,
-  "Gross sales": 1336.01,
+  "Gross sales": 1336.02,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 1336.01,
+  "Net sales": 1336.02,
   "Total sales": 1567.2,
   "AOV": 167.0,
   "Sessions": 125,
@@ -500,18 +500,18 @@
   "Meta conv value": "",
   "Puzzles sold": 28,
   "Subscriber list size": "",
-  "Shipping charged": 88.74,
+  "Shipping charged": 88.73,
   "Shipping cost": ""
  },
  {
   "Date": "2026-04-20",
   "Orders": 7,
-  "Gross sales": 369.2,
+  "Gross sales": 369.21,
   "Discounts": 0,
   "Returns": -36.28,
-  "Net sales": 332.92,
+  "Net sales": 332.93,
   "Total sales": 451.85,
-  "AOV": 52.74,
+  "AOV": 47.56,
   "Sessions": 116,
   "Sessions with cart adds": 13,
   "Sessions reached checkout": 10,
@@ -524,8 +524,8 @@
   "Meta conv value": "",
   "Puzzles sold": 18,
   "Subscriber list size": "",
-  "Shipping charged": 77.87,
-  "Shipping cost": ""
+  "Shipping charged": 77.86,
+  "Shipping cost": 504.05
  },
  {
   "Date": "2026-04-21",
@@ -542,22 +542,22 @@
   "Sessions completed checkout": 1,
   "Conversion rate": 0.0147,
   "Email subscribes": 0,
-  "Email unsubscribes": 2,
-  "Net subscriber growth": -2,
+  "Email unsubscribes": 1,
+  "Net subscriber growth": -1,
   "Meta spend": "",
   "Meta conv value": "",
   "Puzzles sold": 5,
   "Subscriber list size": "",
   "Shipping charged": 9.05,
-  "Shipping cost": ""
+  "Shipping cost": 27.3
  },
  {
   "Date": "2026-04-22",
   "Orders": 65,
-  "Gross sales": 4658.4,
+  "Gross sales": 4658.51,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 4658.4,
+  "Net sales": 4658.51,
   "Total sales": 5899.75,
   "AOV": 71.67,
   "Sessions": 951,
@@ -566,22 +566,22 @@
   "Sessions completed checkout": 63,
   "Conversion rate": 0.0662,
   "Email subscribes": 5,
-  "Email unsubscribes": 11,
-  "Net subscriber growth": -6,
+  "Email unsubscribes": 12,
+  "Net subscriber growth": -7,
   "Meta spend": "",
   "Meta conv value": "",
   "Puzzles sold": 240,
   "Subscriber list size": "",
-  "Shipping charged": 705.34,
-  "Shipping cost": ""
+  "Shipping charged": 705.23,
+  "Shipping cost": 23.21
  },
  {
   "Date": "2026-04-23",
   "Orders": 19,
-  "Gross sales": 1153.9,
+  "Gross sales": 1153.93,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 1153.9,
+  "Net sales": 1153.93,
   "Total sales": 1488.3,
   "AOV": 60.73,
   "Sessions": 390,
@@ -596,18 +596,18 @@
   "Meta conv value": "",
   "Puzzles sold": 55,
   "Subscriber list size": "",
-  "Shipping charged": 199.17,
-  "Shipping cost": ""
+  "Shipping charged": 199.14,
+  "Shipping cost": 512.79
  },
  {
   "Date": "2026-04-24",
   "Orders": 9,
-  "Gross sales": 574.73,
+  "Gross sales": 574.74,
   "Discounts": 0,
   "Returns": -130.59,
-  "Net sales": 444.14,
+  "Net sales": 444.15,
   "Total sales": 574.2,
-  "AOV": 63.86,
+  "AOV": 49.35,
   "Sessions": 184,
   "Sessions with cart adds": 20,
   "Sessions reached checkout": 10,
@@ -620,8 +620,8 @@
   "Meta conv value": "",
   "Puzzles sold": 26,
   "Subscriber list size": "",
-  "Shipping charged": 77.87,
-  "Shipping cost": ""
+  "Shipping charged": 77.86,
+  "Shipping cost": 977.16
  },
  {
   "Date": "2026-04-25",
@@ -674,10 +674,10 @@
  {
   "Date": "2026-04-27",
   "Orders": 8,
-  "Gross sales": 556.97,
+  "Gross sales": 556.96,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 556.97,
+  "Net sales": 556.96,
   "Total sales": 710.25,
   "AOV": 69.62,
   "Sessions": 142,
@@ -692,16 +692,16 @@
   "Meta conv value": "",
   "Puzzles sold": 27,
   "Subscriber list size": "",
-  "Shipping charged": 88.72,
-  "Shipping cost": ""
+  "Shipping charged": 88.73,
+  "Shipping cost": 739.54
  },
  {
   "Date": "2026-04-28",
   "Orders": 5,
-  "Gross sales": 366.44,
+  "Gross sales": 366.45,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 366.44,
+  "Net sales": 366.45,
   "Total sales": 460.8,
   "AOV": 73.29,
   "Sessions": 116,
@@ -716,18 +716,18 @@
   "Meta conv value": "",
   "Puzzles sold": 19,
   "Subscriber list size": "",
-  "Shipping charged": 52.51,
-  "Shipping cost": ""
+  "Shipping charged": 52.5,
+  "Shipping cost": 10.2
  },
  {
   "Date": "2026-04-29",
   "Orders": 2,
-  "Gross sales": 116.09,
+  "Gross sales": 116.08,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 116.09,
+  "Net sales": 116.08,
   "Total sales": 153.6,
-  "AOV": 58.05,
+  "AOV": 58.04,
   "Sessions": 118,
   "Sessions with cart adds": 12,
   "Sessions reached checkout": 8,
@@ -740,7 +740,7 @@
   "Meta conv value": "",
   "Puzzles sold": 6,
   "Subscriber list size": "",
-  "Shipping charged": 23.54,
+  "Shipping charged": 23.55,
   "Shipping cost": ""
  },
  {
@@ -751,7 +751,7 @@
   "Returns": -68.92,
   "Net sales": -17.19,
   "Total sales": -15.9,
-  "AOV": 51.73,
+  "AOV": -17.19,
   "Sessions": 109,
   "Sessions with cart adds": 5,
   "Sessions reached checkout": 5,
@@ -765,7 +765,7 @@
   "Puzzles sold": 2,
   "Subscriber list size": "",
   "Shipping charged": 2.72,
-  "Shipping cost": ""
+  "Shipping cost": 274.25
  },
  {
   "Date": "2026-05-01",
@@ -775,21 +775,21 @@
   "Returns": -20.86,
   "Net sales": 9.96,
   "Total sales": 25.9,
-  "AOV": 30.82,
+  "AOV": 9.96,
   "Sessions": 95,
   "Sessions with cart adds": 4,
   "Sessions reached checkout": 5,
   "Sessions completed checkout": 1,
   "Conversion rate": 0.0105,
-  "Email subscribes": 2,
+  "Email subscribes": 1,
   "Email unsubscribes": 1,
-  "Net subscriber growth": 1,
+  "Net subscriber growth": 0,
   "Meta spend": "",
   "Meta conv value": "",
   "Puzzles sold": 2,
   "Subscriber list size": "",
   "Shipping charged": 13.59,
-  "Shipping cost": ""
+  "Shipping cost": 57.28
  },
  {
   "Date": "2026-05-02",
@@ -805,9 +805,9 @@
   "Sessions reached checkout": 2,
   "Sessions completed checkout": 0,
   "Conversion rate": 0.0,
-  "Email subscribes": 1,
+  "Email subscribes": 2,
   "Email unsubscribes": 0,
-  "Net subscriber growth": 1,
+  "Net subscriber growth": 2,
   "Meta spend": "",
   "Meta conv value": "",
   "Puzzles sold": 0,
@@ -847,7 +847,7 @@
   "Returns": -18.14,
   "Net sales": 242.12,
   "Total sales": 304.15,
-  "AOV": 86.75,
+  "AOV": 80.71,
   "Sessions": 175,
   "Sessions with cart adds": 6,
   "Sessions reached checkout": 5,
@@ -861,15 +861,15 @@
   "Puzzles sold": 15,
   "Subscriber list size": "",
   "Shipping charged": 34.41,
-  "Shipping cost": ""
+  "Shipping cost": 249.4
  },
  {
   "Date": "2026-05-05",
   "Orders": 4,
-  "Gross sales": 115.19,
+  "Gross sales": 115.2,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 115.19,
+  "Net sales": 115.2,
   "Total sales": 171.5,
   "AOV": 28.8,
   "Sessions": 106,
@@ -884,16 +884,16 @@
   "Meta conv value": "",
   "Puzzles sold": 6,
   "Subscriber list size": "",
-  "Shipping charged": 40.74,
+  "Shipping charged": 40.73,
   "Shipping cost": ""
  },
  {
   "Date": "2026-05-06",
   "Orders": 5,
-  "Gross sales": 186.83,
+  "Gross sales": 186.84,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 186.83,
+  "Net sales": 186.84,
   "Total sales": 263.25,
   "AOV": 37.37,
   "Sessions": 105,
@@ -908,8 +908,8 @@
   "Meta conv value": "",
   "Puzzles sold": 10,
   "Subscriber list size": "",
-  "Shipping charged": 52.51,
-  "Shipping cost": ""
+  "Shipping charged": 52.5,
+  "Shipping cost": 21.32
  },
  {
   "Date": "2026-05-07",
@@ -919,7 +919,7 @@
   "Returns": -69.87,
   "Net sales": 6.36,
   "Total sales": 7,
-  "AOV": 76.23,
+  "AOV": 6.37,
   "Sessions": 123,
   "Sessions with cart adds": 8,
   "Sessions reached checkout": 5,
@@ -933,7 +933,7 @@
   "Puzzles sold": 3,
   "Subscriber list size": "",
   "Shipping charged": 0,
-  "Shipping cost": ""
+  "Shipping cost": 217.26
  },
  {
   "Date": "2026-05-08",
@@ -957,7 +957,7 @@
   "Puzzles sold": 1,
   "Subscriber list size": "",
   "Shipping charged": 12.68,
-  "Shipping cost": ""
+  "Shipping cost": 23.22
  },
  {
   "Date": "2026-05-09",
@@ -1029,7 +1029,7 @@
   "Puzzles sold": 2,
   "Subscriber list size": "",
   "Shipping charged": 13.59,
-  "Shipping cost": ""
+  "Shipping cost": 59.11
  },
  {
   "Date": "2026-05-12",
@@ -1058,10 +1058,10 @@
  {
   "Date": "2026-05-13",
   "Orders": 2,
-  "Gross sales": 69.83,
+  "Gross sales": 69.82,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 69.83,
+  "Net sales": 69.82,
   "Total sales": 102.7,
   "AOV": 34.91,
   "Sessions": 87,
@@ -1076,7 +1076,7 @@
   "Meta conv value": "",
   "Puzzles sold": 4,
   "Subscriber list size": "",
-  "Shipping charged": 23.54,
+  "Shipping charged": 23.55,
   "Shipping cost": ""
  },
  {
@@ -1087,7 +1087,7 @@
   "Returns": -17.23,
   "Net sales": 48.09,
   "Total sales": 86.75,
-  "AOV": 21.77,
+  "AOV": 16.03,
   "Sessions": 78,
   "Sessions with cart adds": 6,
   "Sessions reached checkout": 4,
@@ -1101,15 +1101,15 @@
   "Puzzles sold": 3,
   "Subscriber list size": "",
   "Shipping charged": 30.77,
-  "Shipping cost": ""
+  "Shipping cost": 144.55
  },
  {
   "Date": "2026-05-15",
   "Orders": 3,
-  "Gross sales": 139.69,
+  "Gross sales": 139.7,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 139.69,
+  "Net sales": 139.7,
   "Total sales": 186.5,
   "AOV": 46.56,
   "Sessions": 85,
@@ -1124,8 +1124,8 @@
   "Meta conv value": "",
   "Puzzles sold": 7,
   "Subscriber list size": "",
-  "Shipping charged": 29.87,
-  "Shipping cost": ""
+  "Shipping charged": 29.86,
+  "Shipping cost": 73.52
  },
  {
   "Date": "2026-05-16",
@@ -1183,7 +1183,7 @@
   "Returns": 0,
   "Net sales": 39.9,
   "Total sales": 53.85,
-  "AOV": 39.9,
+  "AOV": 39.91,
   "Sessions": 102,
   "Sessions with cart adds": 7,
   "Sessions reached checkout": 4,
@@ -1197,15 +1197,15 @@
   "Puzzles sold": 2,
   "Subscriber list size": "",
   "Shipping charged": 9.05,
-  "Shipping cost": ""
+  "Shipping cost": 167.93
  },
  {
   "Date": "2026-05-19",
   "Orders": 3,
-  "Gross sales": 117.05,
+  "Gross sales": 117.06,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 117.05,
+  "Net sales": 117.06,
   "Total sales": 163.6,
   "AOV": 39.02,
   "Sessions": 74,
@@ -1220,18 +1220,18 @@
   "Meta conv value": "",
   "Puzzles sold": 5,
   "Subscriber list size": "",
-  "Shipping charged": 31.69,
-  "Shipping cost": ""
+  "Shipping charged": 31.68,
+  "Shipping cost": 7.72
  },
  {
   "Date": "2026-05-20",
   "Orders": 2,
-  "Gross sales": 83.5,
+  "Gross sales": 83.51,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 83.5,
+  "Net sales": 83.51,
   "Total sales": 111.75,
-  "AOV": 41.75,
+  "AOV": 41.76,
   "Sessions": 79,
   "Sessions with cart adds": 4,
   "Sessions reached checkout": 2,
@@ -1244,8 +1244,8 @@
   "Meta conv value": "",
   "Puzzles sold": 3,
   "Subscriber list size": "",
-  "Shipping charged": 18.1,
-  "Shipping cost": ""
+  "Shipping charged": 18.09,
+  "Shipping cost": 9.82
  },
  {
   "Date": "2026-05-21",
@@ -1269,7 +1269,7 @@
   "Puzzles sold": 0,
   "Subscriber list size": "",
   "Shipping charged": 0,
-  "Shipping cost": ""
+  "Shipping cost": 86.76
  },
  {
   "Date": "2026-05-22",
@@ -1293,7 +1293,7 @@
   "Puzzles sold": 4,
   "Subscriber list size": "",
   "Shipping charged": 20.82,
-  "Shipping cost": ""
+  "Shipping cost": 41.23
  },
  {
   "Date": "2026-05-23",
@@ -1322,10 +1322,10 @@
  {
   "Date": "2026-05-24",
   "Orders": 6,
-  "Gross sales": 233.32,
+  "Gross sales": 233.34,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 233.32,
+  "Net sales": 233.34,
   "Total sales": 319.35,
   "AOV": 38.89,
   "Sessions": 91,
@@ -1333,23 +1333,23 @@
   "Sessions reached checkout": 10,
   "Sessions completed checkout": 6,
   "Conversion rate": 0.0659,
-  "Email subscribes": 2,
+  "Email subscribes": 1,
   "Email unsubscribes": 0,
-  "Net subscriber growth": 2,
+  "Net subscriber growth": 1,
   "Meta spend": "",
   "Meta conv value": "",
   "Puzzles sold": 7,
   "Subscriber list size": "",
-  "Shipping charged": 57.02,
+  "Shipping charged": 57,
   "Shipping cost": ""
  },
  {
   "Date": "2026-05-25",
   "Orders": 5,
-  "Gross sales": 658.69,
+  "Gross sales": 658.7,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 658.69,
+  "Net sales": 658.7,
   "Total sales": 784.25,
   "AOV": 131.74,
   "Sessions": 87,
@@ -1357,15 +1357,15 @@
   "Sessions reached checkout": 7,
   "Sessions completed checkout": 4,
   "Conversion rate": 0.046,
-  "Email subscribes": 2,
+  "Email subscribes": 3,
   "Email unsubscribes": 0,
-  "Net subscriber growth": 2,
+  "Net subscriber growth": 3,
   "Meta spend": "",
   "Meta conv value": "",
   "Puzzles sold": 29,
   "Subscriber list size": "",
-  "Shipping charged": 54.33,
-  "Shipping cost": ""
+  "Shipping charged": 54.32,
+  "Shipping cost": 108.76
  },
  {
   "Date": "2026-05-26",
@@ -1375,7 +1375,7 @@
   "Returns": 0,
   "Net sales": 36.32,
   "Total sales": 49.9,
-  "AOV": 36.32,
+  "AOV": 36.33,
   "Sessions": 80,
   "Sessions with cart adds": 6,
   "Sessions reached checkout": 4,
@@ -1394,10 +1394,10 @@
  {
   "Date": "2026-05-27",
   "Orders": 201,
-  "Gross sales": 11947.15,
-  "Discounts": -3.79,
+  "Gross sales": 11947.51,
+  "Discounts": -3.8,
   "Returns": 0,
-  "Net sales": 11943.36,
+  "Net sales": 11943.71,
   "Total sales": 15459.85,
   "AOV": 59.42,
   "Sessions": 2739,
@@ -1412,16 +1412,16 @@
   "Meta conv value": "",
   "Puzzles sold": 785,
   "Subscriber list size": "",
-  "Shipping charged": 2112.12,
-  "Shipping cost": ""
+  "Shipping charged": 2111.77,
+  "Shipping cost": 25.82
  },
  {
   "Date": "2026-05-28",
   "Orders": 21,
-  "Gross sales": 866.68,
+  "Gross sales": 866.75,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 866.68,
+  "Net sales": 866.75,
   "Total sales": 1180.2,
   "AOV": 41.27,
   "Sessions": 701,
@@ -1436,16 +1436,16 @@
   "Meta conv value": "",
   "Puzzles sold": 55,
   "Subscriber list size": "",
-  "Shipping charged": 206.39,
-  "Shipping cost": ""
+  "Shipping charged": 206.32,
+  "Shipping cost": 442.7
  },
  {
   "Date": "2026-05-29",
   "Orders": 5,
-  "Gross sales": 202.24,
+  "Gross sales": 202.23,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 202.24,
+  "Net sales": 202.23,
   "Total sales": 282.2,
   "AOV": 40.45,
   "Sessions": 291,
@@ -1460,16 +1460,16 @@
   "Meta conv value": "",
   "Puzzles sold": 11,
   "Subscriber list size": "",
-  "Shipping charged": 54.31,
-  "Shipping cost": ""
+  "Shipping charged": 54.32,
+  "Shipping cost": 847.11
  },
  {
   "Date": "2026-05-30",
   "Orders": 4,
-  "Gross sales": 111.55,
+  "Gross sales": 111.56,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 111.55,
+  "Net sales": 111.56,
   "Total sales": 170.5,
   "AOV": 27.89,
   "Sessions": 202,
@@ -1484,7 +1484,7 @@
   "Meta conv value": "",
   "Puzzles sold": 6,
   "Subscriber list size": "",
-  "Shipping charged": 43.46,
+  "Shipping charged": 43.45,
   "Shipping cost": ""
  },
  {
@@ -1495,7 +1495,7 @@
   "Returns": 0,
   "Net sales": 42.64,
   "Total sales": 56.85,
-  "AOV": 42.64,
+  "AOV": 42.65,
   "Sessions": 153,
   "Sessions with cart adds": 6,
   "Sessions reached checkout": 6,
@@ -1533,7 +1533,7 @@
   "Puzzles sold": 2,
   "Subscriber list size": "",
   "Shipping charged": 11.77,
-  "Shipping cost": ""
+  "Shipping cost": 669.9
  },
  {
   "Date": "2026-06-02",
@@ -1543,7 +1543,7 @@
   "Returns": -92.46,
   "Net sales": -85.23,
   "Total sales": -93.75,
-  "AOV": 7.23,
+  "AOV": -85.22,
   "Sessions": 147,
   "Sessions with cart adds": 3,
   "Sessions reached checkout": 4,
@@ -1557,7 +1557,7 @@
   "Puzzles sold": 1,
   "Subscriber list size": "",
   "Shipping charged": 0,
-  "Shipping cost": ""
+  "Shipping cost": 496.95
  },
  {
   "Date": "2026-06-03",
@@ -1581,7 +1581,7 @@
   "Puzzles sold": 0,
   "Subscriber list size": "",
   "Shipping charged": -13.59,
-  "Shipping cost": ""
+  "Shipping cost": 298.92
  },
  {
   "Date": "2026-06-04",
@@ -1605,17 +1605,17 @@
   "Puzzles sold": 2,
   "Subscriber list size": "",
   "Shipping charged": 9.05,
-  "Shipping cost": ""
+  "Shipping cost": 951.32
  },
  {
   "Date": "2026-06-05",
   "Orders": 2,
   "Gross sales": 771.69,
   "Discounts": 0,
-  "Returns": -64.5,
-  "Net sales": 707.19,
+  "Returns": -63.5,
+  "Net sales": 708.19,
   "Total sales": 806.9,
-  "AOV": 385.85,
+  "AOV": 354.09,
   "Sessions": 132,
   "Sessions with cart adds": 5,
   "Sessions reached checkout": 5,
@@ -1629,7 +1629,7 @@
   "Puzzles sold": 3,
   "Subscriber list size": "",
   "Shipping charged": 26.27,
-  "Shipping cost": ""
+  "Shipping cost": 457.96
  },
  {
   "Date": "2026-06-06",
@@ -1663,7 +1663,7 @@
   "Returns": 0,
   "Net sales": 48.96,
   "Total sales": 63.8,
-  "AOV": 48.96,
+  "AOV": 48.97,
   "Sessions": 83,
   "Sessions with cart adds": 2,
   "Sessions reached checkout": 4,
@@ -1711,7 +1711,7 @@
   "Returns": -28.23,
   "Net sales": 5.32,
   "Total sales": 20.9,
-  "AOV": 33.55,
+  "AOV": 5.32,
   "Sessions": 100,
   "Sessions with cart adds": 5,
   "Sessions reached checkout": 2,
@@ -1725,7 +1725,7 @@
   "Puzzles sold": 2,
   "Subscriber list size": "",
   "Shipping charged": 13.59,
-  "Shipping cost": ""
+  "Shipping cost": 57.03
  },
  {
   "Date": "2026-06-10",
@@ -1735,7 +1735,7 @@
   "Returns": 0,
   "Net sales": 32.63,
   "Total sales": 54.3,
-  "AOV": 16.32,
+  "AOV": 16.31,
   "Sessions": 124,
   "Sessions with cart adds": 6,
   "Sessions reached checkout": 5,
@@ -1749,7 +1749,7 @@
   "Puzzles sold": 2,
   "Subscriber list size": "",
   "Shipping charged": 16.73,
-  "Shipping cost": ""
+  "Shipping cost": 38.75
  },
  {
   "Date": "2026-06-11",
@@ -1773,7 +1773,7 @@
   "Puzzles sold": 4,
   "Subscriber list size": "",
   "Shipping charged": 20.82,
-  "Shipping cost": ""
+  "Shipping cost": 82.43
  },
  {
   "Date": "2026-06-12",
@@ -1850,8 +1850,8 @@
  {
   "Date": "2026-06-15",
   "Orders": 1,
-  "Gross sales": 111.55,
-  "Discounts": -33.93,
+  "Gross sales": 111.57,
+  "Discounts": -33.95,
   "Returns": 0,
   "Net sales": 77.62,
   "Total sales": 95.33,
@@ -1869,17 +1869,17 @@
   "Puzzles sold": 7,
   "Subscriber list size": "",
   "Shipping charged": 9.05,
-  "Shipping cost": ""
+  "Shipping cost": 70.53
  },
  {
   "Date": "2026-06-16",
   "Orders": 3,
-  "Gross sales": 116.66,
-  "Discounts": -4.54,
+  "Gross sales": 116.68,
+  "Discounts": -4.55,
   "Returns": 0,
-  "Net sales": 112.12,
+  "Net sales": 112.13,
   "Total sales": 153.18,
-  "AOV": 37.37,
+  "AOV": 37.38,
   "Sessions": 95,
   "Sessions with cart adds": 6,
   "Sessions reached checkout": 2,
@@ -1892,16 +1892,16 @@
   "Meta conv value": "",
   "Puzzles sold": 5,
   "Subscriber list size": "",
-  "Shipping charged": 27.15,
-  "Shipping cost": ""
+  "Shipping charged": 27.14,
+  "Shipping cost": 136.66
  },
  {
   "Date": "2026-06-17",
   "Orders": 10,
-  "Gross sales": 790.28,
+  "Gross sales": 790.29,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 790.28,
+  "Net sales": 790.29,
   "Total sales": 1016.81,
   "AOV": 79.03,
   "Sessions": 774,
@@ -1916,8 +1916,8 @@
   "Meta conv value": "",
   "Puzzles sold": 30,
   "Subscriber list size": "",
-  "Shipping charged": 134.1,
-  "Shipping cost": ""
+  "Shipping charged": 134.09,
+  "Shipping cost": 28.42
  },
  {
   "Date": "2026-06-18",
@@ -1941,15 +1941,15 @@
   "Puzzles sold": 0,
   "Subscriber list size": "",
   "Shipping charged": 0,
-  "Shipping cost": ""
+  "Shipping cost": 21.03
  },
  {
   "Date": "2026-06-19",
   "Orders": 3,
-  "Gross sales": 127.1,
+  "Gross sales": 127.11,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 127.1,
+  "Net sales": 127.11,
   "Total sales": 174.67,
   "AOV": 42.37,
   "Sessions": 137,
@@ -1964,8 +1964,8 @@
   "Meta conv value": "",
   "Puzzles sold": 4,
   "Subscriber list size": "",
-  "Shipping charged": 31.69,
-  "Shipping cost": ""
+  "Shipping charged": 31.68,
+  "Shipping cost": 273.45
  },
  {
   "Date": "2026-06-20",
@@ -2018,12 +2018,12 @@
  {
   "Date": "2026-06-22",
   "Orders": 3,
-  "Gross sales": 87.63,
+  "Gross sales": 87.64,
   "Discounts": 0,
   "Returns": -15.85,
-  "Net sales": 71.78,
+  "Net sales": 71.79,
   "Total sales": 117.8,
-  "AOV": 29.21,
+  "AOV": 23.93,
   "Sessions": 96,
   "Sessions with cart adds": 7,
   "Sessions reached checkout": 4,
@@ -2036,8 +2036,8 @@
   "Meta conv value": "",
   "Puzzles sold": 3,
   "Subscriber list size": "",
-  "Shipping charged": 35.33,
-  "Shipping cost": ""
+  "Shipping charged": 35.32,
+  "Shipping cost": 114.53
  },
  {
   "Date": "2026-06-23",
@@ -2061,7 +2061,7 @@
   "Puzzles sold": 0,
   "Subscriber list size": "",
   "Shipping charged": 0,
-  "Shipping cost": ""
+  "Shipping cost": 48.33
  },
  {
   "Date": "2026-06-24",
@@ -2162,12 +2162,12 @@
  {
   "Date": "2026-06-28",
   "Orders": 2,
-  "Gross sales": 238.94,
+  "Gross sales": 273.48,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 238.94,
-  "Total sales": 277.79,
-  "AOV": 119.47,
+  "Net sales": 273.48,
+  "Total sales": 315.78,
+  "AOV": 136.74,
   "Sessions": 94,
   "Sessions with cart adds": 3,
   "Sessions reached checkout": 2,
@@ -2186,12 +2186,12 @@
  {
   "Date": "2026-06-29",
   "Orders": 12,
-  "Gross sales": 732.71,
+  "Gross sales": 732.75,
   "Discounts": 0,
   "Returns": -18,
-  "Net sales": 714.71,
+  "Net sales": 714.75,
   "Total sales": 931.39,
-  "AOV": 61.06,
+  "AOV": 59.56,
   "Sessions": 604,
   "Sessions with cart adds": 35,
   "Sessions reached checkout": 17,
@@ -2204,18 +2204,18 @@
   "Meta conv value": "",
   "Puzzles sold": 24,
   "Subscriber list size": "",
-  "Shipping charged": 130.4,
-  "Shipping cost": ""
+  "Shipping charged": 130.36,
+  "Shipping cost": 142.67
  },
  {
   "Date": "2026-06-30",
   "Orders": 4,
-  "Gross sales": 282.63,
+  "Gross sales": 282.64,
   "Discounts": 0,
   "Returns": -31.81,
-  "Net sales": 250.82,
+  "Net sales": 250.83,
   "Total sales": 329.72,
-  "AOV": 70.66,
+  "AOV": 62.71,
   "Sessions": 202,
   "Sessions with cart adds": 8,
   "Sessions reached checkout": 6,
@@ -2228,18 +2228,18 @@
   "Meta conv value": "",
   "Puzzles sold": 10,
   "Subscriber list size": "",
-  "Shipping charged": 48.92,
-  "Shipping cost": ""
+  "Shipping charged": 48.91,
+  "Shipping cost": 160.05
  },
  {
   "Date": "2026-07-01",
   "Orders": 1,
-  "Gross sales": 106.89,
+  "Gross sales": 72.35,
   "Discounts": 0,
-  "Returns": -45.4,
-  "Net sales": 61.49,
+  "Returns": -57.35,
+  "Net sales": 15,
   "Total sales": 82.59,
-  "AOV": 72.35,
+  "AOV": 15.0,
   "Sessions": 103,
   "Sessions with cart adds": 7,
   "Sessions reached checkout": 3,
@@ -2253,7 +2253,7 @@
   "Puzzles sold": 3,
   "Subscriber list size": "",
   "Shipping charged": 13.59,
-  "Shipping cost": ""
+  "Shipping cost": 49.65
  },
  {
   "Date": "2026-07-02",
@@ -2277,15 +2277,15 @@
   "Puzzles sold": 4,
   "Subscriber list size": "",
   "Shipping charged": 0,
-  "Shipping cost": ""
+  "Shipping cost": 44.0
  },
  {
   "Date": "2026-07-03",
   "Orders": 4,
-  "Gross sales": 152.51,
+  "Gross sales": 152.52,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 152.51,
+  "Net sales": 152.52,
   "Total sales": 202.62,
   "AOV": 38.13,
   "Sessions": 90,
@@ -2300,8 +2300,8 @@
   "Meta conv value": "",
   "Puzzles sold": 7,
   "Subscriber list size": "",
-  "Shipping charged": 31.69,
-  "Shipping cost": ""
+  "Shipping charged": 31.68,
+  "Shipping cost": 78.42
  },
  {
   "Date": "2026-07-04",
@@ -2330,10 +2330,10 @@
  {
   "Date": "2026-07-05",
   "Orders": 4,
-  "Gross sales": 144.35,
+  "Gross sales": 144.36,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 144.35,
+  "Net sales": 144.36,
   "Total sales": 203.58,
   "AOV": 36.09,
   "Sessions": 81,
@@ -2348,7 +2348,7 @@
   "Meta conv value": "",
   "Puzzles sold": 6,
   "Subscriber list size": "",
-  "Shipping charged": 40.74,
+  "Shipping charged": 40.73,
   "Shipping cost": ""
  },
  {
@@ -2373,15 +2373,15 @@
   "Puzzles sold": 2,
   "Subscriber list size": "",
   "Shipping charged": 17.23,
-  "Shipping cost": ""
+  "Shipping cost": 82.49
  },
  {
   "Date": "2026-07-07",
   "Orders": 11,
-  "Gross sales": 1141.48,
+  "Gross sales": 1141.5,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 1141.48,
+  "Net sales": 1141.5,
   "Total sales": 1335.29,
   "AOV": 103.77,
   "Sessions": 528,
@@ -2396,18 +2396,18 @@
   "Meta conv value": "",
   "Puzzles sold": 38,
   "Subscriber list size": "",
-  "Shipping charged": 72.43,
-  "Shipping cost": ""
+  "Shipping charged": 72.41,
+  "Shipping cost": 117.02
  },
  {
   "Date": "2026-07-08",
   "Orders": 5,
-  "Gross sales": 300.86,
+  "Gross sales": 300.88,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 300.86,
+  "Net sales": 300.88,
   "Total sales": 380.7,
-  "AOV": 60.17,
+  "AOV": 60.18,
   "Sessions": 191,
   "Sessions with cart adds": 13,
   "Sessions reached checkout": 11,
@@ -2420,18 +2420,18 @@
   "Meta conv value": "",
   "Puzzles sold": 11,
   "Subscriber list size": "",
-  "Shipping charged": 45.25,
-  "Shipping cost": ""
+  "Shipping charged": 45.23,
+  "Shipping cost": 184.14
  },
  {
   "Date": "2026-07-09",
   "Orders": 3,
-  "Gross sales": 194.3,
-  "Discounts": -10.43,
+  "Gross sales": 194.32,
+  "Discounts": -10.45,
   "Returns": -20.83,
-  "Net sales": 163.04,
+  "Net sales": 163.05,
   "Total sales": 225.27,
-  "AOV": 61.29,
+  "AOV": 54.35,
   "Sessions": 151,
   "Sessions with cart adds": 10,
   "Sessions reached checkout": 6,
@@ -2444,8 +2444,8 @@
   "Meta conv value": "",
   "Puzzles sold": 6,
   "Subscriber list size": "",
-  "Shipping charged": 39.87,
-  "Shipping cost": ""
+  "Shipping charged": 39.86,
+  "Shipping cost": 61.79
  },
  {
   "Date": "2026-07-10",
@@ -2469,7 +2469,7 @@
   "Puzzles sold": 1,
   "Subscriber list size": "",
   "Shipping charged": 17.23,
-  "Shipping cost": ""
+  "Shipping cost": 69.27
  },
  {
   "Date": "2026-07-11",
@@ -2541,17 +2541,17 @@
   "Puzzles sold": 0,
   "Subscriber list size": "",
   "Shipping charged": 0,
-  "Shipping cost": ""
+  "Shipping cost": 23.96
  },
  {
   "Date": "2026-07-14",
   "Orders": 8,
-  "Gross sales": 481.47,
-  "Discounts": -7.23,
+  "Gross sales": 481.51,
+  "Discounts": -7.25,
   "Returns": -16.98,
-  "Net sales": 457.26,
+  "Net sales": 457.28,
   "Total sales": 584.31,
-  "AOV": 59.28,
+  "AOV": 57.16,
   "Sessions": 256,
   "Sessions with cart adds": 13,
   "Sessions reached checkout": 12,
@@ -2564,16 +2564,16 @@
   "Meta conv value": "",
   "Puzzles sold": 18,
   "Subscriber list size": "",
-  "Shipping charged": 72.43,
-  "Shipping cost": ""
+  "Shipping charged": 72.41,
+  "Shipping cost": 50.71
  },
  {
   "Date": "2026-07-15",
   "Orders": 5,
-  "Gross sales": 254.15,
-  "Discounts": -18.13,
+  "Gross sales": 254.16,
+  "Discounts": -18.14,
   "Returns": 0,
-  "Net sales": 236.02,
+  "Net sales": 236.03,
   "Total sales": 324.35,
   "AOV": 47.2,
   "Sessions": 435,
@@ -2588,18 +2588,18 @@
   "Meta conv value": "",
   "Puzzles sold": 9,
   "Subscriber list size": "",
-  "Shipping charged": 58.87,
-  "Shipping cost": ""
+  "Shipping charged": 58.86,
+  "Shipping cost": 166.54
  },
  {
   "Date": "2026-07-16",
   "Orders": 6,
-  "Gross sales": 335.92,
-  "Discounts": -7.81,
+  "Gross sales": 335.96,
+  "Discounts": -7.83,
   "Returns": -10.2,
-  "Net sales": 317.91,
+  "Net sales": 317.94,
   "Total sales": 410.41,
-  "AOV": 54.69,
+  "AOV": 52.99,
   "Sessions": 200,
   "Sessions with cart adds": 20,
   "Sessions reached checkout": 10,
@@ -2612,8 +2612,8 @@
   "Meta conv value": "",
   "Puzzles sold": 12,
   "Subscriber list size": "",
-  "Shipping charged": 54.3,
-  "Shipping cost": ""
+  "Shipping charged": 54.27,
+  "Shipping cost": 117.7
  },
  {
   "Date": "2026-07-17",
@@ -2637,17 +2637,17 @@
   "Puzzles sold": 0,
   "Subscriber list size": "",
   "Shipping charged": 0,
-  "Shipping cost": ""
+  "Shipping cost": 31.92
  },
  {
   "Date": "2026-07-18",
   "Orders": 2,
-  "Gross sales": 54.46,
+  "Gross sales": 54.47,
   "Discounts": 0,
   "Returns": -53.94,
-  "Net sales": 0.52,
+  "Net sales": 0.53,
   "Total sales": 25.86,
-  "AOV": 27.23,
+  "AOV": 0.27,
   "Sessions": 87,
   "Sessions with cart adds": 6,
   "Sessions reached checkout": 4,
@@ -2660,7 +2660,7 @@
   "Meta conv value": "",
   "Puzzles sold": 2,
   "Subscriber list size": "",
-  "Shipping charged": 18.1,
+  "Shipping charged": 18.09,
   "Shipping cost": ""
  },
  {
@@ -2709,7 +2709,7 @@
   "Puzzles sold": 0,
   "Subscriber list size": "",
   "Shipping charged": 0,
-  "Shipping cost": ""
+  "Shipping cost": 16.12
  },
  {
   "Date": "2026-07-21",
@@ -2733,17 +2733,17 @@
   "Puzzles sold": 10,
   "Subscriber list size": "",
   "Shipping charged": 30.82,
-  "Shipping cost": ""
+  "Shipping cost": 29.57
  },
  {
   "Date": "2026-07-22",
   "Orders": 4,
-  "Gross sales": 299.86,
+  "Gross sales": 299.87,
   "Discounts": 0,
   "Returns": -46.64,
-  "Net sales": 253.22,
+  "Net sales": 253.23,
   "Total sales": 324.54,
-  "AOV": 74.97,
+  "AOV": 63.31,
   "Sessions": 251,
   "Sessions with cart adds": 9,
   "Sessions reached checkout": 6,
@@ -2756,18 +2756,18 @@
   "Meta conv value": "",
   "Puzzles sold": 8,
   "Subscriber list size": "",
-  "Shipping charged": 40.74,
-  "Shipping cost": ""
+  "Shipping charged": 40.73,
+  "Shipping cost": 126.25
  },
  {
   "Date": "2026-07-23",
   "Orders": 3,
-  "Gross sales": 151.78,
-  "Discounts": -3.62,
+  "Gross sales": 151.79,
+  "Discounts": -3.63,
   "Returns": -9,
   "Net sales": 139.16,
   "Total sales": 202.82,
-  "AOV": 49.39,
+  "AOV": 46.39,
   "Sessions": 179,
   "Sessions with cart adds": 9,
   "Sessions reached checkout": 6,
@@ -2781,15 +2781,15 @@
   "Puzzles sold": 4,
   "Subscriber list size": "",
   "Shipping charged": 44.41,
-  "Shipping cost": ""
+  "Shipping cost": 109.61
  },
  {
   "Date": "2026-07-24",
   "Orders": 5,
-  "Gross sales": 452.61,
+  "Gross sales": 452.62,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 452.61,
+  "Net sales": 452.62,
   "Total sales": 556.7,
   "AOV": 90.52,
   "Sessions": 159,
@@ -2804,8 +2804,8 @@
   "Meta conv value": "",
   "Puzzles sold": 14,
   "Subscriber list size": "",
-  "Shipping charged": 53.46,
-  "Shipping cost": ""
+  "Shipping charged": 53.45,
+  "Shipping cost": 73.17
  },
  {
   "Date": "2026-07-25",
@@ -2815,7 +2815,7 @@
   "Returns": 0,
   "Net sales": 68.16,
   "Total sales": 84.93,
-  "AOV": 68.16,
+  "AOV": 68.17,
   "Sessions": 152,
   "Sessions with cart adds": 8,
   "Sessions reached checkout": 2,
@@ -2834,10 +2834,10 @@
  {
   "Date": "2026-07-26",
   "Orders": 6,
-  "Gross sales": 444.36,
+  "Gross sales": 444.37,
   "Discounts": 0,
   "Returns": 0,
-  "Net sales": 444.36,
+  "Net sales": 444.37,
   "Total sales": 557.55,
   "AOV": 74.06,
   "Sessions": 205,
@@ -2852,7 +2852,7 @@
   "Meta conv value": "",
   "Puzzles sold": 12,
   "Subscriber list size": "",
-  "Shipping charged": 62.51,
+  "Shipping charged": 62.5,
   "Shipping cost": ""
  },
  {
@@ -2877,7 +2877,7 @@
   "Puzzles sold": 0,
   "Subscriber list size": "",
   "Shipping charged": 0,
-  "Shipping cost": ""
+  "Shipping cost": 189.49
  },
  {
   "Date": "2026-07-28",
@@ -2894,13 +2894,13 @@
   "Sessions completed checkout": 0,
   "Conversion rate": 0.0,
   "Email subscribes": 3,
-  "Email unsubscribes": 0,
-  "Net subscriber growth": 3,
+  "Email unsubscribes": 2,
+  "Net subscriber growth": 1,
   "Meta spend": "",
   "Meta conv value": "",
   "Puzzles sold": 0,
   "Subscriber list size": "",
   "Shipping charged": 0,
-  "Shipping cost": ""
+  "Shipping cost": 8.06
  }
 ]
