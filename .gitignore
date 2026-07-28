@@ -7,7 +7,11 @@ __pycache__/
 .venv/
 venv/
 .env
-dashboard/.env
+# Everything .env-ish is secret; the committed template is the one exception.
+# (A stray dashboard/.env.example.txt held live keys — this is why.)
+.env.*
+dashboard/.env*
+!dashboard/.env.example
 *.log
 
 # OneDrive / Office noise

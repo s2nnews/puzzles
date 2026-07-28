@@ -330,9 +330,9 @@ function parseCSV(text){
 }
 
 /* Non-daily inputs — "latest known", refreshed less often. Wire these to their
-   own daily columns later to make them range-aware too. */
+   own daily columns later to make them range-aware too. Google Ads and Meta
+   moved out of here once the daily feed started carrying them. */
 const CONFIG = {
-  googleSpend:177.69, googleRev:577.49, googleClicks:269, metaClicks:725,
   marginPct:0.369, packagingPerOrder:1.50,
   ltv:82.70, repeatRate:0.534, repeatPrev:0.623
 };
@@ -352,12 +352,14 @@ function aggregate(rows){
     checkout:S('Sessions reached checkout'), completed:S('Sessions completed checkout'),
     subs:S('Email subscribes'), unsubs:S('Email unsubscribes'), netSub:S('Net subscriber growth'),
     metaSpend:S('Meta spend'), metaRev:S('Meta conv value'), puzzles:S('Puzzles sold'),
+    metaClicks:S('Meta clicks'), googleSpend:S('Google spend'),
+    googleRev:S('Google conv value'), googleClicks:S('Google clicks'),
     listSize:last('Subscriber list size'),
     shipCharged:S('Shipping charged'), shipCost:S('Shipping cost')};
 }
 
 function buildModel(a,p){
-  const adSpend=CONFIG.googleSpend+a.metaSpend;
+  const adSpend=a.googleSpend+a.metaSpend;
   const shipBleed=a.shipCost-a.shipCharged;                 // net loss on shipping
   const estGP=a.net*CONFIG.marginPct;
   const packaging=a.orders*CONFIG.packagingPerOrder;
@@ -365,7 +367,9 @@ function buildModel(a,p){
   const aov=a.orders?a.net/a.orders:0, paov=p.orders?p.net/p.orders:0;
   const conv=a.sessions?a.orders/a.sessions:0, pconv=p.sessions?p.orders/p.sessions:0;
   const metaRoas=a.metaSpend?a.metaRev/a.metaSpend:0;
-  const paidRev=CONFIG.googleRev+a.metaRev, paidOrders=aov?paidRev/aov:0;
+  const googleRoas=a.googleSpend?a.googleRev/a.googleSpend:0;
+  const clicks=a.googleClicks+a.metaClicks;
+  const paidRev=a.googleRev+a.metaRev, paidOrders=aov?paidRev/aov:0;
   const cac=paidOrders?adSpend/paidOrders:0;
   return {
     money:[
@@ -377,10 +381,10 @@ function buildModel(a,p){
       {label:'Returns',val:money(Math.abs(a.returns)),prev:Math.abs(p.returns),cur:Math.abs(a.returns),pv:(a.gross?pct(Math.abs(a.returns)/a.gross,1):'0%')+' of gross',invert:1},
     ],
     mktg:[
-      {label:'Ad spend',val:money(adSpend,2),prev:null,pv:'Google $'+fmt(CONFIG.googleSpend,2)+' · Meta $'+fmt(a.metaSpend,2),accent:1},
+      {label:'Ad spend',val:money(adSpend,2),prev:p.googleSpend+p.metaSpend,cur:adSpend,pv:'Google $'+fmt(a.googleSpend,2)+' · Meta $'+fmt(a.metaSpend,2),accent:1,invert:1},
       {label:'Blended ROAS (MER)',val:(adSpend?(a.total/adSpend):0).toFixed(1)+'×',prev:null,pv:'total rev ÷ ad spend',accent:1},
-      {label:'Cost per click',val:money((CONFIG.googleClicks+CONFIG.metaClicks)?adSpend/(CONFIG.googleClicks+CONFIG.metaClicks):0,2),prev:null,pv:'blended paid clicks',accent:1},
-      {label:'Google / Meta ROAS',val:(CONFIG.googleSpend?CONFIG.googleRev/CONFIG.googleSpend:0).toFixed(2)+'× / '+metaRoas.toFixed(2)+'×',prev:null,pv:'platform-attributed'},
+      {label:'Cost per click',val:money(clicks?adSpend/clicks:0,2),prev:null,pv:fmt(clicks)+' paid clicks',accent:1},
+      {label:'Google / Meta ROAS',val:googleRoas.toFixed(2)+'× / '+metaRoas.toFixed(2)+'×',prev:null,pv:'platform-attributed'},
       {label:'Paid CAC',val:money(cac,0),prev:null,pv:'per new order · ≈'+Math.round(paidOrders)+' paid',accent:1,tip:'Ad spend ÷ paid-attributed orders (platform revenue ÷ AOV) for the selected range.'},
       {label:'Conversion rate',val:pct(conv,2),prev:pconv,cur:conv,pv:pct(pconv,2)+' prev',tip:'Orders ÷ sessions — one source of truth for a sale.'},
     ],

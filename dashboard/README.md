@@ -22,15 +22,18 @@ this README describes the current system.
    sales metrics and units derived from the Shopify Orders API (bucketed by
    Sydney day; ShopifyQL is tried first but is denied to third-party apps
    on the Basic plan), subscriber growth from the email platform, and
-   shipping cost per ship date from ShipStation. Meta spend and conversion
-   value come from an optional CSV export (`META_CSV`); those two columns
-   stay blank until it's configured. The sessions funnel has no API source
-   on Basic — its history is preserved and GA4 is the planned source.
+   shipping cost per ship date from ShipStation. The advertising funnel
+   (GA4 sessions/cart/checkout/purchases, plus Meta and Google Ads spend,
+   conversion value and clicks) comes from one Porter blend export read via
+   `PORTER_CSV`, defaulting to `dashboard/porter_feed.csv`.
 2. It writes `data.json` (sorted by Date ascending, blanks = ""; the page
-   treats blanks as 0).
-3. `.github/workflows/dashboard.yml` runs the collector nightly (~06:00
-   Sydney), and commits `data.json` when it changed. GitHub Pages redeploys
-   automatically.
+   treats blanks as 0), merging over the previous file so an existing value
+   is never replaced by a blank. That merge is what keeps history older than
+   Porter's rolling 30-day free-tier window.
+3. `run_daily.py` runs the collector once a day on the at-logon trigger and
+   publishes `data.json` with the Index files, so the site updates whenever
+   the laptop is opened. `.github/workflows/dashboard.yml` can do the same
+   nightly in the cloud, but its cron is commented out.
 
 ## Running the collector locally
 
@@ -40,22 +43,24 @@ cp dashboard/.env.example dashboard/.env   # fill in the keys
 python dashboard/collect.py
 ```
 
-Config comes from the environment or `dashboard/.env` (gitignored). The same
-names are the repo's Actions secrets: `SHOPIFY_STORE`, `SHOPIFY_TOKEN`
-(Admin API, scopes `read_orders` + `read_reports`), `OMNISEND_API_KEY`,
-`SHIPSTATION_API_KEY`, `SHIPSTATION_API_SECRET`, optional `META_CSV`,
-optional `DAYS` (default 120).
+Config comes from the environment or `dashboard/.env` (gitignored, as is
+anything else matching `dashboard/.env*` — this repo is public). The same
+names serve as Actions secrets: `SHOPIFY_STORE`, `SHOPIFY_TOKEN` (Admin API,
+`read_orders`; or `SHOPIFY_CLIENT_ID` + `SHOPIFY_CLIENT_SECRET` for a Dev
+Dashboard app), `OMNISEND_API_KEY`, `SHIPSTATION_API_KEY`,
+`SHIPSTATION_API_SECRET`, optional `PORTER_CSV`, optional `DAYS`
+(default 120).
 
 ## What's live vs. "latest known"
 
 Fully range-aware from the daily feed: total sales, orders, net sales, AOV,
-returns, the funnel, conversion rate, subscribers, the shipping bleed,
-Meta spend/ROAS (once `META_CSV` is set), the contribution waterfall and
-both trend charts.
+returns, the funnel, conversion rate, subscribers, the shipping bleed, ad
+spend, blended ROAS, cost per click, Google and Meta ROAS, paid CAC, the
+contribution waterfall and both trend charts.
 
-Shown as "latest known" until they get their own daily columns: Google Ads
-spend/ROAS, gross-margin %, 12-month LTV, repeat rate, the email campaign
-table, revenue-by-channel and the traffic donut.
+Shown as "latest known" until they get their own daily columns: gross-margin
+%, 12-month LTV, repeat rate, the email campaign table, revenue-by-channel
+and the traffic donut.
 
 ## Privacy
 
@@ -71,6 +76,8 @@ changing any of this.
 - `data.json` — the daily feed the page reads. Rebuilt nightly; don't edit
   by hand.
 - `collect.py` — the collector. stdlib + requests only.
+- `porter_feed.csv` — GA4 + Meta + Google Ads daily rows from Porter. The
+  default `PORTER_CSV`; point that at a published Sheet URL to automate it.
 - `.env.example` — template for local keys. Copy to `.env` (gitignored).
 - `ARCHITECTURE.md`, `DATA-SOURCES.md`, `STATUS.md` — background docs.
 - `../.github/workflows/dashboard.yml` — the nightly refresh.

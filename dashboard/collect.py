@@ -48,7 +48,24 @@ COLUMNS = [
     "Conversion rate", "Email subscribes", "Email unsubscribes",
     "Net subscriber growth", "Meta spend", "Meta conv value", "Puzzles sold",
     "Subscriber list size", "Shipping charged", "Shipping cost",
+    # Added once Google Ads went live again and GA4 became the funnel source.
+    "Meta clicks", "Google spend", "Google conv value", "Google clicks",
 ]
+
+# Porter feed column -> data.json column. The feed carries Meta Ads, GA4 and
+# Google Ads on one date-keyed row (one Porter blend, all three connectors).
+PORTER_MAP = {
+    "meta_spend": "Meta spend",
+    "meta_conv_value": "Meta conv value",
+    "meta_clicks": "Meta clicks",
+    "sessions": "Sessions",
+    "cart_adds": "Sessions with cart adds",
+    "checkouts": "Sessions reached checkout",
+    "purchases": "Sessions completed checkout",
+    "google_spend": "Google spend",
+    "google_conv_value": "Google conv value",
+    "google_clicks": "Google clicks",
+}
 
 
 class ShopifyAccessDenied(Exception):
@@ -363,21 +380,35 @@ def fetch_shipstation(api_key, api_secret, since, today):
         time.sleep(1)
 
 
-# ------------------------------------------------------- Meta (Porter CSV)
+# ----------------------------------------------------------- Porter feed
 
-def fetch_meta(src):
-    """Optional Porter export (URL or local path), columns date,spend,conv_value."""
+def fetch_porter(src):
+    """Porter blend export (URL or local path): Meta Ads + GA4 + Google Ads.
+
+    Expected header: date plus any of PORTER_MAP's keys. Returns
+    {day: {data.json column: value}} for whichever columns are present, so
+    a feed missing a source simply leaves those columns to the merge.
+
+    Porter's free tier only stores a rolling ~30 days; data.json is the
+    long-term store, which is why merge_previous never blanks a value.
+    """
     if src.startswith("http://") or src.startswith("https://"):
         resp = http_retry(lambda: requests.get(src, timeout=60))
         if resp.status_code != 200:
-            die("META_CSV HTTP %s: %s" % (resp.status_code, resp.text[:200]))
+            die("PORTER_CSV HTTP %s: %s" % (resp.status_code, resp.text[:200]))
         text = resp.text
     else:
+        if not os.path.isabs(src):
+            src = os.path.join(HERE, src)
+        if not os.path.exists(src):
+            print("Porter: %s not found, leaving its columns blank" % src)
+            return {}
         with open(src, encoding="utf-8-sig") as f:
             text = f.read()
     out = {}
     for row in csv.DictReader(io.StringIO(text)):
-        row = {(k or "").strip().lower(): (v or "").strip() for k, v in row.items()}
+        row = {(k or "").strip().lower().replace(" ", "_"): (v or "").strip()
+               for k, v in row.items()}
         raw = row.get("date", "")
         day = None
         for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%Y%m%d"):
@@ -388,7 +419,8 @@ def fetch_meta(src):
                 pass
         if not day:
             continue
-        out[day] = (to_num(row.get("spend")), to_num(row.get("conv_value")))
+        out[day] = {col: to_num(row[key])
+                    for key, col in PORTER_MAP.items() if key in row}
     return out
 
 
@@ -474,10 +506,11 @@ def main():
     print("ShipStation: %d ship days" % len(ship) if ss_key and ss_secret
           else "ShipStation: no keys, leaving Shipping cost blank")
 
-    meta_src = os.environ.get("META_CSV", "").strip()
-    meta = fetch_meta(meta_src) if meta_src else {}
-    print("Meta: %d days" % len(meta) if meta_src
-          else "Meta: no META_CSV, leaving Meta columns blank")
+    porter_src = (os.environ.get("PORTER_CSV", "").strip()
+                  or os.environ.get("META_CSV", "").strip()
+                  or "porter_feed.csv")
+    porter = fetch_porter(porter_src)
+    print("Porter feed: %d days from %s" % (len(porter), porter_src))
 
     rows = []
     for day in sorted(sales):
@@ -486,7 +519,6 @@ def main():
         n_sessions = int(sess.get("sessions") or 0)
         completed = int(sess.get("sessions_that_completed_checkout") or 0)
         subs, unsubs = omni.get(day, ("", ""))
-        m_spend, m_value = meta.get(day, ("", ""))
         row = {
             "Date": day,
             "Orders": to_num(s.get("orders")),
@@ -504,13 +536,26 @@ def main():
             "Email subscribes": subs,
             "Email unsubscribes": unsubs,
             "Net subscriber growth": subs - unsubs if subs != "" else "",
-            "Meta spend": m_spend,
-            "Meta conv value": m_value,
+            "Meta spend": "",
+            "Meta conv value": "",
             "Puzzles sold": units.get(day, 0),
             "Subscriber list size": "",
             "Shipping charged": to_num(s.get("shipping_charges")),
             "Shipping cost": ship.get(day, ""),
+            "Meta clicks": "",
+            "Google spend": "",
+            "Google conv value": "",
+            "Google clicks": "",
         }
+        # Porter owns the ad columns, and the funnel wherever it reaches:
+        # GA4 is the only funnel source now that ShopifyQL sessions are
+        # plan-gated, so its values take precedence over older Shopify ones.
+        for col, value in porter.get(day, {}).items():
+            if value != "":
+                row[col] = value
+        n_sessions = int(row["Sessions"] or 0)
+        completed = int(row["Sessions completed checkout"] or 0)
+        row["Conversion rate"] = round(completed / n_sessions, 4) if n_sessions else ""
         rows.append({k: row[k] for k in COLUMNS})
 
     rows = merge_previous(rows)
