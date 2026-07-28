@@ -155,7 +155,7 @@ def fetch_units(store, token, since):
 # --------------------------------------------------------------- Omnisend
 
 def fetch_omnisend(api_key, since, today):
-    """Daily subscribedEmail/unsubscribedEmail via /v5/analytics/statistics.
+    """Daily subscribedEmail/unsubscribedEmail via /api/analytics/statistics.
 
     The API takes {queries:[...]} with a required timestamp dimension; at day
     granularity a query spans at most 60 days and must not cross a calendar
@@ -178,8 +178,10 @@ def fetch_omnisend(api_key, since, today):
             "dateRange": {"from": frm, "to": to},
         }]}
         resp = http_retry(lambda: requests.post(
-            "https://api.omnisend.com/v5/analytics/statistics",
-            json=body, headers={"X-API-KEY": api_key}, timeout=60))
+            "https://api.omnisend.com/api/analytics/statistics",
+            json=body,
+            headers={"X-API-KEY": api_key, "Omnisend-Version": "2026-03-15"},
+            timeout=60))
         if resp.status_code != 200:
             die("Omnisend HTTP %s: %s" % (resp.status_code, resp.text[:400]))
         for block in resp.json().get("statistics", []):
