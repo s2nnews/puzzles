@@ -1,52 +1,74 @@
 # Premium Puzzles — Marketing Dashboard
 
 A one-page, always-on marketing dashboard for Premium Puzzles Australia. Sales,
-funnel, margin, the profit waterfall, subscribers and email — with a date-range
-picker that recomputes every sheet-backed metric for any range and its previous
+funnel, margin, the profit waterfall, subscribers and email, with a date-range
+picker that recomputes every daily metric for any range and its previous
 period.
 
-**Live:** https://s2nnews.github.io/puzzles/dashboard/
+**Live:** <https://s2nnews.github.io/puzzles/dashboard/>
 
-It's a single static `index.html` — no server, no build step. It fetches its
-numbers from a **published CSV** of the "Cockpit Daily" Google Sheet, so the
-date picker can recompute any range in the browser. Anyone with the link can
-open it (no login) — good for family and collaborators.
+It's a single static `index.html` served by GitHub Pages. The page reads
+`./data.json`, an array of one object per day, which a Python collector
+rebuilds every night. No Google Sheet, no Apps Script, no login.
 
-> **Read the docs before changing anything:** `ARCHITECTURE.md` (the whole
-> system + all IDs/URLs), `DATA-SOURCES.md` (which column comes from where),
-> `STATUS.md` (current state, gaps, next steps, credential boundary).
+Background docs: `ARCHITECTURE.md` (system design), `DATA-SOURCES.md`
+(which column comes from where), `STATUS.md` (state and next steps). Where
+they mention the Google Sheet / Apps Script pipeline, that path is retired;
+this README describes the current system.
 
-## Current state (read this — it's honest)
-- The **dashboard is live** and correctly reads the sheet's published CSV.
-- **But the sheet is currently a static snapshot** (frozen to values, stuck at
-  26 Jul 2026). The daily auto-refresh that would keep it live **has not been
-  deployed yet** — so it does *not* refresh every morning today. Making it
-  self-updating is the open task; see `STATUS.md`.
-- Three columns (Meta spend/conv, Puzzles sold, Shipping cost) are still blank
-  for the same reason — the refresh that fills them hasn't run.
+## How the data flows
 
-## Data sources (see DATA-SOURCES.md for the column map)
-- **Shopify** — sales, orders, AOV, session funnel, units
-- **Omnisend** — subscribers, campaigns
-- **Meta → Porter** (free, rolling 30-day) — the *only* thing Porter is used for
-- **Google Ads** — native connector / "latest known" in the dashboard CONFIG
-- **ShipStation** — carrier shipping cost (the "bleed")
+1. `collect.py` pulls the daily series from the source APIs:
+   sales and the sessions funnel via ShopifyQL, units sold via the Orders
+   API (bucketed by Sydney day), subscriber growth from the email platform,
+   and shipping cost per ship date from ShipStation. Meta spend and
+   conversion value come from an optional CSV export (`META_CSV`); those two
+   columns stay blank until it's configured.
+2. It writes `data.json` (sorted by Date ascending, blanks = ""; the page
+   treats blanks as 0).
+3. `.github/workflows/dashboard.yml` runs the collector nightly (~06:00
+   Sydney), and commits `data.json` when it changed. GitHub Pages redeploys
+   automatically.
+
+## Running the collector locally
+
+```sh
+pip install -r dashboard/requirements.txt
+cp dashboard/.env.example dashboard/.env   # fill in the keys
+python dashboard/collect.py
+```
+
+Config comes from the environment or `dashboard/.env` (gitignored). The same
+names are the repo's Actions secrets: `SHOPIFY_STORE`, `SHOPIFY_TOKEN`
+(Admin API, scopes `read_orders` + `read_reports`), `OMNISEND_API_KEY`,
+`SHIPSTATION_API_KEY`, `SHIPSTATION_API_SECRET`, optional `META_CSV`,
+optional `DAYS` (default 120).
 
 ## What's live vs. "latest known"
-Fully range-aware from the daily sheet (once it's refreshing): total sales,
-orders, net sales, AOV, returns, the funnel, conversion rate, subscribers, the
-shipping bleed, Meta spend/ROAS, the contribution waterfall and both trend
-charts. Carried as "latest known" CONFIG constants until they get their own
-daily columns: Google Ads spend/ROAS, gross-margin %, 12-month LTV, repeat rate,
-the email campaign table, revenue-by-channel and the traffic donut.
 
-## Setup (already done)
-1. Sheet's Daily tab published to web as CSV — done.
-2. CSV URL pasted into `index.html` (`var SHEET_CSV_URL = '…'`) — done.
-3. GitHub Pages enabled (Deploy from branch `main` / root) — done.
+Fully range-aware from the daily feed: total sales, orders, net sales, AOV,
+returns, the funnel, conversion rate, subscribers, the shipping bleed,
+Meta spend/ROAS (once `META_CSV` is set), the contribution waterfall and
+both trend charts.
+
+Shown as "latest known" until they get their own daily columns: Google Ads
+spend/ROAS, gross-margin %, 12-month LTV, repeat rate, the email campaign
+table, revenue-by-channel and the traffic donut.
+
+## Privacy
+
+The Pages URL and `data.json` are reachable by anyone who has the link;
+that's what makes no-login sharing possible. The numbers aren't indexed or
+advertised, but they aren't access-controlled either. If you later want to
+gate it, a passphrase layer or Cloudflare Access can sit in front without
+changing any of this.
 
 ## Files
+
 - `index.html` — the dashboard (what Pages serves).
-- `ARCHITECTURE.md`, `DATA-SOURCES.md`, `STATUS.md` — the docs.
-- `apps-script/MarketingDashboardRefresh.gs` — the daily-refresh script, **drafted
-  but not yet deployed** (kept for when we stand up the live refresh).
+- `data.json` — the daily feed the page reads. Rebuilt nightly; don't edit
+  by hand.
+- `collect.py` — the collector. stdlib + requests only.
+- `.env.example` — template for local keys. Copy to `.env` (gitignored).
+- `ARCHITECTURE.md`, `DATA-SOURCES.md`, `STATUS.md` — background docs.
+- `../.github/workflows/dashboard.yml` — the nightly refresh.

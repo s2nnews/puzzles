@@ -7,6 +7,7 @@ __pycache__/
 .venv/
 venv/
 .env
+dashboard/.env
 *.log
 
 # OneDrive / Office noise

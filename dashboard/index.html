@@ -473,18 +473,14 @@ function initPicker(){
   preset(30);
 }
 
-/* ---------- BOOT: pick the data source (injected → data.json → static) ----------
-   data.json lives beside this file in the repo, refreshed daily by collect.py. */
-var DATA_JSON_URL = './data.json';
+/* ---------- BOOT: load the daily feed from ./data.json (written nightly by collect.py) ---------- */
 (function(){
-  const haveInjected = DAILY_DATA && DAILY_DATA.length;
-  if(haveInjected){ initPicker(); return; }
   const live=document.getElementById('dr-live');
   live.innerHTML='<span class="dot" style="background:var(--warn)"></span>loading…';
-  fetch(DATA_JSON_URL, {cache:'no-store'}).then(r=>r.json()).then(rows=>{
-    if(rows && rows.length) DAILY_DATA=rows;
+  fetch('./data.json',{cache:'no-store'}).then(r=>r.json()).then(rows=>{
+    if(Array.isArray(rows) && rows.length) DAILY_DATA=rows;
     initPicker();
-  }).catch(()=>{ live.innerHTML='<span class="dot"></span>data offline'; initPicker(); });
+  }).catch(()=>{ live.innerHTML='<span class="dot"></span>feed offline'; initPicker(); });
 })();
 
 /* ---------- PROFIT WATERFALL ---------- */
