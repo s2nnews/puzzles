@@ -329,13 +329,23 @@ function parseCSV(text){
     .sort((a,b)=>a.Date<b.Date?-1:(a.Date>b.Date?1:0));
 }
 
-/* Non-daily inputs — "latest known", refreshed less often. Wire these to their
-   own daily columns later to make them range-aware too. Google Ads and Meta
-   moved out of here once the daily feed started carrying them. */
+/* Non-daily inputs — modelled assumptions, not measured per day, so these do
+   NOT move when you change the date range. Google Ads and Meta moved out of
+   here once the daily feed started carrying them.
+
+   Margin: Shopify reports 36.9% on the sales where a cost is recorded, and
+   that cost is the supplier's LIST price (ex-GST, as invoices state it).
+   Stock is actually bought around 20% under list, so a conservative 15% is
+   taken off cost. Money columns are GST-inclusive; the cost bears GST too
+   (Premium Puzzles isn't registered, so it can't reclaim the input credit),
+   and the two cancel — the same margin % applies on a GST-inclusive base.
+       margin = 1 − (1 − 0.369) × 0.85 = 46.4% */
 const CONFIG = {
-  marginPct:0.369, packagingPerOrder:1.50,
+  listMarginPct:0.369, buyingDiscount:0.15,
+  packagingPerOrder:1.50,
   ltv:82.70, repeatRate:0.534, repeatPrev:0.623
 };
+CONFIG.marginPct = 1 - (1 - CONFIG.listMarginPct) * (1 - CONFIG.buyingDiscount);
 
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const parseD = s => new Date(s+'T00:00:00');
@@ -389,9 +399,9 @@ function buildModel(a,p){
       {label:'Conversion rate',val:pct(conv,2),prev:pconv,cur:conv,pv:pct(pconv,2)+' prev',tip:'Orders ÷ sessions — one source of truth for a sale.'},
     ],
     profit:[
-      {label:'Gross margin',val:pct(CONFIG.marginPct,1),prev:null,pv:'on cost-tracked sales',sm:1},
-      {label:'Shipping bleed',val:'<span style="color:var(--down)">−'+money(Math.max(shipBleed,0),0)+'</span>',prev:null,pv:(a.shipCost?pct(a.shipCharged/a.shipCost,0):'0%')+' recovered · −'+money(a.orders?shipBleed/a.orders:0,2)+'/parcel',sm:1},
-      {label:'Est. gross profit',val:money(estGP,0),prev:null,pv:'net sales × margin',sm:1,accent:1},
+      {label:'Gross margin',val:pct(CONFIG.marginPct,1),prev:null,pv:'assumption · fixed for every range',sm:1,tip:'A modelled rate, not measured per day: '+pct(CONFIG.listMarginPct,1)+' at supplier list price, improved by buying '+pct(CONFIG.buyingDiscount,0)+' under list. It cannot move with the date range. Only 58% of units sold have a cost recorded in Shopify — fill the rest in and this can become a real, range-aware margin.'},
+      {label:'Shipping bleed',val:'<span style="color:var(--down)">−'+money(Math.max(shipBleed,0),0)+'</span>',prev:null,pv:(a.shipCost?pct(a.shipCharged/a.shipCost,0):'0%')+' recovered · −'+money(a.orders?shipBleed/a.orders:0,2)+'/parcel',sm:1,tip:'Carrier cost for Premium Puzzles shipments only (funbox.fun and manual orders are excluded) against what customers paid, GST included.'},
+      {label:'Est. gross profit',val:money(estGP,0),prev:p.net*CONFIG.marginPct,cur:estGP,pv:'net sales × '+pct(CONFIG.marginPct,1),sm:1,accent:1},
       {label:'Contribution profit',val:'<span style="color:var(--up)">'+money(contribution,0)+'</span>',prev:null,pv:'≈'+money(a.orders?contribution/a.orders:0,0)+'/order · '+(a.net?pct(contribution/a.net,0):'0%'),sm:1,accent:1},
       {label:'Repeat-customer rate',val:pct(CONFIG.repeatRate,1),prev:CONFIG.repeatPrev,cur:CONFIG.repeatRate,pv:pct(CONFIG.repeatPrev,1)+' prev',sm:1},
       {label:'12-mo customer value',val:money(CONFIG.ltv,2),prev:null,pv:'trailing 12m',sm:1},

@@ -34,6 +34,29 @@ Porter's free tier only stores a rolling ~30 days, so `collect.py`'s
 `merge_previous` never overwrites an existing value with a blank: `data.json`
 in git is the long-term store and Porter only supplies the trailing window.
 
+## Accounting conventions (decided 28 Jul 2026)
+
+- **Every money column is GST-inclusive.** Premium Puzzles is not registered
+  for GST, so the tax it charges is revenue it keeps. `total_sales` equals
+  `net_sales + shipping_charges` to the cent across all 121 days — that
+  identity is the regression test for the Orders-API derivation.
+- **Returns follow the money actually refunded**, split into its shipping
+  part and the rest. Refund line-item subtotals are deliberately not used: a
+  restock-without-refund would otherwise book revenue loss that never
+  happened.
+- **Shipping cost counts Premium Puzzles shipments only.** The ShipStation
+  account also ships `funbox.fun` (store 125784) and Manual Orders (120002);
+  including them overstated the bleed by ~$1,520 over 120 days. Controlled
+  by `SHIPSTATION_STORE_IDS`, default `120003`.
+- **Gross margin is a modelled constant: 46.4%.** Shopify reports 36.9% at
+  supplier list price, and stock is bought ~20% under list, so a
+  conservative 15% comes off cost: `1 − (1 − 0.369) × 0.85`. Cost is ex-GST
+  on invoices but bears GST that cannot be reclaimed, and revenue is now
+  GST-inclusive, so the two 10%s cancel and the same rate applies. It cannot
+  vary by date range — only 58% of units sold have a cost recorded in
+  Shopify, and filling that gap is what would make margin genuinely
+  range-aware.
+
 ## The gap
 
 1. **The Porter feed is refreshed by hand.** `dashboard/porter_feed.csv` was

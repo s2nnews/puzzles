@@ -39,7 +39,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_PATH = os.path.join(HERE, "data.json")
 SYDNEY = ZoneInfo("Australia/Sydney")
 SHOPIFY_API_VERSION = "2025-07"
-GST = 1.1  # AU prices are GST-inclusive; ShopifyQL reports amounts ex-GST
+# ShipStation stores whose shipments are Premium Puzzles' own cost. The same
+# account also ships funbox.fun (125784) and "Manual Orders" (120002, PP
+# shipments with no matching Shopify revenue). Override with
+# SHIPSTATION_STORE_IDS, e.g. "120003,120002" to fold manual orders back in.
+SHIPSTATION_PP_STORES = "120003"
 
 COLUMNS = [
     "Date", "Orders", "Gross sales", "Discounts", "Returns", "Net sales",
@@ -200,11 +204,9 @@ ORDERS_GQL = (
     "totalTaxSet { shopMoney { amount } } "
     "totalShippingPriceSet { shopMoney { amount } } "
     "refunds { createdAt totalRefundedSet { shopMoney { amount } } "
-    "refundLineItems(first: 50) { nodes { "
-    "subtotalSet { shopMoney { amount } } "
-    "totalTaxSet { shopMoney { amount } } } } "
     "refundShippingLines(first: 10) { nodes { "
-    "subtotalAmountSet { shopMoney { amount } } } } } } } }")
+    "subtotalAmountSet { shopMoney { amount } } "
+    "taxAmountSet { shopMoney { amount } } } } } } } }")
 
 
 def _money(node, key):
@@ -214,16 +216,20 @@ def _money(node, key):
 def fetch_orders(store, token, since):
     """One pass over the Orders API: units + derived daily sales metrics.
 
-    Buckets by Sydney day, replicating ShopifyQL's sales-dataset
-    conventions (validated against its history): gross/discounts/returns/
-    net/shipping are ex-GST, total is GST-inclusive, discounts and returns
-    are negative. Orders (including cancelled ones) book their ORIGINAL
-    amounts on the creation day; refunds land on the refund date, with
-    refunded products going to returns (line subtotals are GST-inclusive,
-    tax split out per line), refunded shipping netting off shipping_charges
-    (its subtotal is already ex-GST), and line-less custom refunds booked
-    in full to returns. The window reaches 90 days behind `since` so
-    refunds against older orders are captured on their refund date.
+    Buckets by Sydney day. Every money column is GST-INCLUSIVE — Premium
+    Puzzles is not registered for GST, so the tax it charges is revenue it
+    keeps, and `total_sales` reconciles as net_sales + shipping_charges.
+    (ShopifyQL reported these ex-GST; that is the one deliberate departure
+    from its conventions.) Discounts and returns are negative.
+
+    Orders (including cancelled ones) book their ORIGINAL amounts on the
+    creation day; refunds land on the refund date, with refunded products
+    going to returns and refunded shipping netting off shipping_charges.
+    Shopify quotes refunded product subtotals GST-inclusive but refunded
+    shipping subtotals ex-GST, hence the asymmetry below. Line-less custom
+    refunds are booked in full to returns. The window reaches 90 days
+    behind `since` so refunds against older orders land on their refund
+    date.
     """
     q = "created_at:>=%s" % (since - timedelta(days=90)).isoformat()
     days = {}
@@ -241,37 +247,30 @@ def fetch_orders(store, token, since):
             if node.get("test"):
                 continue
             for refund in node.get("refunds") or []:
+                # Returns follow the money actually refunded, split into its
+                # shipping part and the rest. Line-item subtotals are not used:
+                # a restock-without-refund posts $0 of lines-worth of goods and
+                # would otherwise book revenue loss that never happened, and a
+                # custom-amount refund has no lines at all.
                 amount = _money(refund, "totalRefundedSet")
-                lines = (refund.get("refundLineItems") or {}).get("nodes") or []
+                if not amount:
+                    continue
                 ships = (refund.get("refundShippingLines") or {}).get("nodes") or []
-                prod_ex = sum(_money(li, "subtotalSet") - _money(li, "totalTaxSet")
-                              for li in lines)
-                ship_ex = sum(_money(sl, "subtotalAmountSet") for sl in ships)
-                if not lines and not ships and amount:
-                    prod_ex = amount  # custom-amount refund: all to returns
-                if amount or prod_ex or ship_ex:
-                    rb = bucket(sydney_day(refund["createdAt"]))
-                    rb["total"] -= amount
-                    rb["returns"] -= prod_ex
-                    rb["shipping"] -= ship_ex
+                ship = min(sum(_money(sl, "subtotalAmountSet")
+                               + _money(sl, "taxAmountSet") for sl in ships), amount)
+                rb = bucket(sydney_day(refund["createdAt"]))
+                rb["total"] -= amount
+                rb["returns"] -= amount - ship
+                rb["shipping"] -= ship
             n += 1
             b = bucket(sydney_day(node["createdAt"]))
             b["orders"] += 1
             b["units"] += node["currentSubtotalLineItemsQuantity"] or 0
-            prod_incl = _money(node, "subtotalPriceSet")
-            disc_incl = _money(node, "totalDiscountsSet")
-            ship_incl = _money(node, "totalShippingPriceSet")
-            tax = _money(node, "totalTaxSet")
-            if node.get("taxesIncluded") and tax > 0:
-                ship_ex = ship_incl / GST
-                tax_prod = tax - (ship_incl - ship_ex)
-                prod_ex = prod_incl - tax_prod
-                disc_ex = disc_incl / GST
-            else:
-                prod_ex, disc_ex, ship_ex = prod_incl, disc_incl, ship_incl
-            b["gross"] += prod_ex + disc_ex
-            b["discounts"] -= disc_ex
-            b["shipping"] += ship_ex
+            prod = _money(node, "subtotalPriceSet")
+            disc = _money(node, "totalDiscountsSet")
+            b["gross"] += prod + disc
+            b["discounts"] -= disc
+            b["shipping"] += _money(node, "totalShippingPriceSet")
             b["total"] += _money(node, "totalPriceSet")
         if not conn["pageInfo"]["hasNextPage"]:
             break
@@ -353,9 +352,15 @@ def fetch_omnisend(api_key, since, today):
 
 # ------------------------------------------------------------- ShipStation
 
-def fetch_shipstation(api_key, api_secret, since, today):
-    """Sum shipmentCost + insuranceCost per shipDate, skipping voided."""
-    out, page = {}, 1
+def fetch_shipstation(api_key, api_secret, since, today, store_ids):
+    """Sum shipmentCost + insuranceCost per shipDate, skipping voided.
+
+    The account also ships for other stores (funbox.fun, Manual Orders),
+    which would inflate the shipping bleed against Premium Puzzles' own
+    revenue, so shipments are filtered to `store_ids`. What is excluded is
+    reported rather than silently dropped.
+    """
+    out, page, skipped = {}, 1, {}
     while True:
         resp = http_retry(lambda: requests.get(
             "https://ssapi.shipstation.com/shipments",
@@ -373,11 +378,21 @@ def fetch_shipstation(api_key, api_secret, since, today):
             if not day:
                 continue
             cost = float(sh.get("shipmentCost") or 0) + float(sh.get("insuranceCost") or 0)
+            store = str((sh.get("advancedOptions") or {}).get("storeId") or "")
+            if store_ids and store not in store_ids:
+                a = skipped.setdefault(store, [0, 0.0])
+                a[0] += 1
+                a[1] += cost
+                continue
             out[day] = round(out.get(day, 0) + cost, 2)
         if page >= int(body.get("pages") or 1):
-            return out
+            break
         page += 1
         time.sleep(1)
+    for store, (n, cost) in sorted(skipped.items()):
+        print("  ShipStation: excluded store %s — %d shipments, $%.2f"
+              % (store or "?", n, cost))
+    return out
 
 
 # ----------------------------------------------------------- Porter feed
@@ -502,7 +517,11 @@ def main():
 
     ss_key = os.environ.get("SHIPSTATION_API_KEY", "").strip()
     ss_secret = os.environ.get("SHIPSTATION_API_SECRET", "").strip()
-    ship = fetch_shipstation(ss_key, ss_secret, since, today) if ss_key and ss_secret else {}
+    store_ids = {s.strip() for s in os.environ.get(
+        "SHIPSTATION_STORE_IDS", SHIPSTATION_PP_STORES).split(",") if s.strip()}
+    ship_ran = bool(ss_key and ss_secret)
+    ship = (fetch_shipstation(ss_key, ss_secret, since, today, store_ids)
+            if ship_ran else {})
     print("ShipStation: %d ship days" % len(ship) if ss_key and ss_secret
           else "ShipStation: no keys, leaving Shipping cost blank")
 
@@ -541,7 +560,10 @@ def main():
             "Puzzles sold": units.get(day, 0),
             "Subscriber list size": "",
             "Shipping charged": to_num(s.get("shipping_charges")),
-            "Shipping cost": ship.get(day, ""),
+            # A day ShipStation covered with no Premium Puzzles shipment cost
+            # $0, not "unknown" — writing 0 rather than a blank also stops
+            # merge_previous resurrecting a superseded figure.
+            "Shipping cost": ship.get(day, 0 if ship_ran else ""),
             "Meta clicks": "",
             "Google spend": "",
             "Google conv value": "",
