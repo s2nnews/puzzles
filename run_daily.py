@@ -43,6 +43,8 @@ JOBS = {
                lambda d: d.weekday() == 3),
     "global": (["scrapers/global_trends.py"],
                lambda d: d.weekday() == 4),  # Fri — a day off trends to spare rate limits
+    "dashboard": (["dashboard/collect.py"],
+                  lambda d: True),  # marketing dashboard data.json (needs dashboard/.env)
 }
 
 
@@ -84,7 +86,45 @@ def done_today(name: str) -> bool:
     if name in ("trends", "global"):
         stem = "google_trends" if name == "trends" else "global_trends"
         return (ROOT / "data" / "raw" / f"{stem}_{today}.csv").exists()
+    if name == "dashboard":
+        # collect.py rewrites data.json on every run — mtime date marks it done.
+        path = ROOT / "dashboard" / "data.json"
+        return (path.exists()
+                and date.fromtimestamp(path.stat().st_mtime).isoformat() == today)
     return False
+
+
+def publish(today: date) -> bool:
+    """Commit + push the rebuilt Index so the live site (which reads
+    origin/main) updates. Only the files the website consumes are staged.
+    A push failure (e.g. offline) logs but never fails the job — the next
+    run will catch up. This is the step that keeps the public page current;
+    without it the pipeline rebuilds locally but nothing reaches the site."""
+    files = [
+        "data/processed/index.json",
+        "web/puzzle_index.html",
+        "web/puzzle_index_basic.html",
+        "web/puzzle_index_global.html",
+        "dashboard/data.json",
+    ]
+    print("\n=== publish ===", flush=True)
+    try:
+        subprocess.run(["git", "add", *files], cwd=ROOT, check=True)
+        # Nothing staged means the build produced no changes — skip quietly.
+        if subprocess.run(["git", "diff", "--cached", "--quiet"],
+                          cwd=ROOT).returncode == 0:
+            print("=== publish: nothing to commit ===", flush=True)
+            return True
+        subprocess.run(["git", "commit", "-m",
+                        f"data: refresh Index {today.isoformat()}"],
+                       cwd=ROOT, check=True)
+        subprocess.run(["git", "push"], cwd=ROOT, check=True)
+        print("=== publish: pushed to origin ===", flush=True)
+        return True
+    except Exception as exc:  # noqa: BLE001 — never let publish kill the job
+        print(f"=== publish: FAILED ({exc}) — site not updated this run ===",
+              flush=True)
+        return False
 
 
 def main() -> int:
@@ -96,6 +136,8 @@ def main() -> int:
                     help="ignore cadence, run every source")
     ap.add_argument("--no-build", action="store_true",
                     help="skip the index rebuild at the end")
+    ap.add_argument("--no-push", action="store_true",
+                    help="skip committing + pushing the rebuilt Index to git")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -127,6 +169,11 @@ def main() -> int:
         built = run("aggregate", ["pipeline/aggregate.py"])
         if built:
             run("chart", ["web/build_chart.py"])  # non-critical: refresh the dashboard
+
+    # Publish the fresh Index to git so the live site picks it up. Gated on a
+    # successful build so we never push a half-baked or empty index.
+    if built and not args.no_build and not args.no_push:
+        publish(today)
 
     ok = sum(results.values())
     print(f"\nSummary {today}: {ok}/{len(results)} sources ok"

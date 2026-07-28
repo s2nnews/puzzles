@@ -1,8 +1,11 @@
 name: dashboard-data
 
 on:
-  schedule:
-    - cron: "0 20 * * *"   # nightly ~06:00 Sydney
+  # Cron disabled for now: the dashboard refreshes from Michael's laptop via
+  # run_daily.py (at-logon Task Scheduler). Re-enable the schedule + set repo
+  # secrets to go fully autonomous.
+  # schedule:
+  #   - cron: "0 20 * * *"   # nightly ~06:00 Sydney
   workflow_dispatch:
 
 permissions:
@@ -24,6 +27,8 @@ jobs:
       - name: Build dashboard/data.json
         env:
           SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
+          SHOPIFY_CLIENT_ID: ${{ secrets.SHOPIFY_CLIENT_ID }}
+          SHOPIFY_CLIENT_SECRET: ${{ secrets.SHOPIFY_CLIENT_SECRET }}
           SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
           OMNISEND_API_KEY: ${{ secrets.OMNISEND_API_KEY }}
           SHIPSTATION_API_KEY: ${{ secrets.SHIPSTATION_API_KEY }}
