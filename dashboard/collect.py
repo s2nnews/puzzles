@@ -100,6 +100,57 @@ PORTER_MAP = {
 }
 
 
+# Porter's Sheets export prefixes each label with the connector's display
+# name: "Meta Ads Amount spent", "GA4 Sessions", "Google Ads Cost". The
+# prefix is what disambiguates the two "Clicks" columns, so prefer it.
+PORTER_PREFIXES = {
+    "meta ads": "meta", "facebook ads": "meta", "meta": "meta",
+    "google ads": "google",
+    "ga4": "ga4", "google analytics 4": "ga4", "google analytics": "ga4",
+}
+PORTER_LABELS = {
+    ("meta", "amount spent"): "Meta spend",
+    ("meta", "spend"): "Meta spend",
+    ("meta", "purchase conversion value"): "Meta conv value",
+    ("meta", "clicks"): "Meta clicks",
+    ("google", "cost"): "Google spend",
+    ("google", "amount spent"): "Google spend",
+    ("google", "conversions value"): "Google conv value",
+    ("google", "clicks"): "Google clicks",
+    ("ga4", "sessions"): "Sessions",
+    ("ga4", "add to carts"): "Sessions with cart adds",
+    ("ga4", "checkouts"): "Sessions reached checkout",
+    ("ga4", "ecommerce purchases"): "Sessions completed checkout",
+}
+
+
+def porter_target(header, seen):
+    """Resolve one feed header to a data.json column, or None.
+
+    Tries an exact alias first (our own CSV and Porter's raw field ids),
+    then the "<connector> <label>" form. `seen` counts repeats so a dialect
+    that labels both click columns plainly "Clicks" still splits Meta from
+    Google by column order."""
+    name = " ".join((header or "").strip().lower().split())
+    if not name or name == "date":
+        return None
+    for key in (name, name.replace(" ", "_")):
+        options = PORTER_MAP.get(key)
+        if options:
+            n = seen.get(key, 0)
+            if n >= len(options):
+                return None
+            seen[key] = n + 1
+            return options[n]
+    for prefix in sorted(PORTER_PREFIXES, key=len, reverse=True):
+        if name.startswith(prefix + " "):
+            col = PORTER_LABELS.get((PORTER_PREFIXES[prefix],
+                                     name[len(prefix) + 1:]))
+            if col:
+                return col
+    return None
+
+
 def parse_day(raw):
     for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%Y%m%d"):
         try:
@@ -467,17 +518,12 @@ def fetch_porter(src):
     # Resolve each column position once, so duplicate headers stay distinct.
     date_at, targets, seen = None, {}, {}
     for i, raw in enumerate(header):
-        name = (raw or "").strip().lower()
-        if name == "date" and date_at is None:
+        if (raw or "").strip().lower() == "date" and date_at is None:
             date_at = i
             continue
-        options = PORTER_MAP.get(name) or PORTER_MAP.get(name.replace(" ", "_"))
-        if not options:
-            continue
-        n = seen.get(name, 0)
-        if n < len(options):
-            targets[i] = options[n]
-            seen[name] = n + 1
+        col = porter_target(raw, seen)
+        if col:
+            targets[i] = col
     if date_at is None:
         die("Porter feed has no 'date' column — headers were: %s" % header[:12])
     missing = sorted(set(sum(PORTER_MAP.values(), [])) - set(targets.values()))
