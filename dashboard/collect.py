@@ -38,6 +38,7 @@ import requests
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_PATH = os.path.join(HERE, "data.json")
 CAMPAIGNS_PATH = os.path.join(HERE, "campaigns.json")
+CHANNELS_PATH = os.path.join(HERE, "channels.json")
 SYDNEY = ZoneInfo("Australia/Sydney")
 SHOPIFY_API_VERSION = "2025-07"
 # ShipStation stores whose shipments are Premium Puzzles' own cost. The same
@@ -714,6 +715,97 @@ def write_campaigns(rows):
           % (len(rows), len(names), CAMPAIGNS_PATH))
 
 
+CHANNEL_COLUMNS = ["Date", "Channel", "Sessions", "Purchases", "Revenue"]
+
+
+def fetch_channels(src):
+    """GA4 sessions/purchases/revenue per default channel group per day.
+
+    This is what tells you email is the biggest channel rather than a rounding
+    error — the donut it feeds was previously hardcoded and said the opposite.
+    """
+    if src.startswith("http://") or src.startswith("https://"):
+        resp = http_retry(lambda: requests.get(src, timeout=60))
+        if resp.status_code != 200:
+            die("CHANNELS_CSV HTTP %s: %s" % (resp.status_code, resp.text[:200]))
+        text = resp.text
+    else:
+        if not os.path.isabs(src):
+            src = os.path.join(HERE, src)
+        if not os.path.exists(src):
+            print("Channels: %s not found, skipping" % src)
+            return []
+        with open(src, encoding="utf-8-sig") as f:
+            text = f.read()
+
+    reader = csv.reader(io.StringIO(text))
+    try:
+        header = next(reader)
+    except StopIteration:
+        return []
+    lower = [" ".join((h or "").strip().lower().split()) for h in header]
+
+    def find(*names):
+        for n in names:
+            for i, h in enumerate(lower):
+                if h == n or h.endswith(" " + n):
+                    return i
+        return None
+
+    at = {
+        "Date": find("date"),
+        "Channel": find("session default channel group", "default channel group",
+                        "channel"),
+        "Sessions": find("sessions"),
+        "Purchases": find("ecommerce purchases", "purchases"),
+        "Revenue": find("purchase revenue", "revenue"),
+    }
+    if at["Date"] is None or at["Channel"] is None:
+        print("Channels: unrecognised headers %s" % header[:8])
+        return []
+
+    rows = []
+    for row in reader:
+        if len(row) <= max(i for i in at.values() if i is not None):
+            continue
+        day = parse_day((row[at["Date"]] or "").strip())
+        name = (row[at["Channel"]] or "").strip()
+        if not day or not name:
+            continue
+        rows.append({
+            "Date": day, "Channel": name,
+            "Sessions": to_num(row[at["Sessions"]]) if at["Sessions"] is not None else "",
+            "Purchases": to_num(row[at["Purchases"]]) if at["Purchases"] is not None else "",
+            "Revenue": to_num(row[at["Revenue"]]) if at["Revenue"] is not None else "",
+        })
+    rows.sort(key=lambda r: (r["Date"], r["Channel"]))
+    return rows
+
+
+def write_rows(path, rows, key_fields, columns, label):
+    """Write a feed file, keeping any older rows already published.
+
+    Porter only retains ~30 days, so the committed file is the long-term
+    store — same reasoning as merge_previous."""
+    if not rows:
+        return
+    seen = {tuple(r[k] for k in key_fields) for r in rows}
+    if os.path.exists(path):
+        try:
+            with open(path, encoding="utf-8") as f:
+                for old in json.load(f):
+                    k = tuple(old.get(f) for f in key_fields)
+                    if k not in seen and all(k):
+                        rows.append({c: old.get(c, "") for c in columns})
+        except (ValueError, KeyError, TypeError):
+            pass
+    rows.sort(key=lambda r: tuple(str(r[k]) for k in key_fields))
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(rows, f, indent=1)
+        f.write("\n")
+    print("%s: %d rows -> %s" % (label, len(rows), os.path.basename(path)))
+
+
 # ------------------------------------------------------------------- main
 
 def merge_previous(rows):
@@ -813,6 +905,10 @@ def main():
 
     write_campaigns(fetch_campaigns(
         os.environ.get("CAMPAIGNS_CSV", "").strip() or "campaigns.csv"))
+    write_rows(CHANNELS_PATH,
+               fetch_channels(os.environ.get("CHANNELS_CSV", "").strip()
+                              or "channels.csv"),
+               ("Date", "Channel"), CHANNEL_COLUMNS, "Channels")
 
     rows = []
     for day in sorted(sales):

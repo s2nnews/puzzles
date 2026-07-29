@@ -1,0 +1,366 @@
+[
+ {
+  "Date": "2026-07-24",
+  "Channel": "Cross-network",
+  "Sessions": 1,
+  "Purchases": 1,
+  "Revenue": 156.96
+ },
+ {
+  "Date": "2026-07-24",
+  "Channel": "Direct",
+  "Sessions": 17,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-24",
+  "Channel": "Email",
+  "Sessions": 18,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-24",
+  "Channel": "Organic Search",
+  "Sessions": 42,
+  "Purchases": 1,
+  "Revenue": 56.19
+ },
+ {
+  "Date": "2026-07-24",
+  "Channel": "Organic Shopping",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-24",
+  "Channel": "Organic Social",
+  "Sessions": 6,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-24",
+  "Channel": "Paid Search",
+  "Sessions": 52,
+  "Purchases": 2,
+  "Revenue": 181.82
+ },
+ {
+  "Date": "2026-07-24",
+  "Channel": "Paid Social",
+  "Sessions": 10,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-24",
+  "Channel": "Unassigned",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-25",
+  "Channel": "Cross-network",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-25",
+  "Channel": "Direct",
+  "Sessions": 16,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-25",
+  "Channel": "Email",
+  "Sessions": 13,
+  "Purchases": 1,
+  "Revenue": 74.98
+ },
+ {
+  "Date": "2026-07-25",
+  "Channel": "Organic Search",
+  "Sessions": 35,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-25",
+  "Channel": "Organic Social",
+  "Sessions": 3,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-25",
+  "Channel": "Paid Search",
+  "Sessions": 65,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-25",
+  "Channel": "Paid Social",
+  "Sessions": 6,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-26",
+  "Channel": "Cross-network",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-26",
+  "Channel": "Direct",
+  "Sessions": 19,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-26",
+  "Channel": "Email",
+  "Sessions": 12,
+  "Purchases": 1,
+  "Revenue": 74.98
+ },
+ {
+  "Date": "2026-07-26",
+  "Channel": "Organic Search",
+  "Sessions": 42,
+  "Purchases": 1,
+  "Revenue": 189.88
+ },
+ {
+  "Date": "2026-07-26",
+  "Channel": "Organic Shopping",
+  "Sessions": 4,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-26",
+  "Channel": "Organic Social",
+  "Sessions": 6,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-26",
+  "Channel": "Paid Search",
+  "Sessions": 84,
+  "Purchases": 3,
+  "Revenue": 183.95
+ },
+ {
+  "Date": "2026-07-26",
+  "Channel": "Paid Social",
+  "Sessions": 6,
+  "Purchases": 1,
+  "Revenue": 39.99
+ },
+ {
+  "Date": "2026-07-26",
+  "Channel": "Unassigned",
+  "Sessions": 6,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-27",
+  "Channel": "Cross-network",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-27",
+  "Channel": "Direct",
+  "Sessions": 44,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-27",
+  "Channel": "Email",
+  "Sessions": 12,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-27",
+  "Channel": "Organic Search",
+  "Sessions": 49,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-27",
+  "Channel": "Organic Shopping",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-27",
+  "Channel": "Organic Social",
+  "Sessions": 3,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-27",
+  "Channel": "Paid Search",
+  "Sessions": 74,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-27",
+  "Channel": "Paid Social",
+  "Sessions": 7,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-28",
+  "Channel": "Direct",
+  "Sessions": 31,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-28",
+  "Channel": "Email",
+  "Sessions": 333,
+  "Purchases": 8,
+  "Revenue": 711.39
+ },
+ {
+  "Date": "2026-07-28",
+  "Channel": "Organic Search",
+  "Sessions": 36,
+  "Purchases": 3,
+  "Revenue": 295.46
+ },
+ {
+  "Date": "2026-07-28",
+  "Channel": "Organic Shopping",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-28",
+  "Channel": "Organic Social",
+  "Sessions": 3,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-28",
+  "Channel": "Paid Search",
+  "Sessions": 74,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-28",
+  "Channel": "Paid Social",
+  "Sessions": 7,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-28",
+  "Channel": "Referral",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-28",
+  "Channel": "Unassigned",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-29",
+  "Channel": "Cross-network",
+  "Sessions": 52,
+  "Purchases": 1,
+  "Revenue": 29.66
+ },
+ {
+  "Date": "2026-07-29",
+  "Channel": "Direct",
+  "Sessions": 9,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-29",
+  "Channel": "Email",
+  "Sessions": 66,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-29",
+  "Channel": "Organic Search",
+  "Sessions": 20,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-29",
+  "Channel": "Organic Social",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-29",
+  "Channel": "Paid Search",
+  "Sessions": 73,
+  "Purchases": 1,
+  "Revenue": 115.93
+ },
+ {
+  "Date": "2026-07-29",
+  "Channel": "Paid Shopping",
+  "Sessions": 5,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-29",
+  "Channel": "Paid Social",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-29",
+  "Channel": "Referral",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-29",
+  "Channel": "Unassigned",
+  "Sessions": 176,
+  "Purchases": 2,
+  "Revenue": 61.2
+ }
+]

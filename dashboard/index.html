@@ -204,7 +204,7 @@
     </div>
     <div class="card">
       <h3>Where the traffic comes from</h3>
-      <div class="hint">Sessions by referrer source, last 30 days (5,875 total). Direct dominates — a tagging opportunity.</div>
+      <div class="hint" id="traffic-hint">Sessions by GA4 channel group.</div>
       <div id="traffic"></div>
     </div>
   </div>
@@ -233,7 +233,7 @@
     </div>
     <div class="card">
       <h3>Revenue by channel <span class="tag">attribution-limited</span></h3>
-      <div class="hint">Attributed revenue by channel, each platform's own model. Email now includes the full Klaviyo history — it's your dominant channel by a wide margin. Figures overlap with direct/organic; exact splits need UTM tagging.</div>
+      <div class="hint">Revenue GA4 credits to each channel for the selected range, on last-click attribution.</div>
       <div id="channels"></div>
     </div>
   </div>
@@ -547,6 +547,7 @@ function initPicker(){
     const prevR=DAILY_DATA.filter(r=>r.Date>=prevFrom && r.Date<=prevTo);
     renderModel(buildModel(aggregate(inR), aggregate(prevR)));
     renderCampaigns(fromS,toS);
+    renderTraffic(fromS,toS);
     document.getElementById('period-label').innerHTML='vs previous '+days+' days · AUD · <span style="color:var(--up)">live</span> from your daily sheet · '+prettyD(maxDate)+' latest';
     fromEl.value=fromS; toEl.value=toS;
     note.style.display= prevR.length? 'none' : 'block';
@@ -575,9 +576,11 @@ function initPicker(){
   const live=document.getElementById('dr-live');
   live.innerHTML='<span class="dot" style="background:var(--warn)"></span>loading…';
   const grab=u=>fetch(u,{cache:'no-store'}).then(r=>r.json()).catch(()=>null);
-  Promise.all([grab('./data.json'), grab('./campaigns.json')]).then(([rows,camps])=>{
+  Promise.all([grab('./data.json'), grab('./campaigns.json'), grab('./channels.json')])
+   .then(([rows,camps,chans])=>{
     if(Array.isArray(rows) && rows.length) DAILY_DATA=rows;
     if(Array.isArray(camps)) CAMPAIGN_DATA=camps;
+    if(Array.isArray(chans)) CHANNEL_DATA=chans;
     if(!DAILY_DATA.length) live.innerHTML='<span class="dot"></span>feed offline';
     initPicker();
   });
@@ -639,11 +642,61 @@ function renderFunnel(F){
 }
 renderFunnel(funnel);
 
-/* ---------- TRAFFIC donut ---------- */
-const traffic=[
-  {k:'Direct',v:3690,c:'#8fa3b8'},{k:'Search (organic + paid)',v:1721,c:'#4f9cf9'},
-  {k:'Social',v:272,c:'#a06bff'},{k:'Email',v:158,c:'#34d39a'},{k:'Unknown',v:34,c:'#3a4c61'}];
-(function(){
+/* ---------- TRAFFIC donut ----------
+   Fed by channels.json (GA4 default channel groups). This was hardcoded
+   until 29 Jul 2026 and had it backwards: it showed Direct at 63% and Email
+   at 3%, when Email is in fact the largest channel by both sessions and
+   revenue. Never hardcode a chart that looks live. */
+var CHANNEL_DATA=[];
+const CHANNEL_COLOUR={
+  'Email':'#34d39a','Organic Search':'#4f9cf9','Paid Search':'#3ba7c4',
+  'Direct':'#8fa3b8','Organic Social':'#a06bff','Paid Social':'#c88bff',
+  'Referral':'#2dd4bf','Organic Shopping':'#ffb020','Cross-network':'#ff8a8a',
+  'Unassigned':'#3a4c61','AI Assistant':'#6b7f94'};
+
+function renderTraffic(fromS,toS){
+  const host=document.getElementById('traffic');
+  if(!host) return;
+  const by={};
+  CHANNEL_DATA.filter(r=>r.Date>=fromS && r.Date<=toS).forEach(r=>{
+    const c=by[r.Channel]||(by[r.Channel]={sessions:0,rev:0,buys:0});
+    c.sessions+=+r.Sessions||0; c.rev+=+r.Revenue||0; c.buys+=+r.Purchases||0;
+  });
+  const traffic=Object.entries(by).map(([k,v])=>({k,v:v.sessions,rev:v.rev,buys:v.buys,
+    c:CHANNEL_COLOUR[k]||'#5f7488'})).filter(t=>t.v>0).sort((a,b)=>b.v-a.v);
+  if(!traffic.length){
+    host.innerHTML='<div class="notes">No channel data in this range. GA4 channel history starts 15 Jul 2026.</div>';
+    return;
+  }
+  renderDonut(host,traffic);
+  const hint=document.getElementById('traffic-hint');
+  if(hint){
+    const top=traffic[0];
+    hint.innerHTML='Sessions by GA4 channel group, '+fmt(traffic.reduce((a,b)=>a+b.v,0))
+      +' in range. <b>'+esc(top.k)+'</b> leads with '+fmt(top.v)+' sessions.';
+  }
+  const ch=document.getElementById('channels');
+  if(ch){
+    const withRev=traffic.filter(t=>t.rev>0).sort((a,b)=>b.rev-a.rev);
+    const totRev=withRev.reduce((a,b)=>a+b.rev,0);
+    ch.innerHTML=withRev.length
+      ? '<table><thead><tr><th>Channel</th><th>Revenue</th><th>Share</th>'
+        +'<th>Orders</th><th>Sessions</th><th>Conv.</th></tr></thead><tbody>'
+        +withRev.map(t=>'<tr><td><span style="display:inline-block;width:8px;height:8px;'
+          +'border-radius:2px;background:'+t.c+';margin-right:7px"></span>'+esc(t.k)+'</td>'
+          +'<td>'+money(t.rev,2)+'</td><td>'+pct(totRev?t.rev/totRev:0,0)+'</td>'
+          +'<td>'+fmt(t.buys)+'</td><td>'+fmt(t.v)+'</td>'
+          +'<td>'+pct(t.v?t.buys/t.v:0,2)+'</td></tr>').join('')
+        +'</tbody></table>'
+        +'<div class="notes" style="font-size:11.5px">GA4 last-click attribution, so a '
+        +'sale is credited to the last channel before it. That undercounts email, which '
+        +'often starts the journey and gets the credit only if it also finishes it. '
+        +'Totals here will not equal Shopify sales.</div>'
+      : '<div class="notes">No attributed revenue in this range.</div>';
+  }
+}
+
+function renderDonut(host,traffic){
   const tot=traffic.reduce((a,b)=>a+b.v,0),R=64,r=40,cx=80,cy=80;let a0=-Math.PI/2,seg='';
   traffic.forEach(t=>{const a1=a0+2*Math.PI*t.v/tot;
     const x0=cx+R*Math.cos(a0),y0=cy+R*Math.sin(a0),x1=cx+R*Math.cos(a1),y1=cy+R*Math.sin(a1);
@@ -652,14 +705,14 @@ const traffic=[
     seg+=`<path d="M${x0} ${y0} A${R} ${R} 0 ${big} 1 ${x1} ${y1} L${xi1} ${yi1} A${r} ${r} 0 ${big} 0 ${xi0} ${yi0} Z" fill="${t.c}"/>`;
     a0=a1;});
   let leg=traffic.map(t=>`<div style="display:flex;justify-content:space-between;font-size:12.5px;margin:7px 0">
-    <span><i style="display:inline-block;width:11px;height:11px;border-radius:3px;background:${t.c};margin-right:8px;vertical-align:-1px"></i>${t.k}</span><b>${fmt(t.v)} · ${pct(t.v/tot,0)}</b></div>`).join('');
-  document.getElementById('traffic').innerHTML=
+    <span><i style="display:inline-block;width:11px;height:11px;border-radius:3px;background:${t.c};margin-right:8px;vertical-align:-1px"></i>${esc(t.k)}</span><b>${fmt(t.v)} · ${pct(t.v/tot,0)}</b></div>`).join('');
+  host.innerHTML=
     `<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
       <svg width="160" height="160" viewBox="0 0 160 160">${seg}
       <text x="80" y="76" text-anchor="middle" fill="#e8eef5" font-size="20" font-weight="700">${fmt(tot)}</text>
       <text x="80" y="94" text-anchor="middle" fill="#8fa3b8" font-size="10">sessions</text></svg>
       <div style="flex:1;min-width:150px">${leg}</div></div>`;
-})();
+}
 
 /* ---------- SALES TREND (60d) ---------- */
 const sales=[["05-27",15459.85],["05-28",1180.2],["05-29",282.2],["05-30",170.5],["05-31",56.85],["06-01",40.85],["06-02",-93.75],["06-03",-85.7],["06-04",40.85],["06-05",806.9],["06-06",0],["06-07",63.8],["06-08",83.7],["06-09",20.9],["06-10",54.3],["06-11",111.7],["06-12",0],["06-13",0],["06-14",0],["06-15",95.33],["06-16",153.18],["06-17",1016.81],["06-18",0],["06-19",174.67],["06-20",19.9],["06-21",158.56],["06-22",117.8],["06-23",0],["06-24",0],["06-25",0],["06-26",53.94],["06-27",0],["06-28",277.79],["06-29",931.39],["06-30",329.72],["07-01",82.59],["07-02",176.52],["07-03",202.62],["07-04",0],["07-05",203.58],["07-06",70.89],["07-07",1335.29],["07-08",380.7],["07-09",225.27],["07-10",56.94],["07-11",90.94],["07-12",0],["07-13",0],["07-14",584.31],["07-15",324.35],["07-16",410.41],["07-17",0],["07-18",25.86],["07-19",0],["07-20",0],["07-21",417.51],["07-22",324.54],["07-23",202.82],["07-24",556.7],["07-25",84.93],["07-26",557.55]];
@@ -693,24 +746,8 @@ function renderSubTrend(subs){
 }
 renderSubTrend(subs);
 
-/* ---------- REVENUE BY CHANNEL ---------- */
-(function(){
-  const email=1671.05+1277.80+1280.75+901.11+124.8+367.19+233.25+134.78; // 5990.73 across both platforms
-  const gAds=577.49, mAds=54.94;
-  const rows=[
-    {k:'Email — Klaviyo + Omnisend',v:email,c:'#34d39a',note:'8 sends · best ROI · free list'},
-    {k:'Paid — Google Search',v:gAds,c:'#4f9cf9',note:'ROAS 3.25×'},
-    {k:'Paid — Meta',v:mAds,c:'#a06bff',note:'ROAS 0.25×'},
-  ];
-  const mx=Math.max(...rows.map(r=>r.v));
-  document.getElementById('channels').innerHTML=rows.map(r=>`
-    <div style="margin:12px 0">
-      <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px">
-        <span><i style="width:9px;height:9px;border-radius:2px;background:${r.c};display:inline-block;margin-right:7px"></i>${r.k}</span>
-        <span><b>${money(r.v,0)}</b> <span class="src">${r.note}</span></span></div>
-      <div style="height:9px;background:#0e1620;border-radius:5px;overflow:hidden"><div style="width:${r.v/mx*100}%;height:100%;background:${r.c}"></div></div>
-    </div>`).join('') + `<div class="notes" style="font-size:11.5px">Each figure is that platform's own attribution — they overlap with Shopify's direct/organic and aren't a clean split of the $7,895 total. <b style="color:var(--up)">Email is comfortably your biggest attributed channel.</b> Direct is 63% of traffic and still untagged, so true splits need UTMs.</div>`;
-})();
+/* Revenue by channel is rendered by renderTraffic() from channels.json.
+   The hardcoded version that used to live here is gone. */
 
 /* ---------- CAMPAIGNS ---------- */
 const camps=[
