@@ -70,10 +70,14 @@ in git is the long-term store and Porter only supplies the trailing window.
    published as CSV and read via the `PORTER_CSV` secret. Confirmed
    "Porter: mapped 10 columns" in the Action log.
 
-   **`campaigns.csv` is still refreshed by hand** from a Porter pull in
-   conversation. To automate it, add a second export with
-   `google_ads_campaign_name` / `facebook_ads_campaign_name` and set
-   `CAMPAIGNS_CSV`. The collector already reads a URL there.
+   **The campaign export EXISTS but cannot run yet.** Export
+   `2a6bfdec-6366-48b3-90da-40a67646ad7b` targets a `campaigns` tab that does
+   not exist, and Porter cannot create one: it fails with "Sheet 'campaigns'
+   not found". **Mike: add a tab named exactly `campaigns` to the feed
+   spreadsheet, publish it as CSV, set the `CAMPAIGNS_CSV` secret.** Until
+   then the table runs off the committed `campaigns.csv`, refreshed by hand.
+   The collector already parses Porter's wide shape, verified against a
+   sample of the real headers.
 
    Gotchas, both cost real time once: `worksheet_id` must be
    `<spreadsheet_id>__<sheet_name>` (Porter cannot create the spreadsheet),

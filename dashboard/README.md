@@ -11,10 +11,11 @@ It's a single static `index.html` served by GitHub Pages. The page reads
 `./data.json`, an array of one object per day, which a Python collector
 rebuilds every night. No Google Sheet, no Apps Script, no login.
 
-Background docs: `ARCHITECTURE.md` (system design), `DATA-SOURCES.md`
-(which column comes from where), `STATUS.md` (state and next steps). Where
-they mention the Google Sheet / Apps Script pipeline, that path is retired;
-this README describes the current system.
+**Start with [`ARCHITECTURE.md`](ARCHITECTURE.md)** — the full picture: every
+source, who writes what and when, the accounting conventions, the Porter setup
+and every trap that has already cost time. `STATUS.md` is the current state and
+what is left to do. `DATA-SOURCES.md` predates the rewrite; its column→source
+map is still broadly useful but the two docs above are authoritative.
 
 ## How the data flows
 

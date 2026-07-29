@@ -561,6 +561,41 @@ def fetch_porter(src):
 CAMPAIGN_COLUMNS = ["Date", "Platform", "Campaign", "Spend", "Value",
                     "Clicks", "Impressions", "Conversions"]
 
+# Porter's campaign export is WIDE: one row per day carrying both platforms'
+# columns, with only one platform's campaign name filled in per row (adding
+# both campaign dimensions gives sparse rows, not a cross product). Each
+# header resolves to (platform, field) and rows are pivoted to the narrow
+# CAMPAIGN_COLUMNS shape. The hand-written narrow CSV is still accepted.
+CAMPAIGN_LABELS = {
+    ("meta", "campaign"): ("Meta", "Campaign"),
+    ("meta", "campaign name"): ("Meta", "Campaign"),
+    ("meta", "amount spent"): ("Meta", "Spend"),
+    ("meta", "purchase conversion value"): ("Meta", "Value"),
+    ("meta", "omni purchase"): ("Meta", "Conversions"),
+    ("meta", "purchases"): ("Meta", "Conversions"),
+    ("meta", "clicks"): ("Meta", "Clicks"),
+    ("meta", "impressions"): ("Meta", "Impressions"),
+    ("google", "campaign"): ("Google", "Campaign"),
+    ("google", "campaign name"): ("Google", "Campaign"),
+    ("google", "cost"): ("Google", "Spend"),
+    ("google", "conversions value"): ("Google", "Value"),
+    ("google", "conversions"): ("Google", "Conversions"),
+    ("google", "clicks"): ("Google", "Clicks"),
+    ("google", "impressions"): ("Google", "Impressions"),
+}
+
+
+def campaign_target(header):
+    """Resolve a wide-format header to (platform, field), or None."""
+    name = " ".join((header or "").strip().lower().split())
+    for prefix in sorted(PORTER_PREFIXES, key=len, reverse=True):
+        if name.startswith(prefix + " "):
+            platform = PORTER_PREFIXES[prefix]
+            if platform == "ga4":
+                return None
+            return CAMPAIGN_LABELS.get((platform, name[len(prefix) + 1:]))
+    return None
+
 
 def fetch_campaigns(src):
     """Per-campaign ad rows: date,platform,campaign,spend,value,clicks,...
@@ -582,22 +617,73 @@ def fetch_campaigns(src):
             return []
         with open(src, encoding="utf-8-sig") as f:
             text = f.read()
+    reader = csv.reader(io.StringIO(text))
+    try:
+        header = next(reader)
+    except StopIteration:
+        print("Campaigns: feed is empty")
+        return []
+
+    lower = [" ".join((h or "").strip().lower().split()) for h in header]
+    date_at = lower.index("date") if "date" in lower else None
+    if date_at is None:
+        die("Campaigns feed has no 'date' column — headers were: %s" % header[:14])
+
     rows = []
-    for row in csv.DictReader(io.StringIO(text)):
-        row = {(k or "").strip().lower(): (v or "").strip() for k, v in row.items()}
-        day = parse_day(row.get("date", ""))
-        if not day or not row.get("campaign"):
-            continue
-        rows.append({
-            "Date": day,
-            "Platform": row.get("platform", ""),
-            "Campaign": row.get("campaign", ""),
-            "Spend": to_num(row.get("spend")),
-            "Value": to_num(row.get("value")),
-            "Clicks": to_num(row.get("clicks")),
-            "Impressions": to_num(row.get("impressions")),
-            "Conversions": to_num(row.get("conversions")),
-        })
+    if "platform" in lower and "campaign" in lower:
+        # Narrow, hand-written shape.
+        idx = {n: i for i, n in enumerate(lower)}
+        get = lambda r, n: r[idx[n]].strip() if n in idx and idx[n] < len(r) else ""
+        for row in reader:
+            day = parse_day(get(row, "date"))
+            if not day or not get(row, "campaign"):
+                continue
+            rows.append({
+                "Date": day, "Platform": get(row, "platform"),
+                "Campaign": get(row, "campaign"),
+                "Spend": to_num(get(row, "spend")), "Value": to_num(get(row, "value")),
+                "Clicks": to_num(get(row, "clicks")),
+                "Impressions": to_num(get(row, "impressions")),
+                "Conversions": to_num(get(row, "conversions")),
+            })
+    else:
+        # Wide Porter shape: pivot each row into one record per platform that
+        # actually names a campaign on that row.
+        targets = {}
+        for i, h in enumerate(header):
+            if i == date_at:
+                continue
+            t = campaign_target(h)
+            if t:
+                targets[i] = t
+        platforms = sorted({p for p, _ in targets.values()})
+        if not platforms:
+            print("Campaigns: no recognised columns, headers were %s" % header[:14])
+            return []
+        print("Campaigns: wide feed, %d columns across %s"
+              % (len(targets), ", ".join(platforms)))
+        for row in reader:
+            if len(row) <= date_at:
+                continue
+            day = parse_day((row[date_at] or "").strip())
+            if not day:
+                continue
+            acc = {p: {} for p in platforms}
+            for i, (platform, field) in targets.items():
+                if i < len(row):
+                    acc[platform][field] = (row[i] or "").strip()
+            for platform, vals in acc.items():
+                name = vals.get("Campaign", "")
+                if not name:
+                    continue
+                rows.append({
+                    "Date": day, "Platform": platform, "Campaign": name,
+                    "Spend": to_num(vals.get("Spend")),
+                    "Value": to_num(vals.get("Value")),
+                    "Clicks": to_num(vals.get("Clicks")),
+                    "Impressions": to_num(vals.get("Impressions")),
+                    "Conversions": to_num(vals.get("Conversions")),
+                })
     rows.sort(key=lambda r: (r["Date"], r["Platform"], r["Campaign"]))
     return rows
 
