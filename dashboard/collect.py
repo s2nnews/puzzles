@@ -510,8 +510,13 @@ def main():
     if sessions is None:
         sessions = {}
 
+    # Omnisend allows only 55 requests/DAY. One <=59-day chunk is one request,
+    # so a short window keeps hourly runs (24/day) well inside the cap while
+    # merge_previous holds the older history. Widen it for a one-off backfill.
     omni_key = os.environ.get("OMNISEND_API_KEY", "").strip()
-    omni = fetch_omnisend(omni_key, since, today) if omni_key else {}
+    omni_days = int(os.environ.get("OMNISEND_DAYS") or 45)
+    omni_since = max(since, today - timedelta(days=omni_days))
+    omni = fetch_omnisend(omni_key, omni_since, today) if omni_key else {}
     print("Omnisend: %d days" % len(omni) if omni_key
           else "Omnisend: no OMNISEND_API_KEY, leaving email columns blank")
 

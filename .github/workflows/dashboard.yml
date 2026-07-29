@@ -1,15 +1,22 @@
 name: dashboard-data
 
+# Hourly refresh of dashboard/data.json. Actions minutes are free and
+# unlimited on public repos, so the cadence costs nothing.
+#
+# GitHub runs scheduled jobs on a best-effort basis and delays them under
+# load, so "hourly" means roughly hourly, not on the minute.
 on:
-  # Cron disabled for now: the dashboard refreshes from Michael's laptop via
-  # run_daily.py (at-logon Task Scheduler). Re-enable the schedule + set repo
-  # secrets to go fully autonomous.
-  # schedule:
-  #   - cron: "0 20 * * *"   # nightly ~06:00 Sydney
+  schedule:
+    - cron: "5 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
+
+# Never let two refreshes race each other onto the same branch.
+concurrency:
+  group: dashboard-data
+  cancel-in-progress: false
 
 jobs:
   refresh:
@@ -20,6 +27,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
+          cache-dependency-path: dashboard/requirements.txt
 
       - name: Install dependencies
         run: pip install -r dashboard/requirements.txt
@@ -27,24 +36,39 @@ jobs:
       - name: Build dashboard/data.json
         env:
           SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
+          SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
           SHOPIFY_CLIENT_ID: ${{ secrets.SHOPIFY_CLIENT_ID }}
           SHOPIFY_CLIENT_SECRET: ${{ secrets.SHOPIFY_CLIENT_SECRET }}
-          SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
           OMNISEND_API_KEY: ${{ secrets.OMNISEND_API_KEY }}
           SHIPSTATION_API_KEY: ${{ secrets.SHIPSTATION_API_KEY }}
           SHIPSTATION_API_SECRET: ${{ secrets.SHIPSTATION_API_SECRET }}
-          META_CSV: ${{ secrets.META_CSV }}
+          # Published-CSV URL of the Porter export sheet. Falls back to the
+          # committed dashboard/porter_feed.csv when unset.
+          PORTER_CSV: ${{ secrets.PORTER_CSV }}
           DAYS: ${{ vars.DASHBOARD_DAYS }}
+          OMNISEND_DAYS: ${{ vars.OMNISEND_DAYS }}
         run: python dashboard/collect.py
 
-      - name: Commit data.json if changed
+      - name: Commit data.json if it changed
         run: |
           git add dashboard/data.json
           if git diff --cached --quiet; then
             echo "No change in data.json"
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git commit -m "dashboard: nightly data refresh"
-            git push
+            exit 0
           fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "data: dashboard refresh $(date -u '+%Y-%m-%d %H:%M') UTC"
+          # The laptop's run_daily.py can push between our checkout and here.
+          for attempt in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "push rejected (attempt $attempt) — rebasing on origin/main"
+            git pull --rebase --strategy-option=ours origin main || {
+              git rebase --abort || true
+              exit 1
+            }
+          done
+          echo "could not push after 3 attempts" >&2
+          exit 1

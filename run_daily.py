@@ -98,6 +98,27 @@ def done_today(name: str) -> bool:
     return False
 
 
+def sync() -> None:
+    """Rebase onto origin before building anything.
+
+    The hourly GitHub Action also writes dashboard/data.json, so this machine
+    is not the only writer. Pulling first (and discarding any uncommitted
+    data.json, which collect.py regenerates anyway from the pulled file's
+    history) keeps the two from diverging into a merge conflict nobody is
+    watching. Offline is fine — the build still runs, the push just waits."""
+    print("\n=== sync ===", flush=True)
+    try:
+        subprocess.run(["git", "checkout", "--", "dashboard/data.json"],
+                       cwd=ROOT, check=False)
+        subprocess.run(["git", "pull", "--rebase", "--autostash"],
+                       cwd=ROOT, check=True)
+        print("=== sync: up to date with origin ===", flush=True)
+    except Exception as exc:  # noqa: BLE001 — never let sync kill the job
+        subprocess.run(["git", "rebase", "--abort"], cwd=ROOT, check=False)
+        print(f"=== sync: skipped ({exc}) — building on the local copy ===",
+              flush=True)
+
+
 INDEX_FILES = [
     "data/processed/index.json",
     "web/puzzle_index.html",
@@ -170,6 +191,9 @@ def main() -> int:
           + (f" · already done: {', '.join(skipped_done)}" if skipped_done else ""))
     if args.dry_run:
         return 0
+
+    if not args.no_push:
+        sync()
 
     results = {}
     for n in due:
