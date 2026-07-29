@@ -57,20 +57,42 @@ COLUMNS = [
     "Meta clicks", "Google spend", "Google conv value", "Google clicks",
 ]
 
-# Porter feed column -> data.json column. The feed carries Meta Ads, GA4 and
-# Google Ads on one date-keyed row (one Porter blend, all three connectors).
+# Porter feed header -> data.json column(s). The feed carries Meta Ads, GA4
+# and Google Ads on one date-keyed row (one Porter blend, all three
+# connectors), and arrives in one of two dialects:
+#   - the hand-written CSV's snake_case names, or
+#   - Porter's own export labels ("Amount spent", "Cost", ...).
+# Porter labels BOTH click columns "Clicks", so a value is a LIST and the
+# nth occurrence of a header takes the nth entry. Column order in the export
+# is Meta first, then Google — matching the blend's field order.
 PORTER_MAP = {
-    "meta_spend": "Meta spend",
-    "meta_conv_value": "Meta conv value",
-    "meta_clicks": "Meta clicks",
-    "sessions": "Sessions",
-    "cart_adds": "Sessions with cart adds",
-    "checkouts": "Sessions reached checkout",
-    "purchases": "Sessions completed checkout",
-    "google_spend": "Google spend",
-    "google_conv_value": "Google conv value",
-    "google_clicks": "Google clicks",
+    "meta_spend": ["Meta spend"],
+    "amount spent": ["Meta spend"],
+    "meta_conv_value": ["Meta conv value"],
+    "purchase conversion value": ["Meta conv value"],
+    "meta_clicks": ["Meta clicks"],
+    "google_clicks": ["Google clicks"],
+    "clicks": ["Meta clicks", "Google clicks"],
+    "sessions": ["Sessions"],
+    "cart_adds": ["Sessions with cart adds"],
+    "add to carts": ["Sessions with cart adds"],
+    "checkouts": ["Sessions reached checkout"],
+    "purchases": ["Sessions completed checkout"],
+    "ecommerce purchases": ["Sessions completed checkout"],
+    "google_spend": ["Google spend"],
+    "cost": ["Google spend"],
+    "google_conv_value": ["Google conv value"],
+    "conversions value": ["Google conv value"],
 }
+
+
+def parse_day(raw):
+    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%Y%m%d"):
+        try:
+            return datetime.strptime(raw[:10], fmt).date().isoformat()
+        except ValueError:
+            pass
+    return None
 
 
 class ShopifyAccessDenied(Exception):
@@ -421,22 +443,42 @@ def fetch_porter(src):
             return {}
         with open(src, encoding="utf-8-sig") as f:
             text = f.read()
+    reader = csv.reader(io.StringIO(text))
+    try:
+        header = next(reader)
+    except StopIteration:
+        print("Porter: feed is empty")
+        return {}
+
+    # Resolve each column position once, so duplicate headers stay distinct.
+    date_at, targets, seen = None, {}, {}
+    for i, raw in enumerate(header):
+        name = (raw or "").strip().lower()
+        if name == "date" and date_at is None:
+            date_at = i
+            continue
+        options = PORTER_MAP.get(name) or PORTER_MAP.get(name.replace(" ", "_"))
+        if not options:
+            continue
+        n = seen.get(name, 0)
+        if n < len(options):
+            targets[i] = options[n]
+            seen[name] = n + 1
+    if date_at is None:
+        die("Porter feed has no 'date' column — headers were: %s" % header[:12])
+    missing = sorted(set(sum(PORTER_MAP.values(), [])) - set(targets.values()))
+    print("Porter: mapped %d columns%s"
+          % (len(targets), (", missing " + ", ".join(missing)) if missing else ""))
+
     out = {}
-    for row in csv.DictReader(io.StringIO(text)):
-        row = {(k or "").strip().lower().replace(" ", "_"): (v or "").strip()
-               for k, v in row.items()}
-        raw = row.get("date", "")
-        day = None
-        for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%Y%m%d"):
-            try:
-                day = datetime.strptime(raw[:10], fmt).date().isoformat()
-                break
-            except ValueError:
-                pass
+    for row in reader:
+        if len(row) <= date_at:
+            continue
+        day = parse_day((row[date_at] or "").strip())
         if not day:
             continue
-        out[day] = {col: to_num(row[key])
-                    for key, col in PORTER_MAP.items() if key in row}
+        out[day] = {col: to_num(row[i].strip())
+                    for i, col in targets.items() if i < len(row)}
     return out
 
 
@@ -467,14 +509,7 @@ def fetch_campaigns(src):
     rows = []
     for row in csv.DictReader(io.StringIO(text)):
         row = {(k or "").strip().lower(): (v or "").strip() for k, v in row.items()}
-        raw = row.get("date", "")
-        day = None
-        for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%Y%m%d"):
-            try:
-                day = datetime.strptime(raw[:10], fmt).date().isoformat()
-                break
-            except ValueError:
-                pass
+        day = parse_day(row.get("date", ""))
         if not day or not row.get("campaign"):
             continue
         rows.append({
