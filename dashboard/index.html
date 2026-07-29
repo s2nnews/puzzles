@@ -158,6 +158,19 @@
   <div class="section-title">Profit — what's actually left after the real costs</div>
   <div class="grid kpis-2" id="kpis-profit"></div>
 
+  <!-- CAMPAIGNS -->
+  <div class="section-title">Campaigns — which ads are actually working</div>
+  <div class="card">
+    <h3>Per-campaign performance</h3>
+    <div class="hint">Every campaign that spent in the selected range, worst
+      ROAS last. <b>Revenue is each platform's own attribution</b>, so the two
+      are not measured the same way and neither is the same thing as a Shopify
+      order — read them for direction, not as a ledger. A campaign showing
+      spend and no revenue is either genuinely not converting or not being
+      credited; check it against total sales on the day before you judge it.</div>
+    <div id="campaigns"></div>
+  </div>
+
   <!-- ===================== PROFIT WATERFALL + CUSTOMER VALUE ===================== -->
   <div class="cols c-2" style="margin-top:14px">
     <div class="card">
@@ -428,6 +441,64 @@ function buildModel(a,p){
 }
 function prettyMD(s){const d=parseD(s);return String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
+/* ---------- CAMPAIGN TABLE ----------
+   CAMPAIGN_DATA is one row per (day, platform, campaign); this rolls the
+   selected range up per campaign and ranks by spend. */
+var CAMPAIGN_DATA = [];
+const PLATFORM_COLOUR = {Google:'#4f9cf9', Meta:'#a06bff'};
+
+function renderCampaigns(fromS,toS){
+  const host=document.getElementById('campaigns');
+  if(!host) return;
+  const rows=CAMPAIGN_DATA.filter(r=>r.Date>=fromS && r.Date<=toS);
+  if(!rows.length){
+    host.innerHTML='<div class="notes">No campaign data in this range. '
+      +'Google Ads restarted 21 Jul and Meta on 15 Jul, so pick a range inside that.</div>';
+    return;
+  }
+  const by={};
+  rows.forEach(r=>{
+    const k=r.Platform+'|'+r.Campaign;
+    const c=by[k]||(by[k]={platform:r.Platform,name:r.Campaign,
+      spend:0,value:0,clicks:0,impr:0,conv:0,days:0});
+    c.spend+=+r.Spend||0; c.value+=+r.Value||0; c.clicks+=+r.Clicks||0;
+    c.impr+=+r.Impressions||0; c.conv+=+r.Conversions||0;
+    if((+r.Spend||0)>0) c.days++;
+  });
+  const list=Object.values(by).filter(c=>c.spend>0).sort((a,b)=>b.spend-a.spend);
+  const totSpend=list.reduce((a,c)=>a+c.spend,0);
+  const totValue=list.reduce((a,c)=>a+c.value,0);
+
+  const row=c=>{
+    const roas=c.spend?c.value/c.spend:0;
+    // Below 1x the campaign is losing money on attributed revenue alone.
+    const col=roas>=2?'var(--up)':(roas>=1?'var(--warn)':'var(--down)');
+    return '<tr>'
+      +'<td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;'
+        +'background:'+(PLATFORM_COLOUR[c.platform]||'var(--faint)')+';margin-right:7px"></span>'
+        +esc(c.name)+'<div class="src">'+esc(c.platform)+' · '+c.days+' active day'+(c.days===1?'':'s')+'</div></td>'
+      +'<td>'+money(c.spend,2)+'</td>'
+      +'<td>'+money(c.value,2)+'</td>'
+      +'<td style="color:'+col+';font-weight:700">'+roas.toFixed(2)+'×</td>'
+      +'<td>'+fmt(c.conv)+'</td>'
+      +'<td>'+money(c.conv?c.spend/c.conv:0,2)+'</td>'
+      +'<td>'+fmt(c.clicks)+'</td>'
+      +'<td>'+money(c.clicks?c.spend/c.clicks:0,2)+'</td>'
+      +'</tr>';
+  };
+  const blended=totSpend?totValue/totSpend:0;
+  host.innerHTML='<table><thead><tr>'
+    +'<th>Campaign</th><th>Spend</th><th>Revenue</th><th>ROAS</th>'
+    +'<th>Conv.</th><th>Cost/conv.</th><th>Clicks</th><th>CPC</th>'
+    +'</tr></thead><tbody>'+list.map(row).join('')
+    +'<tr style="font-weight:700"><td>All campaigns</td>'
+      +'<td>'+money(totSpend,2)+'</td><td>'+money(totValue,2)+'</td>'
+      +'<td style="color:'+(blended>=1?'var(--up)':'var(--down)')+'">'+blended.toFixed(2)+'×</td>'
+      +'<td colspan="4"></td></tr>'
+    +'</tbody></table>';
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
 function renderModel(m){
   paintMoney(m.money); paintMktg(m.mktg); paintProfit(m.profit);
   renderFunnel(m.funnel); renderWaterfall(m.wf);
@@ -466,6 +537,7 @@ function initPicker(){
     const prevFrom=isoD(new Date(parseD(prevTo)-86400000*(days-1)));
     const prevR=DAILY_DATA.filter(r=>r.Date>=prevFrom && r.Date<=prevTo);
     renderModel(buildModel(aggregate(inR), aggregate(prevR)));
+    renderCampaigns(fromS,toS);
     document.getElementById('period-label').innerHTML='vs previous '+days+' days · AUD · <span style="color:var(--up)">live</span> from your daily sheet · '+prettyD(maxDate)+' latest';
     fromEl.value=fromS; toEl.value=toS;
     note.style.display= prevR.length? 'none' : 'block';
@@ -487,14 +559,19 @@ function initPicker(){
   preset(30);
 }
 
-/* ---------- BOOT: load the daily feed from ./data.json (written nightly by collect.py) ---------- */
+/* ---------- BOOT: load the feeds written by collect.py ----------
+   campaigns.json is optional — a missing or broken file leaves the campaign
+   table empty rather than taking the whole dashboard down with it. */
 (function(){
   const live=document.getElementById('dr-live');
   live.innerHTML='<span class="dot" style="background:var(--warn)"></span>loading…';
-  fetch('./data.json',{cache:'no-store'}).then(r=>r.json()).then(rows=>{
+  const grab=u=>fetch(u,{cache:'no-store'}).then(r=>r.json()).catch(()=>null);
+  Promise.all([grab('./data.json'), grab('./campaigns.json')]).then(([rows,camps])=>{
     if(Array.isArray(rows) && rows.length) DAILY_DATA=rows;
+    if(Array.isArray(camps)) CAMPAIGN_DATA=camps;
+    if(!DAILY_DATA.length) live.innerHTML='<span class="dot"></span>feed offline';
     initPicker();
-  }).catch(()=>{ live.innerHTML='<span class="dot"></span>feed offline'; initPicker(); });
+  });
 })();
 
 /* ---------- PROFIT WATERFALL ---------- */

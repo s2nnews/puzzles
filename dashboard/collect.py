@@ -37,6 +37,7 @@ import requests
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_PATH = os.path.join(HERE, "data.json")
+CAMPAIGNS_PATH = os.path.join(HERE, "campaigns.json")
 SYDNEY = ZoneInfo("Australia/Sydney")
 SHOPIFY_API_VERSION = "2025-07"
 # ShipStation stores whose shipments are Premium Puzzles' own cost. The same
@@ -439,6 +440,83 @@ def fetch_porter(src):
     return out
 
 
+CAMPAIGN_COLUMNS = ["Date", "Platform", "Campaign", "Spend", "Value",
+                    "Clicks", "Impressions", "Conversions"]
+
+
+def fetch_campaigns(src):
+    """Per-campaign ad rows: date,platform,campaign,spend,value,clicks,...
+
+    One normalised table across platforms, so the page can rank campaigns
+    against each other rather than only showing platform totals. Same
+    URL-or-path handling as the Porter feed.
+    """
+    if src.startswith("http://") or src.startswith("https://"):
+        resp = http_retry(lambda: requests.get(src, timeout=60))
+        if resp.status_code != 200:
+            die("CAMPAIGNS_CSV HTTP %s: %s" % (resp.status_code, resp.text[:200]))
+        text = resp.text
+    else:
+        if not os.path.isabs(src):
+            src = os.path.join(HERE, src)
+        if not os.path.exists(src):
+            print("Campaigns: %s not found, skipping" % src)
+            return []
+        with open(src, encoding="utf-8-sig") as f:
+            text = f.read()
+    rows = []
+    for row in csv.DictReader(io.StringIO(text)):
+        row = {(k or "").strip().lower(): (v or "").strip() for k, v in row.items()}
+        raw = row.get("date", "")
+        day = None
+        for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%Y%m%d"):
+            try:
+                day = datetime.strptime(raw[:10], fmt).date().isoformat()
+                break
+            except ValueError:
+                pass
+        if not day or not row.get("campaign"):
+            continue
+        rows.append({
+            "Date": day,
+            "Platform": row.get("platform", ""),
+            "Campaign": row.get("campaign", ""),
+            "Spend": to_num(row.get("spend")),
+            "Value": to_num(row.get("value")),
+            "Clicks": to_num(row.get("clicks")),
+            "Impressions": to_num(row.get("impressions")),
+            "Conversions": to_num(row.get("conversions")),
+        })
+    rows.sort(key=lambda r: (r["Date"], r["Platform"], r["Campaign"]))
+    return rows
+
+
+def write_campaigns(rows):
+    """Write campaigns.json, keeping any older days already published.
+
+    Same reasoning as merge_previous: Porter only retains ~30 days, so the
+    committed file is the long-term store."""
+    if not rows:
+        return
+    seen = {(r["Date"], r["Platform"], r["Campaign"]) for r in rows}
+    if os.path.exists(CAMPAIGNS_PATH):
+        try:
+            with open(CAMPAIGNS_PATH, encoding="utf-8") as f:
+                for old in json.load(f):
+                    key = (old.get("Date"), old.get("Platform"), old.get("Campaign"))
+                    if key not in seen and all(key):
+                        rows.append({k: old.get(k, "") for k in CAMPAIGN_COLUMNS})
+        except (ValueError, KeyError, TypeError):
+            pass
+    rows.sort(key=lambda r: (r["Date"], r["Platform"], r["Campaign"]))
+    with open(CAMPAIGNS_PATH, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(rows, f, indent=1)
+        f.write("\n")
+    names = sorted({r["Campaign"] for r in rows})
+    print("Campaigns: %d rows across %d campaigns -> %s"
+          % (len(rows), len(names), CAMPAIGNS_PATH))
+
+
 # ------------------------------------------------------------------- main
 
 def merge_previous(rows):
@@ -535,6 +613,9 @@ def main():
                   or "porter_feed.csv")
     porter = fetch_porter(porter_src)
     print("Porter feed: %d days from %s" % (len(porter), porter_src))
+
+    write_campaigns(fetch_campaigns(
+        os.environ.get("CAMPAIGNS_CSV", "").strip() or "campaigns.csv"))
 
     rows = []
     for day in sorted(sales):

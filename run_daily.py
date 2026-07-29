@@ -30,13 +30,13 @@ ROOT = Path(__file__).resolve().parent
 PY = sys.executable
 
 # name -> (script args, due-today predicate). weekday(): Mon=0 .. Sun=6.
-# Order matters: dict order is run order, and the dashboard goes FIRST. It
-# takes ~1 minute and publishes immediately, so a scraper stalling on a
-# block (or the laptop closing mid-run) can no longer cost us the day's
-# dashboard refresh — which is exactly what happened on 2026-07-29.
+#
+# The marketing dashboard is NOT here. Since 2026-07-29 the hourly GitHub
+# Action owns dashboard/data.json and campaigns.json outright — one writer
+# only, or the two fight over the same file. This machine just pulls their
+# work down in sync(). To force a dashboard refresh, use the "Run workflow"
+# button on the dashboard-data Action.
 JOBS = {
-    "dashboard": (["dashboard/collect.py"],
-                  lambda d: True),  # marketing dashboard data.json (needs dashboard/.env)
     "amazon": (["scrapers/amazon_bsr.py", "--max-products", "100"],
                lambda d: True),
     "ebay":   (["scrapers/ebay_sold.py"],
@@ -90,11 +90,6 @@ def done_today(name: str) -> bool:
     if name in ("trends", "global"):
         stem = "google_trends" if name == "trends" else "global_trends"
         return (ROOT / "data" / "raw" / f"{stem}_{today}.csv").exists()
-    if name == "dashboard":
-        # collect.py rewrites data.json on every run — mtime date marks it done.
-        path = ROOT / "dashboard" / "data.json"
-        return (path.exists()
-                and date.fromtimestamp(path.stat().st_mtime).isoformat() == today)
     return False
 
 
@@ -125,7 +120,7 @@ INDEX_FILES = [
     "web/puzzle_index_basic.html",
     "web/puzzle_index_global.html",
 ]
-DASHBOARD_FILES = ["dashboard/data.json"]
+# dashboard/* is deliberately absent: the hourly Action publishes it.
 
 
 def publish(today: date, files: list[str], label: str = "publish") -> bool:
@@ -195,14 +190,7 @@ def main() -> int:
     if not args.no_push:
         sync()
 
-    results = {}
-    for n in due:
-        results[n] = run(n, JOBS[n][0])
-        # Ship the dashboard the moment it is built. Everything after this is
-        # slow scraping that can stall or be cut short; the day's marketing
-        # numbers should not be hostage to it.
-        if n == "dashboard" and results[n] and not args.no_push:
-            publish(today, DASHBOARD_FILES, "dashboard")
+    results = {n: run(n, JOBS[n][0]) for n in due}
 
     built = True
     if not args.no_build:
@@ -213,7 +201,7 @@ def main() -> int:
     # Publish the fresh Index to git so the live site picks it up. Gated on a
     # successful build so we never push a half-baked or empty index.
     if built and not args.no_build and not args.no_push:
-        publish(today, INDEX_FILES + DASHBOARD_FILES, "Index")
+        publish(today, INDEX_FILES, "Index")
 
     ok = sum(results.values())
     print(f"\nSummary {today}: {ok}/{len(results)} sources ok"
