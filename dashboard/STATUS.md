@@ -63,16 +63,26 @@ in git is the long-term store and Porter only supplies the trailing window.
 
 ## The gap
 
-1. **The Porter feeds are refreshed by hand.** `porter_feed.csv` and
-   `campaigns.csv` are written from live Porter pulls in conversation; the
-   Action cannot call the Porter MCP itself. The daily blend export to
-   Google Sheets IS live (blend `9d0fa432-b119-4108-9cf3-752650090633`,
-   export `92f57adc-291c-4d84-bd5e-934d944e4b02`, sheet
-   `1M-g3Wjhhf-KoqPa6tDj5nQj2xKE-yPolD1Va0zYLa48`, 19:00 UTC daily). To
-   finish the loop: publish that sheet as CSV and set `PORTER_CSV`. A second
-   export with a campaign dimension would do the same for `CAMPAIGNS_CSV`.
-   Gotcha: `worksheet_id` must be `<spreadsheet_id>__<sheet_name>`, and
-   Porter cannot create the spreadsheet itself.
+1. **`PORTER_CSV` is DONE — the daily/funnel feed is fully automatic.**
+   Blend `9d0fa432-b119-4108-9cf3-752650090633` → export
+   `92f57adc-291c-4d84-bd5e-934d944e4b02` → sheet
+   `1M-g3Wjhhf-KoqPa6tDj5nQj2xKE-yPolD1Va0zYLa48`, 19:00 UTC daily,
+   published as CSV and read via the `PORTER_CSV` secret. Confirmed
+   "Porter: mapped 10 columns" in the Action log.
+
+   **`campaigns.csv` is still refreshed by hand** from a Porter pull in
+   conversation. To automate it, add a second export with
+   `google_ads_campaign_name` / `facebook_ads_campaign_name` and set
+   `CAMPAIGNS_CSV`. The collector already reads a URL there.
+
+   Gotchas, both cost real time once: `worksheet_id` must be
+   `<spreadsheet_id>__<sheet_name>` (Porter cannot create the spreadsheet),
+   and the published CSV's headers are `<connector> <label>` — "Meta Ads
+   Amount spent", "GA4 Sessions" — with BOTH click columns labelled
+   "Clicks". The connector prefix is what tells them apart. If a feed ever
+   goes stale, check the log for "Porter: mapped N columns": a wrong header
+   maps 0 and `merge_previous` then keeps the last good values on screen,
+   so the dashboard looks fine while quietly freezing.
 
    **Porter free tier = 3 accounts + 30-day lookback.** Meta, GA4 and Google
    Ads is exactly 3; destinations are free. No headroom. Only Meta genuinely
