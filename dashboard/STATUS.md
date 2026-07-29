@@ -61,6 +61,12 @@ in git is the long-term store and Porter only supplies the trailing window.
   Shopify, and filling that gap is what would make margin genuinely
   range-aware.
 
+## Fully automatic as of 29 Jul 2026
+
+Every column now refreshes hourly with no human in the loop: Shopify,
+Omnisend and ShipStation direct from their APIs, and Meta / GA4 / Google Ads
+via two Porter exports into a published Google Sheet.
+
 ## The gap
 
 1. **`PORTER_CSV` is DONE — the daily/funnel feed is fully automatic.**
@@ -70,14 +76,12 @@ in git is the long-term store and Porter only supplies the trailing window.
    published as CSV and read via the `PORTER_CSV` secret. Confirmed
    "Porter: mapped 10 columns" in the Action log.
 
-   **The campaign export EXISTS but cannot run yet.** Export
-   `2a6bfdec-6366-48b3-90da-40a67646ad7b` targets a `campaigns` tab that does
-   not exist, and Porter cannot create one: it fails with "Sheet 'campaigns'
-   not found". **Mike: add a tab named exactly `campaigns` to the feed
-   spreadsheet, publish it as CSV, set the `CAMPAIGNS_CSV` secret.** Until
-   then the table runs off the committed `campaigns.csv`, refreshed by hand.
-   The collector already parses Porter's wide shape, verified against a
-   sample of the real headers.
+   **`CAMPAIGNS_CSV` is DONE too.** Export
+   `2a6bfdec-6366-48b3-90da-40a67646ad7b` → the `campaigns` tab, 19:20 UTC
+   daily, published as CSV. Confirmed "Campaigns: wide feed, 12 columns
+   across Google, Meta" in the Action log. Nothing on the dashboard is
+   hand-maintained any more; `porter_feed.csv` and `campaigns.csv` remain
+   only as offline fallbacks.
 
    Gotchas, both cost real time once: `worksheet_id` must be
    `<spreadsheet_id>__<sheet_name>` (Porter cannot create the spreadsheet),

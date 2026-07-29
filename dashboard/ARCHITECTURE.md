@@ -16,7 +16,7 @@ with a date-range picker that recomputes everything for any range.
 
 ## The stack, end to end
 
-```
+```text
   Shopify Orders API ─┐
   Omnisend REST ──────┤
   ShipStation v1 ─────┤     GitHub Actions (hourly, :05)
@@ -113,8 +113,8 @@ ever drifts, the Orders-API maths is wrong.
 | `collect.py` | The collector. stdlib + requests only. |
 | `data.json` | One row per day, 26 fixed columns. **The long-term store.** |
 | `campaigns.json` | One row per day/platform/campaign. Also a long-term store. |
-| `porter_feed.csv` | Fallback daily ad/funnel feed if `PORTER_CSV` is unset. |
-| `campaigns.csv` | Fallback campaign feed if `CAMPAIGNS_CSV` is unset. |
+| `porter_feed.csv` | Offline fallback if `PORTER_CSV` is unset. Not used in production. |
+| `campaigns.csv` | Offline fallback if `CAMPAIGNS_CSV` is unset. Not used in production. |
 | `.env.example` | Template. Copy to `.env` (gitignored). |
 | `../.github/workflows/dashboard.yml` | The hourly refresh. |
 
@@ -144,7 +144,7 @@ Set in `dashboard/.env` locally, and as **repo secrets** for the Action
 | `OMNISEND_API_KEY` | yes | subscriber movement |
 | `SHIPSTATION_API_KEY` / `_SECRET` | yes | carrier cost |
 | `PORTER_CSV` | yes | published CSV of the feed sheet's `Sheet1` tab |
-| `CAMPAIGNS_CSV` | no | published CSV of the `campaigns` tab |
+| `CAMPAIGNS_CSV` | yes | published CSV of the `campaigns` tab |
 | `SHIPSTATION_STORE_IDS` | no | default `120003` |
 | `DAYS` | no | days to build, default 120 |
 | `OMNISEND_DAYS` | no | days to refresh, default 45 |
