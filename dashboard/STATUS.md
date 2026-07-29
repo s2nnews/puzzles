@@ -10,11 +10,15 @@ _Snapshot: 28 Jul 2026 (late). Update this whenever state changes._
   `./data.json` from the repo and `collect.py` (stdlib + requests) rebuilds
   it from the source APIs. Mentions of the published-CSV / Apps Script path
   in `ARCHITECTURE.md` / `DATA-SOURCES.md` describe the old system.
-- **Refresh cadence is the laptop, not the cloud.** `run_daily.py` has a
-  `dashboard` job that runs `collect.py` once a day on the existing at-logon
-  Task Scheduler trigger, and publishes `data.json` alongside the Index
-  files. The GitHub Actions cron is commented out (no repo secrets set);
-  `workflow_dispatch` still works.
+- **Refresh is hourly, from GitHub Actions** (`.github/workflows/dashboard.yml`,
+  :05 past the hour; Actions minutes are free on public repos). It is the
+  SINGLE WRITER of `dashboard/data.json` and `dashboard/campaigns.json` —
+  `run_daily.py` no longer builds or publishes them, it only rebases onto
+  origin in `sync()`. Two writers on one file had already caused divergence.
+  To force a refresh, use "Run workflow" on the dashboard-data Action.
+- **A campaign table** ranks every campaign that spent in the selected range
+  by spend, showing ROAS, cost/conversion and CPC, fed by
+  `campaigns.csv` → `campaigns.json`.
 - `data.json` covers **2026-03-30 to 2026-07-28**: sales, orders, AOV, units,
   email growth, shipping charged/cost, the GA4 funnel, and Meta + Google Ads
   spend / conversion value / clicks.
@@ -59,14 +63,21 @@ in git is the long-term store and Porter only supplies the trailing window.
 
 ## The gap
 
-1. **The Porter feed is refreshed by hand.** `dashboard/porter_feed.csv` was
-   written from a live Porter pull. `run_daily.py` runs headless and cannot
-   call the Porter MCP, so the feed only advances when someone refreshes it.
-   Fix: create a Google Sheet, attach the scheduled export from blend
-   `9d0fa432-b119-4108-9cf3-752650090633` (already created,
-   destination_type `google_sheets`), publish it as CSV, and put that URL in
-   `PORTER_CSV`. `blend_export.create` needs an existing `worksheet_id` —
+1. **The Porter feeds are refreshed by hand.** `porter_feed.csv` and
+   `campaigns.csv` are written from live Porter pulls in conversation; the
+   Action cannot call the Porter MCP itself. The daily blend export to
+   Google Sheets IS live (blend `9d0fa432-b119-4108-9cf3-752650090633`,
+   export `92f57adc-291c-4d84-bd5e-934d944e4b02`, sheet
+   `1M-g3Wjhhf-KoqPa6tDj5nQj2xKE-yPolD1Va0zYLa48`, 19:00 UTC daily). To
+   finish the loop: publish that sheet as CSV and set `PORTER_CSV`. A second
+   export with a campaign dimension would do the same for `CAMPAIGNS_CSV`.
+   Gotcha: `worksheet_id` must be `<spreadsheet_id>__<sheet_name>`, and
    Porter cannot create the spreadsheet itself.
+
+   **Porter free tier = 3 accounts + 30-day lookback.** Meta, GA4 and Google
+   Ads is exactly 3; destinations are free. No headroom. Only Meta genuinely
+   needs Porter — Google Ads links natively into GA4, and GA4 has a free API
+   with full history, so that is the escape route if Porter starts charging.
 2. **Funnel discontinuity at 15 Jul 2026.** Before that date the funnel is
    Shopify sessions; from 15 Jul it is GA4, which runs ~12% lower on
    sessions (different session definition, consent/ad-blockers). Checkouts
