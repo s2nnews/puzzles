@@ -67,6 +67,14 @@ Every column now refreshes hourly with no human in the loop: Shopify,
 Omnisend and ShipStation direct from their APIs, and Meta / GA4 / Google Ads
 via two Porter exports into a published Google Sheet.
 
+## Open action for Mike
+
+**Add a `channels` tab** to the feed spreadsheet (same as `campaigns`),
+publish it as CSV, and set the `CHANNELS_CSV` secret. Export
+`9e18c134-bfe5-4d2e-a7a2-a7ae8eed9131` already targets it. Until then the
+traffic donut and the revenue-by-channel table run off the committed
+`channels.csv`, which will go stale.
+
 ## The gap
 
 1. **`PORTER_CSV` is DONE — the daily/funnel feed is fully automatic.**

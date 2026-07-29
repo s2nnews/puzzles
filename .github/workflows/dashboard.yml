@@ -52,13 +52,14 @@ jobs:
           # committed dashboard/porter_feed.csv when unset.
           PORTER_CSV: ${{ secrets.PORTER_CSV }}
           CAMPAIGNS_CSV: ${{ secrets.CAMPAIGNS_CSV }}
+          CHANNELS_CSV: ${{ secrets.CHANNELS_CSV }}
           DAYS: ${{ vars.DASHBOARD_DAYS }}
           OMNISEND_DAYS: ${{ vars.OMNISEND_DAYS }}
         run: python dashboard/collect.py
 
       - name: Commit the feeds if they changed
         run: |
-          git add dashboard/data.json dashboard/campaigns.json
+          git add dashboard/data.json dashboard/campaigns.json dashboard/channels.json
           if git diff --cached --quiet; then
             echo "No change in data.json"
             exit 0

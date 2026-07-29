@@ -44,6 +44,7 @@ useful, but this file and `STATUS.md` are authoritative.
 | --- | --- | --- |
 | Porter export → `Sheet1` tab | Meta + GA4 + Google Ads daily rows | every 3h at :00 |
 | Porter export → `campaigns` tab | per-campaign rows, both platforms | every 3h at :10 |
+| Porter export → `channels` tab | GA4 sessions/revenue per channel group | every 3h at :20 |
 | GitHub Action `dashboard-data` | `data.json`, `campaigns.json` | every 2h at :25 |
 | `run_daily.py` (laptop) | Puzzle Index files only | at logon + 10:30 daily |
 
@@ -74,9 +75,14 @@ Action.
 | Meta spend / conv value / clicks / conversions | **Meta Ads** via Porter | from 15 Jul 2026 |
 | Google spend / conv value / clicks / conversions | **Google Ads** via Porter | from 21 Jul 2026 |
 | Per-campaign spend, revenue, conversions, clicks, impressions | Both ad platforms via Porter | `campaigns.json` |
+| Traffic donut + revenue by channel | **GA4 channel groups** via Porter | `channels.json` |
 | Email subscribes / unsubscribes | **Omnisend** | full history |
 | Shipping cost | **ShipStation** | Premium Puzzles store only |
 | Gross margin, LTV, repeat rate, packaging | Modelled constants in `index.html` | do NOT vary by range |
+
+Anything still hardcoded should be treated as suspect until proven otherwise:
+the sales-trend sparkline and the email-campaign table are the remaining
+static blocks.
 
 ### Why Shopify sales are derived, not reported
 
@@ -154,6 +160,7 @@ Set in `dashboard/.env` locally, and as **repo secrets** for the Action
 | `SHIPSTATION_API_KEY` / `_SECRET` | yes | carrier cost |
 | `PORTER_CSV` | yes | published CSV of the feed sheet's `Sheet1` tab |
 | `CAMPAIGNS_CSV` | yes | published CSV of the `campaigns` tab |
+| `CHANNELS_CSV` | yes | published CSV of the `channels` tab |
 | `SHIPSTATION_STORE_IDS` | no | default `120003` |
 | `DAYS` | no | days to build, default 120 |
 | `OMNISEND_DAYS` | no | days to refresh, default 45 |
@@ -175,6 +182,7 @@ GA4 and Google Ads from it, keep Meta only, and pull the rest from GA4 directly.
 | Blend "Premium Puzzles Dashboard Feed" | `9d0fa432-b119-4108-9cf3-752650090633` |
 | Daily export → `Sheet1` | `060ac338-aa12-4127-95d4-4bbf94299201` |
 | Campaign export → `campaigns` | `2a6bfdec-6366-48b3-90da-40a67646ad7b` |
+| Channel export → `channels` | `9e18c134-bfe5-4d2e-a7a2-a7ae8eed9131` |
 | Feed spreadsheet | `1M-g3Wjhhf-KoqPa6tDj5nQj2xKE-yPolD1Va0zYLa48` |
 | Porter account | `info@premiumpuzzles.com.au` |
 
@@ -191,7 +199,15 @@ GA4 and Google Ads from it, keep Meta only, and pull the rest from GA4 directly.
    labelled "Clicks"**. The connector prefix is what tells them apart.
    `collect.py` resolves all three dialects (our snake_case, bare labels,
    prefixed labels).
-5. **Silent staleness is the failure mode to fear.** If headers stop matching,
+5. **Never hardcode a chart that reads as live.** The traffic donut and the
+   revenue-by-channel table were hardcoded until 29 Jul 2026 and had reality
+   backwards: they claimed Direct was 63% of sessions and Email 3%, when GA4
+   reports Email as the largest channel by both sessions and revenue and
+   Direct at ~11%. It sat there looking authoritative for weeks. Michael
+   caught it only because he knew his email sends pull thousands of sessions.
+   Anything on the page that is a fixed assumption must say so on its face —
+   the gross-margin tile now reads "assumption · fixed for every range".
+6. **Silent staleness is the failure mode to fear.** If headers stop matching,
    nothing errors: zero columns map, `merge_previous` keeps the last good values
    on screen, and the dashboard looks perfectly healthy while frozen. Every run
    therefore logs `Porter: mapped N columns` and prints unrecognised header
