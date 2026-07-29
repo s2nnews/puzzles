@@ -66,23 +66,37 @@ COLUMNS = [
 # nth occurrence of a header takes the nth entry. Column order in the export
 # is Meta first, then Google — matching the blend's field order.
 PORTER_MAP = {
+    # our own CSV
     "meta_spend": ["Meta spend"],
-    "amount spent": ["Meta spend"],
     "meta_conv_value": ["Meta conv value"],
-    "purchase conversion value": ["Meta conv value"],
     "meta_clicks": ["Meta clicks"],
-    "google_clicks": ["Google clicks"],
-    "clicks": ["Meta clicks", "Google clicks"],
-    "sessions": ["Sessions"],
     "cart_adds": ["Sessions with cart adds"],
-    "add to carts": ["Sessions with cart adds"],
-    "checkouts": ["Sessions reached checkout"],
     "purchases": ["Sessions completed checkout"],
-    "ecommerce purchases": ["Sessions completed checkout"],
     "google_spend": ["Google spend"],
-    "cost": ["Google spend"],
     "google_conv_value": ["Google conv value"],
+    "google_clicks": ["Google clicks"],
+    # Porter's display labels
+    "amount spent": ["Meta spend"],
+    "purchase conversion value": ["Meta conv value"],
+    "clicks": ["Meta clicks", "Google clicks"],
+    "add to carts": ["Sessions with cart adds"],
+    "ecommerce purchases": ["Sessions completed checkout"],
+    "cost": ["Google spend"],
     "conversions value": ["Google conv value"],
+    # Porter's raw field ids
+    "facebook_ads_spend": ["Meta spend"],
+    "facebook_ads_value_omni_purchase": ["Meta conv value"],
+    "facebook_ads_clicks": ["Meta clicks"],
+    "google_analytics_4_sessions": ["Sessions"],
+    "google_analytics_4_addtocarts": ["Sessions with cart adds"],
+    "google_analytics_4_checkouts": ["Sessions reached checkout"],
+    "google_analytics_4_ecommercepurchases": ["Sessions completed checkout"],
+    "google_ads_cost_micros": ["Google spend"],
+    "google_ads_conversions_value": ["Google conv value"],
+    "google_ads_clicks": ["Google clicks"],
+    # shared by every dialect
+    "sessions": ["Sessions"],
+    "checkouts": ["Sessions reached checkout"],
 }
 
 
@@ -469,6 +483,12 @@ def fetch_porter(src):
     missing = sorted(set(sum(PORTER_MAP.values(), [])) - set(targets.values()))
     print("Porter: mapped %d columns%s"
           % (len(targets), (", missing " + ", ".join(missing)) if missing else ""))
+    if missing:
+        # Names only, never the URL — this is the difference between "the feed
+        # is stale" and "the feed is fine", which is otherwise invisible
+        # because merge_previous keeps the last good values on screen.
+        print("Porter: unmapped headers were %s"
+              % [h for h in header if h and h.strip().lower() != "date"][:16])
 
     out = {}
     for row in reader:
