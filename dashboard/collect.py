@@ -543,19 +543,35 @@ def fetch_porter(src):
     if missing:
         # Names only, never the URL — this is the difference between "the feed
         # is stale" and "the feed is fine", which is otherwise invisible
-        # because merge_previous keeps the last good values on screen.
-        print("Porter: unmapped headers were %s"
-              % [h for h in header if h and h.strip().lower() != "date"][:16])
+        # because merge_previous keeps the last good values on screen. Only
+        # genuinely unrecognised headers, or the line misleads.
+        unmapped = [h for i, h in enumerate(header)
+                    if h and i != date_at and i not in targets]
+        if unmapped:
+            print("Porter: unrecognised headers %s" % unmapped[:16])
 
-    out = {}
+    out, dropped = {}, []
     for row in reader:
         if len(row) <= date_at:
             continue
         day = parse_day((row[date_at] or "").strip())
         if not day:
             continue
-        out[day] = {col: to_num(row[i].strip())
-                    for i, col in targets.items() if i < len(row)}
+        vals = {col: to_num(row[i].strip())
+                for i, col in targets.items() if i < len(row)}
+        # An ALL-ZERO row is a broken read, not a real day: a live store never
+        # records zero sessions, and a genuine pause shows up as one zero metric
+        # beside non-zero others. Dropping it lets merge_previous keep the last
+        # good values. Zeros — unlike blanks — otherwise overwrite, and on
+        # 2026-07-30 that silently wiped a fortnight of ad and funnel data.
+        if vals and not any(v not in ("", 0) for v in vals.values()):
+            dropped.append(day)
+            continue
+        out[day] = vals
+    if dropped:
+        print("Porter: IGNORED %d all-zero row(s) (%s%s) — keeping prior values"
+              % (len(dropped), ", ".join(dropped[:5]),
+                 ", ..." if len(dropped) > 5 else ""))
     return out
 
 
@@ -771,6 +787,12 @@ def fetch_channels(src):
         day = parse_day((row[at["Date"]] or "").strip())
         name = (row[at["Channel"]] or "").strip()
         if not day or not name:
+            continue
+        # Same all-zero guard as the Porter feed: a channel with no sessions,
+        # no purchases and no revenue carries no information.
+        if not any(to_num(row[at[f]]) not in ("", 0)
+                   for f in ("Sessions", "Purchases", "Revenue")
+                   if at[f] is not None):
             continue
         rows.append({
             "Date": day, "Channel": name,
