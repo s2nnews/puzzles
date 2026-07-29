@@ -55,6 +55,9 @@ COLUMNS = [
     "Subscriber list size", "Shipping charged", "Shipping cost",
     # Added once Google Ads went live again and GA4 became the funnel source.
     "Meta clicks", "Google spend", "Google conv value", "Google clicks",
+    # Platform-reported conversion COUNTS, so paid CAC is a real division
+    # rather than attributed-revenue / AOV.
+    "Meta conversions", "Google conversions",
 ]
 
 # Porter feed header -> data.json column(s). The feed carries Meta Ads, GA4
@@ -87,6 +90,10 @@ PORTER_MAP = {
     "facebook_ads_spend": ["Meta spend"],
     "facebook_ads_value_omni_purchase": ["Meta conv value"],
     "facebook_ads_clicks": ["Meta clicks"],
+    "facebook_ads_omni_purchase": ["Meta conversions"],
+    "google_ads_conversions": ["Google conversions"],
+    "meta_conversions": ["Meta conversions"],
+    "google_conversions": ["Google conversions"],
     "google_analytics_4_sessions": ["Sessions"],
     "google_analytics_4_addtocarts": ["Sessions with cart adds"],
     "google_analytics_4_checkouts": ["Sessions reached checkout"],
@@ -113,9 +120,12 @@ PORTER_LABELS = {
     ("meta", "spend"): "Meta spend",
     ("meta", "purchase conversion value"): "Meta conv value",
     ("meta", "clicks"): "Meta clicks",
+    ("meta", "omni purchase"): "Meta conversions",
+    ("meta", "purchases"): "Meta conversions",
     ("google", "cost"): "Google spend",
     ("google", "amount spent"): "Google spend",
     ("google", "conversions value"): "Google conv value",
+    ("google", "conversions"): "Google conversions",
     ("google", "clicks"): "Google clicks",
     ("ga4", "sessions"): "Sessions",
     ("ga4", "add to carts"): "Sessions with cart adds",
@@ -755,6 +765,8 @@ def main():
             "Google spend": "",
             "Google conv value": "",
             "Google clicks": "",
+            "Meta conversions": "",
+            "Google conversions": "",
         }
         # Porter owns the ad columns, and the funnel wherever it reaches:
         # GA4 is the only funnel source now that ShopifyQL sessions are

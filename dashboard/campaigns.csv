@@ -7,6 +7,8 @@ date,platform,campaign,spend,value,clicks,impressions,conversions
 2026-07-26,Google,Search - Puzzles - Australia,42.46,183.95,95,839,3
 2026-07-27,Google,Search - Puzzles - Australia,35.04,0,72,843,0
 2026-07-28,Google,Search - Puzzles - Australia,41.81,0,78,962,0
+2026-07-29,Google,Search - Puzzles - Australia,78.71,215.48,129,1098,3
+2026-07-29,Google,Shopping - Puzzles - Australia,6.55,53.99,19,1055,1
 2026-07-15,Meta,Local 6km - Eastern Suburbs - Free Local Delivery,2.4,0,4,146,0
 2026-07-16,Meta,Local 6km - Eastern Suburbs - Free Local Delivery,20.9,0,52,932,0
 2026-07-17,Meta,Local 6km - Eastern Suburbs - Free Local Delivery,19.34,0,60,1096,0
@@ -22,3 +24,4 @@ date,platform,campaign,spend,value,clicks,impressions,conversions
 2026-07-26,Meta,PP - Retargeting + Lookalike,26.58,54.94,126,1806,1
 2026-07-27,Meta,PP - Retargeting + Lookalike,21.41,0,168,2168,0
 2026-07-28,Meta,PP - Retargeting + Lookalike,19.49,118.83,161,1923,1
+2026-07-29,Meta,PP - Retargeting + Lookalike,0,0,0,0,0
