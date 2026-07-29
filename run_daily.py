@@ -30,7 +30,13 @@ ROOT = Path(__file__).resolve().parent
 PY = sys.executable
 
 # name -> (script args, due-today predicate). weekday(): Mon=0 .. Sun=6.
+# Order matters: dict order is run order, and the dashboard goes FIRST. It
+# takes ~1 minute and publishes immediately, so a scraper stalling on a
+# block (or the laptop closing mid-run) can no longer cost us the day's
+# dashboard refresh — which is exactly what happened on 2026-07-29.
 JOBS = {
+    "dashboard": (["dashboard/collect.py"],
+                  lambda d: True),  # marketing dashboard data.json (needs dashboard/.env)
     "amazon": (["scrapers/amazon_bsr.py", "--max-products", "100"],
                lambda d: True),
     "ebay":   (["scrapers/ebay_sold.py"],
@@ -43,8 +49,6 @@ JOBS = {
                lambda d: d.weekday() == 3),
     "global": (["scrapers/global_trends.py"],
                lambda d: d.weekday() == 4),  # Fri — a day off trends to spare rate limits
-    "dashboard": (["dashboard/collect.py"],
-                  lambda d: True),  # marketing dashboard data.json (needs dashboard/.env)
 }
 
 
@@ -94,35 +98,40 @@ def done_today(name: str) -> bool:
     return False
 
 
-def publish(today: date) -> bool:
-    """Commit + push the rebuilt Index so the live site (which reads
-    origin/main) updates. Only the files the website consumes are staged.
-    A push failure (e.g. offline) logs but never fails the job — the next
-    run will catch up. This is the step that keeps the public page current;
-    without it the pipeline rebuilds locally but nothing reaches the site."""
-    files = [
-        "data/processed/index.json",
-        "web/puzzle_index.html",
-        "web/puzzle_index_basic.html",
-        "web/puzzle_index_global.html",
-        "dashboard/data.json",
-    ]
-    print("\n=== publish ===", flush=True)
+INDEX_FILES = [
+    "data/processed/index.json",
+    "web/puzzle_index.html",
+    "web/puzzle_index_basic.html",
+    "web/puzzle_index_global.html",
+]
+DASHBOARD_FILES = ["dashboard/data.json"]
+
+
+def publish(today: date, files: list[str], label: str = "publish") -> bool:
+    """Commit + push built files so the live site (which reads origin/main)
+    updates. A push failure (e.g. offline) logs but never fails the job — the
+    next run will catch up. This is the step that keeps the public pages
+    current; without it the pipeline rebuilds locally but nothing ships.
+
+    Called twice: once right after the dashboard job so its refresh is safe
+    even if a later scraper stalls or the machine sleeps, and once at the end
+    for the Index."""
+    print(f"\n=== {label} ===", flush=True)
     try:
         subprocess.run(["git", "add", *files], cwd=ROOT, check=True)
         # Nothing staged means the build produced no changes — skip quietly.
         if subprocess.run(["git", "diff", "--cached", "--quiet"],
                           cwd=ROOT).returncode == 0:
-            print("=== publish: nothing to commit ===", flush=True)
+            print(f"=== {label}: nothing to commit ===", flush=True)
             return True
         subprocess.run(["git", "commit", "-m",
-                        f"data: refresh Index {today.isoformat()}"],
+                        f"data: refresh {label} {today.isoformat()}"],
                        cwd=ROOT, check=True)
         subprocess.run(["git", "push"], cwd=ROOT, check=True)
-        print("=== publish: pushed to origin ===", flush=True)
+        print(f"=== {label}: pushed to origin ===", flush=True)
         return True
     except Exception as exc:  # noqa: BLE001 — never let publish kill the job
-        print(f"=== publish: FAILED ({exc}) — site not updated this run ===",
+        print(f"=== {label}: FAILED ({exc}) — site not updated this run ===",
               flush=True)
         return False
 
@@ -162,7 +171,14 @@ def main() -> int:
     if args.dry_run:
         return 0
 
-    results = {n: run(n, JOBS[n][0]) for n in due}
+    results = {}
+    for n in due:
+        results[n] = run(n, JOBS[n][0])
+        # Ship the dashboard the moment it is built. Everything after this is
+        # slow scraping that can stall or be cut short; the day's marketing
+        # numbers should not be hostage to it.
+        if n == "dashboard" and results[n] and not args.no_push:
+            publish(today, DASHBOARD_FILES, "dashboard")
 
     built = True
     if not args.no_build:
@@ -173,7 +189,7 @@ def main() -> int:
     # Publish the fresh Index to git so the live site picks it up. Gated on a
     # successful build so we never push a half-baked or empty index.
     if built and not args.no_build and not args.no_push:
-        publish(today)
+        publish(today, INDEX_FILES + DASHBOARD_FILES, "Index")
 
     ok = sum(results.values())
     print(f"\nSummary {today}: {ok}/{len(results)} sources ok"
