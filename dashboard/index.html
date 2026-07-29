@@ -199,7 +199,7 @@
   <div class="cols c-fun">
     <div class="card">
       <h3>Session → Purchase funnel</h3>
-      <div class="hint">Absolute numbers, % of all sessions, and step-to-step conversion. Previous-period figure in grey. The final step is <b>actual Shopify orders (94)</b> — the same number as the Orders tile up top, so there's one source of truth for a sale. It can slightly exceed session-tracked checkouts because some orders complete without a tracked web session (app, phone, repeat direct).</div>
+      <div class="hint" id="funnel-hint">Absolute numbers, % of all sessions, and step-to-step conversion. Previous-period figure in grey. The final step is <b>actual Shopify orders</b> — the same number as the Orders tile up top, so there's one source of truth for a sale. It can exceed session-tracked checkouts because some orders complete without a tracked web session (app, phone, repeat direct).</div>
       <div class="funnel" id="funnel"></div>
     </div>
     <div class="card">
@@ -450,6 +450,26 @@ function buildModel(a,p){
 }
 function prettyMD(s){const d=parseD(s);return String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
+/* The funnel's session counts come from Shopify before this date and GA4
+   after it — Shopify Basic cut off the ShopifyQL sessions dataset, and GA4
+   via Porter only reaches back to here. GA4 runs ~12% lower by definition,
+   so a range spanning the switch sums two different rulers. */
+const SESSION_SOURCE_SWITCH='2026-07-15';
+
+function noteFunnelSource(fromS,toS){
+  const hint=document.getElementById('funnel-hint');
+  if(!hint || hint.dataset.base===undefined) if(hint) hint.dataset.base=hint.innerHTML;
+  if(!hint) return;
+  const mixed = fromS < SESSION_SOURCE_SWITCH && toS >= SESSION_SOURCE_SWITCH;
+  const pre   = toS < SESSION_SOURCE_SWITCH;
+  hint.innerHTML=hint.dataset.base
+    +(mixed?' <span style="color:var(--warn)">Heads up: sessions are Shopify\'s count before '
+      +prettyD(SESSION_SOURCE_SWITCH)+' and GA4\'s after it. GA4 counts ~12% lower, so a range '
+      +'crossing that date mixes two rulers and will not match the channel donut.</span>'
+     :pre?' <span class="src">Sessions here are Shopify\'s count (pre-GA4).</span>'
+     :' <span class="src">Sessions from GA4.</span>');
+}
+
 /* ---------- CAMPAIGN TABLE ----------
    CAMPAIGN_DATA is one row per (day, platform, campaign); this rolls the
    selected range up per campaign and ranks by spend. */
@@ -548,6 +568,7 @@ function initPicker(){
     renderModel(buildModel(aggregate(inR), aggregate(prevR)));
     renderCampaigns(fromS,toS);
     renderTraffic(fromS,toS);
+    noteFunnelSource(fromS,toS);
     document.getElementById('period-label').innerHTML='vs previous '+days+' days · AUD · <span style="color:var(--up)">live</span> from your daily sheet · '+prettyD(maxDate)+' latest';
     fromEl.value=fromS; toEl.value=toS;
     note.style.display= prevR.length? 'none' : 'block';
@@ -657,8 +678,9 @@ const CHANNEL_COLOUR={
 function renderTraffic(fromS,toS){
   const host=document.getElementById('traffic');
   if(!host) return;
+  const inR=CHANNEL_DATA.filter(r=>r.Date>=fromS && r.Date<=toS);
   const by={};
-  CHANNEL_DATA.filter(r=>r.Date>=fromS && r.Date<=toS).forEach(r=>{
+  inR.forEach(r=>{
     const c=by[r.Channel]||(by[r.Channel]={sessions:0,rev:0,buys:0});
     c.sessions+=+r.Sessions||0; c.rev+=+r.Revenue||0; c.buys+=+r.Purchases||0;
   });
@@ -671,9 +693,17 @@ function renderTraffic(fromS,toS){
   renderDonut(host,traffic);
   const hint=document.getElementById('traffic-hint');
   if(hint){
-    const top=traffic[0];
+    const top=traffic[0], covFrom=inR.reduce((m,r)=>r.Date<m?r.Date:m,inR[0].Date);
+    // The funnel above counts Shopify sessions before 15 Jul 2026 and GA4
+    // after, but channel data only exists for the GA4 era. Over a range that
+    // spans the switch the two totals CANNOT agree, so say so rather than
+    // leave two different session counts side by side unexplained.
+    const short = covFrom>fromS;
     hint.innerHTML='Sessions by GA4 channel group, '+fmt(traffic.reduce((a,b)=>a+b.v,0))
-      +' in range. <b>'+esc(top.k)+'</b> leads with '+fmt(top.v)+' sessions.';
+      +(short?' from '+prettyD(covFrom)+' onward':' in range')
+      +'. <b>'+esc(top.k)+'</b> leads with '+fmt(top.v)+' sessions.'
+      +(short?' <span style="color:var(--warn)">GA4 channel data starts '+prettyD(covFrom)
+        +', so this covers only part of the selected range and will read lower than the funnel.</span>':'');
   }
   const ch=document.getElementById('channels');
   if(ch){
