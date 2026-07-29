@@ -1,13 +1,19 @@
 name: dashboard-data
 
-# Hourly refresh of dashboard/data.json. Actions minutes are free and
-# unlimited on public repos, so the cadence costs nothing.
+# Two-hourly refresh of dashboard/data.json and campaigns.json.
 #
-# GitHub runs scheduled jobs on a best-effort basis and delays them under
-# load, so "hourly" means roughly hourly, not on the minute.
+# Cadence reasoning: Shopify, Omnisend and ShipStation are read live, so the
+# sales side genuinely moves between runs. The ad and funnel columns come
+# from Porter's Google Sheet, which only refreshes every 3 hours (:00 and
+# :10), so running much more often than that just re-reads the same numbers
+# and adds commit noise. :25 lands shortly after each Porter write.
+#
+# Actions minutes are free and unlimited on public repos, so the cost is
+# commit noise rather than money. GitHub runs schedules best-effort and
+# delays them under load, so treat these times as approximate.
 on:
   schedule:
-    - cron: "5 * * * *"
+    - cron: "25 */2 * * *"
   workflow_dispatch:
 
 permissions:

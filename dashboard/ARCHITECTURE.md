@@ -40,12 +40,21 @@ useful, but this file and `STATUS.md` are authoritative.
 
 ## Refresh cadence, and who writes what
 
-| Writer | Writes | When |
+| Writer | Writes | When (UTC) |
 | --- | --- | --- |
-| GitHub Action `dashboard-data` | `data.json`, `campaigns.json` | hourly at :05 |
-| Porter scheduled export | `Sheet1` tab of the feed spreadsheet | 19:00 UTC daily |
-| Porter scheduled export | `campaigns` tab | 19:20 UTC daily |
+| Porter export → `Sheet1` tab | Meta + GA4 + Google Ads daily rows | every 3h at :00 |
+| Porter export → `campaigns` tab | per-campaign rows, both platforms | every 3h at :10 |
+| GitHub Action `dashboard-data` | `data.json`, `campaigns.json` | every 2h at :25 |
 | `run_daily.py` (laptop) | Puzzle Index files only | at logon + 10:30 daily |
+
+**Why these intervals.** Shopify, Omnisend and ShipStation are read live on
+every Action run, so the sales side genuinely changes between runs — that is
+what justifies a frequent cadence. The ad and funnel columns cannot be fresher
+than Porter's sheet, so running the Action far more often than Porter only
+re-reads identical numbers and adds commit noise. Worst-case staleness is about
+3h for ad/funnel data and 2h for sales. Google Ads is itself ingested with a
+delay and is only really settled for yesterday, so chasing minutes there buys
+nothing.
 
 **The Action is the SINGLE WRITER of the dashboard files.** `run_daily.py`
 deliberately does not build or publish them — two writers on one file caused
