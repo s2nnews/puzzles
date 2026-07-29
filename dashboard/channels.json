@@ -737,7 +737,7 @@
  {
   "Date": "2026-07-29",
   "Channel": "Cross-network",
-  "Sessions": 56,
+  "Sessions": 57,
   "Purchases": 1,
   "Revenue": 29.66
  },
@@ -751,7 +751,7 @@
  {
   "Date": "2026-07-29",
   "Channel": "Email",
-  "Sessions": 66,
+  "Sessions": 67,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -772,16 +772,16 @@
  {
   "Date": "2026-07-29",
   "Channel": "Paid Search",
-  "Sessions": 80,
+  "Sessions": 82,
   "Purchases": 1,
   "Revenue": 115.93
  },
  {
   "Date": "2026-07-29",
   "Channel": "Paid Shopping",
-  "Sessions": 11,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 12,
+  "Purchases": 1,
+  "Revenue": 53.99
  },
  {
   "Date": "2026-07-29",
