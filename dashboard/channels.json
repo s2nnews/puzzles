@@ -807,14 +807,14 @@
  {
   "Date": "2026-07-30",
   "Channel": "Cross-network",
-  "Sessions": 58,
+  "Sessions": 60,
   "Purchases": 1,
   "Revenue": 34.95
  },
  {
   "Date": "2026-07-30",
   "Channel": "Direct",
-  "Sessions": 13,
+  "Sessions": 15,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -835,7 +835,7 @@
  {
   "Date": "2026-07-30",
   "Channel": "Paid Search",
-  "Sessions": 55,
+  "Sessions": 60,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -849,14 +849,14 @@
  {
   "Date": "2026-07-30",
   "Channel": "Referral",
-  "Sessions": 6,
+  "Sessions": 7,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-07-30",
   "Channel": "Unassigned",
-  "Sessions": 143,
+  "Sessions": 145,
   "Purchases": 3,
   "Revenue": 247.42
  }
