@@ -807,57 +807,57 @@
  {
   "Date": "2026-07-30",
   "Channel": "Cross-network",
-  "Sessions": 36,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 48,
+  "Purchases": 1,
+  "Revenue": 34.95
  },
  {
   "Date": "2026-07-30",
   "Channel": "Direct",
-  "Sessions": 7,
+  "Sessions": 11,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-07-30",
   "Channel": "Email",
-  "Sessions": 13,
+  "Sessions": 16,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-07-30",
   "Channel": "Organic Search",
-  "Sessions": 10,
+  "Sessions": 15,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-07-30",
   "Channel": "Paid Search",
-  "Sessions": 30,
+  "Sessions": 38,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-07-30",
   "Channel": "Paid Shopping",
-  "Sessions": 14,
+  "Sessions": 29,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-07-30",
   "Channel": "Referral",
-  "Sessions": 3,
+  "Sessions": 5,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-07-30",
   "Channel": "Unassigned",
-  "Sessions": 80,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 110,
+  "Purchases": 3,
+  "Revenue": 247.42
  }
 ]
