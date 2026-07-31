@@ -3696,8 +3696,8 @@
   "Net sales": 0,
   "Total sales": 0,
   "AOV": "",
-  "Sessions": 68,
-  "Sessions with cart adds": 1,
+  "Sessions": 105,
+  "Sessions with cart adds": 5,
   "Sessions reached checkout": 0,
   "Sessions completed checkout": 0,
   "Conversion rate": 0.0,
@@ -3711,9 +3711,9 @@
   "Shipping charged": 0,
   "Shipping cost": 76.67,
   "Meta clicks": 0,
-  "Google spend": 23.09,
+  "Google spend": 37.21,
   "Google conv value": 0,
-  "Google clicks": 46,
+  "Google clicks": 74,
   "Meta conversions": 0,
   "Google conversions": 0
  }
