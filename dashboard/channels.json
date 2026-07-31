@@ -807,44 +807,44 @@
  {
   "Date": "2026-07-30",
   "Channel": "Cross-network",
-  "Sessions": 60,
-  "Purchases": 1,
-  "Revenue": 34.95
- },
- {
-  "Date": "2026-07-30",
-  "Channel": "Direct",
-  "Sessions": 16,
+  "Sessions": 1,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-07-30",
+  "Channel": "Direct",
+  "Sessions": 15,
+  "Purchases": 1,
+  "Revenue": 128.88
+ },
+ {
+  "Date": "2026-07-30",
   "Channel": "Email",
-  "Sessions": 20,
+  "Sessions": 21,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-07-30",
   "Channel": "Organic Search",
-  "Sessions": 22,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 28,
+  "Purchases": 1,
+  "Revenue": 69.94
  },
  {
   "Date": "2026-07-30",
   "Channel": "Paid Search",
-  "Sessions": 60,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 93,
+  "Purchases": 1,
+  "Revenue": 34.95
  },
  {
   "Date": "2026-07-30",
   "Channel": "Paid Shopping",
-  "Sessions": 31,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 60,
+  "Purchases": 1,
+  "Revenue": 48.6
  },
  {
   "Date": "2026-07-30",
@@ -856,8 +856,57 @@
  {
   "Date": "2026-07-30",
   "Channel": "Unassigned",
-  "Sessions": 145,
-  "Purchases": 3,
-  "Revenue": 247.42
+  "Sessions": 3,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-31",
+  "Channel": "Cross-network",
+  "Sessions": 7,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-31",
+  "Channel": "Direct",
+  "Sessions": 4,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-31",
+  "Channel": "Email",
+  "Sessions": 5,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-31",
+  "Channel": "Organic Search",
+  "Sessions": 5,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-31",
+  "Channel": "Paid Search",
+  "Sessions": 5,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-31",
+  "Channel": "Paid Shopping",
+  "Sessions": 3,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-07-31",
+  "Channel": "Unassigned",
+  "Sessions": 15,
+  "Purchases": 0,
+  "Revenue": 0
  }
 ]
