@@ -922,5 +922,47 @@
   "Sessions": 104,
   "Purchases": 0,
   "Revenue": 0
+ },
+ {
+  "Date": "2026-08-01",
+  "Channel": "Cross-network",
+  "Sessions": 11,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-01",
+  "Channel": "Direct",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-01",
+  "Channel": "Organic Search",
+  "Sessions": 5,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-01",
+  "Channel": "Paid Search",
+  "Sessions": 6,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-01",
+  "Channel": "Paid Shopping",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-01",
+  "Channel": "Unassigned",
+  "Sessions": 19,
+  "Purchases": 0,
+  "Revenue": 0
  }
 ]
