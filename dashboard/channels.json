@@ -926,14 +926,14 @@
  {
   "Date": "2026-08-01",
   "Channel": "Cross-network",
-  "Sessions": 85,
+  "Sessions": 87,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-01",
   "Channel": "Direct",
-  "Sessions": 13,
+  "Sessions": 14,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -961,7 +961,7 @@
  {
   "Date": "2026-08-01",
   "Channel": "Paid Search",
-  "Sessions": 54,
+  "Sessions": 56,
   "Purchases": 0,
   "Revenue": 0
  },
