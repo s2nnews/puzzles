@@ -926,7 +926,7 @@
  {
   "Date": "2026-08-01",
   "Channel": "Cross-network",
-  "Sessions": 82,
+  "Sessions": 85,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -961,21 +961,21 @@
  {
   "Date": "2026-08-01",
   "Channel": "Paid Search",
-  "Sessions": 50,
+  "Sessions": 54,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-01",
   "Channel": "Paid Shopping",
-  "Sessions": 24,
+  "Sessions": 27,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-01",
   "Channel": "Unassigned",
-  "Sessions": 144,
+  "Sessions": 145,
   "Purchases": 1,
   "Revenue": 165.26
  }
