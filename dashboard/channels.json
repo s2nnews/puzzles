@@ -989,9 +989,9 @@
  {
   "Date": "2026-08-02",
   "Channel": "Cross-network",
-  "Sessions": 90,
-  "Purchases": 1,
-  "Revenue": 39.99
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
  },
  {
   "Date": "2026-08-02",
@@ -1003,35 +1003,35 @@
  {
   "Date": "2026-08-02",
   "Channel": "Email",
-  "Sessions": 6,
+  "Sessions": 7,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-02",
   "Channel": "Organic Search",
-  "Sessions": 23,
+  "Sessions": 33,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-02",
   "Channel": "Organic Social",
-  "Sessions": 9,
+  "Sessions": 11,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-02",
   "Channel": "Paid Search",
-  "Sessions": 60,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 122,
+  "Purchases": 1,
+  "Revenue": 39.99
  },
  {
   "Date": "2026-08-02",
   "Channel": "Paid Shopping",
-  "Sessions": 10,
+  "Sessions": 41,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1045,7 +1045,56 @@
  {
   "Date": "2026-08-02",
   "Channel": "Unassigned",
-  "Sessions": 150,
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-03",
+  "Channel": "AI Assistant",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-03",
+  "Channel": "Cross-network",
+  "Sessions": 13,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-03",
+  "Channel": "Direct",
+  "Sessions": 5,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-03",
+  "Channel": "Organic Search",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-03",
+  "Channel": "Paid Search",
+  "Sessions": 4,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-03",
+  "Channel": "Paid Shopping",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-03",
+  "Channel": "Unassigned",
+  "Sessions": 21,
   "Purchases": 0,
   "Revenue": 0
  }
