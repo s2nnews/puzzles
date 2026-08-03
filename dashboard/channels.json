@@ -1094,14 +1094,14 @@
  {
   "Date": "2026-08-03",
   "Channel": "Paid Search",
-  "Sessions": 22,
+  "Sessions": 24,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-03",
   "Channel": "Paid Shopping",
-  "Sessions": 9,
+  "Sessions": 11,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1115,7 +1115,7 @@
  {
   "Date": "2026-08-03",
   "Channel": "Unassigned",
-  "Sessions": 105,
+  "Sessions": 106,
   "Purchases": 1,
   "Revenue": 19.95
  }
