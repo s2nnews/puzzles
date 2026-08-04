@@ -1129,14 +1129,14 @@
  {
   "Date": "2026-08-04",
   "Channel": "Direct",
-  "Sessions": 31,
+  "Sessions": 33,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-04",
   "Channel": "Email",
-  "Sessions": 391,
+  "Sessions": 393,
   "Purchases": 2,
   "Revenue": 142.84
  },
