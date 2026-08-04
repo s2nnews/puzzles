@@ -393,20 +393,30 @@
   "Date": "2026-08-04",
   "Platform": "Google",
   "Campaign": "Search - Puzzles - Australia",
-  "Spend": 18.44,
+  "Spend": 30.02,
   "Value": 0,
-  "Clicks": 14,
-  "Impressions": 134,
+  "Clicks": 20,
+  "Impressions": 225,
   "Conversions": 0
  },
  {
   "Date": "2026-08-04",
   "Platform": "Google",
   "Campaign": "Shopping - Puzzles - Australia",
-  "Spend": 6.63,
+  "Spend": 11.78,
   "Value": 0,
-  "Clicks": 19,
-  "Impressions": 1447,
+  "Clicks": 36,
+  "Impressions": 2092,
+  "Conversions": 0
+ },
+ {
+  "Date": "2026-08-04",
+  "Platform": "Meta",
+  "Campaign": "Local 6km - Eastern Suburbs - Free Local Delivery",
+  "Spend": 0,
+  "Value": 0,
+  "Clicks": 0,
+  "Impressions": 0,
   "Conversions": 0
  },
  {
