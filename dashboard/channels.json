@@ -1199,7 +1199,7 @@
  {
   "Date": "2026-08-05",
   "Channel": "Email",
-  "Sessions": 84,
+  "Sessions": 85,
   "Purchases": 2,
   "Revenue": 128.33
  },
@@ -1220,7 +1220,7 @@
  {
   "Date": "2026-08-05",
   "Channel": "Paid Shopping",
-  "Sessions": 20,
+  "Sessions": 21,
   "Purchases": 0,
   "Revenue": 0
  },
