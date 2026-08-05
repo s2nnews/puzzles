@@ -1185,56 +1185,56 @@
  {
   "Date": "2026-08-05",
   "Channel": "Cross-network",
-  "Sessions": 43,
+  "Sessions": 50,
   "Purchases": 1,
   "Revenue": 31.5
  },
  {
   "Date": "2026-08-05",
   "Channel": "Direct",
-  "Sessions": 7,
+  "Sessions": 10,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-05",
   "Channel": "Email",
-  "Sessions": 74,
+  "Sessions": 77,
   "Purchases": 2,
   "Revenue": 128.33
  },
  {
   "Date": "2026-08-05",
   "Channel": "Organic Search",
-  "Sessions": 17,
+  "Sessions": 19,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-05",
   "Channel": "Paid Search",
-  "Sessions": 5,
+  "Sessions": 10,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-05",
   "Channel": "Paid Shopping",
-  "Sessions": 6,
+  "Sessions": 12,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-05",
   "Channel": "Referral",
-  "Sessions": 1,
+  "Sessions": 2,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-05",
   "Channel": "Unassigned",
-  "Sessions": 102,
+  "Sessions": 120,
   "Purchases": 8,
   "Revenue": 449.71
  }
