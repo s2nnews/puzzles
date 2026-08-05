@@ -1192,35 +1192,35 @@
  {
   "Date": "2026-08-05",
   "Channel": "Direct",
-  "Sessions": 15,
+  "Sessions": 16,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-05",
   "Channel": "Email",
-  "Sessions": 81,
+  "Sessions": 84,
   "Purchases": 2,
   "Revenue": 128.33
  },
  {
   "Date": "2026-08-05",
   "Channel": "Organic Search",
-  "Sessions": 19,
+  "Sessions": 20,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-05",
   "Channel": "Paid Search",
-  "Sessions": 12,
+  "Sessions": 13,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-05",
   "Channel": "Paid Shopping",
-  "Sessions": 17,
+  "Sessions": 20,
   "Purchases": 0,
   "Revenue": 0
  },
