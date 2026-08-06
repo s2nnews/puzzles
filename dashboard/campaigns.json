@@ -473,10 +473,20 @@
   "Date": "2026-08-06",
   "Platform": "Google",
   "Campaign": "Shopping - Puzzles - Australia",
-  "Spend": 14.86,
+  "Spend": 20.9,
   "Value": 0,
-  "Clicks": 41,
-  "Impressions": 2715,
+  "Clicks": 57,
+  "Impressions": 3981,
+  "Conversions": 0
+ },
+ {
+  "Date": "2026-08-06",
+  "Platform": "Meta",
+  "Campaign": "PP - Retargeting + Lookalike",
+  "Spend": 0,
+  "Value": 0,
+  "Clicks": 0,
+  "Impressions": 0,
   "Conversions": 0
  }
 ]
