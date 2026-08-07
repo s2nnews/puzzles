@@ -1311,7 +1311,7 @@
  {
   "Date": "2026-08-07",
   "Channel": "Direct",
-  "Sessions": 21,
+  "Sessions": 22,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1325,7 +1325,7 @@
  {
   "Date": "2026-08-07",
   "Channel": "Email",
-  "Sessions": 27,
+  "Sessions": 28,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1353,7 +1353,7 @@
  {
   "Date": "2026-08-07",
   "Channel": "Paid Shopping",
-  "Sessions": 23,
+  "Sessions": 24,
   "Purchases": 0,
   "Revenue": 0
  },
