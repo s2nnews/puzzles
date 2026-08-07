@@ -1304,56 +1304,70 @@
  {
   "Date": "2026-08-07",
   "Channel": "Cross-network",
-  "Sessions": 8,
+  "Sessions": 12,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-07",
   "Channel": "Direct",
-  "Sessions": 10,
+  "Sessions": 13,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-07",
   "Channel": "Display",
-  "Sessions": 1,
+  "Sessions": 11,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-07",
   "Channel": "Email",
-  "Sessions": 7,
+  "Sessions": 14,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-07",
   "Channel": "Organic Search",
-  "Sessions": 2,
+  "Sessions": 6,
   "Purchases": 1,
   "Revenue": 103.44
  },
  {
   "Date": "2026-08-07",
+  "Channel": "Organic Social",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-07",
   "Channel": "Paid Search",
-  "Sessions": 4,
+  "Sessions": 10,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-07",
   "Channel": "Paid Shopping",
-  "Sessions": 2,
+  "Sessions": 5,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-07",
+  "Channel": "Referral",
+  "Sessions": 1,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-07",
   "Channel": "Unassigned",
-  "Sessions": 24,
+  "Sessions": 49,
   "Purchases": 0,
   "Revenue": 0
  }
