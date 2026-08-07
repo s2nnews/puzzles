@@ -1241,7 +1241,7 @@
  {
   "Date": "2026-08-06",
   "Channel": "Cross-network",
-  "Sessions": 61,
+  "Sessions": 3,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1255,35 +1255,35 @@
  {
   "Date": "2026-08-06",
   "Channel": "Email",
-  "Sessions": 26,
+  "Sessions": 34,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-06",
   "Channel": "Organic Search",
-  "Sessions": 11,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 32,
+  "Purchases": 1,
+  "Revenue": 34.99
  },
  {
   "Date": "2026-08-06",
   "Channel": "Organic Social",
-  "Sessions": 1,
+  "Sessions": 3,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-06",
   "Channel": "Paid Search",
-  "Sessions": 14,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 28,
+  "Purchases": 1,
+  "Revenue": 34.99
  },
  {
   "Date": "2026-08-06",
   "Channel": "Paid Shopping",
-  "Sessions": 16,
+  "Sessions": 37,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1297,8 +1297,64 @@
  {
   "Date": "2026-08-06",
   "Channel": "Unassigned",
-  "Sessions": 75,
-  "Purchases": 2,
-  "Revenue": 69.98
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-07",
+  "Channel": "Cross-network",
+  "Sessions": 8,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-07",
+  "Channel": "Direct",
+  "Sessions": 10,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-07",
+  "Channel": "Display",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-07",
+  "Channel": "Email",
+  "Sessions": 7,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-07",
+  "Channel": "Organic Search",
+  "Sessions": 2,
+  "Purchases": 1,
+  "Revenue": 103.44
+ },
+ {
+  "Date": "2026-08-07",
+  "Channel": "Paid Search",
+  "Sessions": 4,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-07",
+  "Channel": "Paid Shopping",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-07",
+  "Channel": "Unassigned",
+  "Sessions": 24,
+  "Purchases": 0,
+  "Revenue": 0
  }
 ]
