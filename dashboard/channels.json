@@ -1325,14 +1325,14 @@
  {
   "Date": "2026-08-07",
   "Channel": "Email",
-  "Sessions": 25,
+  "Sessions": 27,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-07",
   "Channel": "Organic Search",
-  "Sessions": 31,
+  "Sessions": 34,
   "Purchases": 2,
   "Revenue": 203.33
  },
@@ -1353,7 +1353,7 @@
  {
   "Date": "2026-08-07",
   "Channel": "Paid Shopping",
-  "Sessions": 19,
+  "Sessions": 23,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1367,7 +1367,7 @@
  {
   "Date": "2026-08-07",
   "Channel": "Unassigned",
-  "Sessions": 93,
+  "Sessions": 98,
   "Purchases": 1,
   "Revenue": 145.96
  }
