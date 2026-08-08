@@ -1304,37 +1304,44 @@
  {
   "Date": "2026-08-07",
   "Channel": "Cross-network",
-  "Sessions": 26,
+  "Sessions": 7,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-07",
   "Channel": "Direct",
-  "Sessions": 22,
+  "Sessions": 24,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-07",
   "Channel": "Display",
-  "Sessions": 13,
+  "Sessions": 18,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-07",
   "Channel": "Email",
-  "Sessions": 28,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 29,
+  "Purchases": 1,
+  "Revenue": 145.96
  },
  {
   "Date": "2026-08-07",
   "Channel": "Organic Search",
-  "Sessions": 34,
+  "Sessions": 39,
   "Purchases": 2,
   "Revenue": 203.33
+ },
+ {
+  "Date": "2026-08-07",
+  "Channel": "Organic Shopping",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
  },
  {
   "Date": "2026-08-07",
@@ -1346,14 +1353,14 @@
  {
   "Date": "2026-08-07",
   "Channel": "Paid Search",
-  "Sessions": 13,
+  "Sessions": 16,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-07",
   "Channel": "Paid Shopping",
-  "Sessions": 24,
+  "Sessions": 36,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1367,8 +1374,57 @@
  {
   "Date": "2026-08-07",
   "Channel": "Unassigned",
-  "Sessions": 98,
-  "Purchases": 1,
-  "Revenue": 145.96
+  "Sessions": 6,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-08",
+  "Channel": "Cross-network",
+  "Sessions": 10,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-08",
+  "Channel": "Direct",
+  "Sessions": 11,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-08",
+  "Channel": "Email",
+  "Sessions": 3,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-08",
+  "Channel": "Organic Search",
+  "Sessions": 4,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-08",
+  "Channel": "Paid Search",
+  "Sessions": 8,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-08",
+  "Channel": "Paid Shopping",
+  "Sessions": 7,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-08",
+  "Channel": "Unassigned",
+  "Sessions": 32,
+  "Purchases": 0,
+  "Revenue": 0
  }
 ]
