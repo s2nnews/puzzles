@@ -1381,14 +1381,14 @@
  {
   "Date": "2026-08-08",
   "Channel": "Cross-network",
-  "Sessions": 41,
+  "Sessions": 42,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-08",
   "Channel": "Direct",
-  "Sessions": 42,
+  "Sessions": 43,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1423,7 +1423,7 @@
  {
   "Date": "2026-08-08",
   "Channel": "Paid Shopping",
-  "Sessions": 19,
+  "Sessions": 21,
   "Purchases": 0,
   "Revenue": 0
  },
