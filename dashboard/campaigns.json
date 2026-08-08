@@ -524,19 +524,19 @@
   "Platform": "Google",
   "Campaign": "Search - Puzzles - Australia",
   "Spend": 41.77,
-  "Value": 0,
+  "Value": 37.99,
   "Clicks": 41,
   "Impressions": 312,
-  "Conversions": 0
+  "Conversions": 1
  },
  {
   "Date": "2026-08-08",
   "Platform": "Google",
   "Campaign": "Shopping - Puzzles - Australia",
-  "Spend": 12.46,
+  "Spend": 16.3,
   "Value": 0,
-  "Clicks": 35,
-  "Impressions": 1395,
+  "Clicks": 45,
+  "Impressions": 1841,
   "Conversions": 0
  }
 ]
