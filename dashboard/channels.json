@@ -1458,7 +1458,7 @@
  {
   "Date": "2026-08-09",
   "Channel": "Direct",
-  "Sessions": 83,
+  "Sessions": 86,
   "Purchases": 1,
   "Revenue": 54.99
  },
@@ -1500,14 +1500,14 @@
  {
   "Date": "2026-08-09",
   "Channel": "Paid Shopping",
-  "Sessions": 22,
+  "Sessions": 23,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-09",
   "Channel": "Paid Social",
-  "Sessions": 26,
+  "Sessions": 27,
   "Purchases": 0,
   "Revenue": 0
  },
