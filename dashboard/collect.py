@@ -449,6 +449,65 @@ def fetch_omnisend(api_key, since, today):
     return out
 
 
+def omnisend_get(api_key, path):
+    resp = http_retry(lambda: requests.get(
+        "https://api.omnisend.com" + path,
+        headers={"X-API-KEY": api_key, "Omnisend-Version": "2026-03-15"},
+        timeout=60))
+    if resp.status_code != 200:
+        die("Omnisend HTTP %s on %s: %s" % (resp.status_code, path, resp.text[:400]))
+    return resp.json()
+
+
+# The condition shape that means "every contact subscribed on email" — the
+# same population Omnisend's Contacts page calls "Email subscribers".
+def _is_email_subscribers_segment(seg):
+    groups = seg.get("conditionGroups") or []
+    if len(groups) != 1:
+        return False
+    conditions = groups[0].get("conditions") or []
+    if len(conditions) != 1:
+        return False
+    filters = conditions[0].get("filters") or []
+    if conditions[0].get("entity") != "contact" or len(filters) != 1:
+        return False
+    f = filters[0]
+    return (f.get("property") == "subscriptionStatus"
+            and f.get("operator") == "equals"
+            and f.get("value") == "subscribed"
+            and "email" in (f.get("channels") or []))
+
+
+def fetch_omnisend_list_size(api_key, segment_id=""):
+    """Current mailable list size, via a segment's contactsCount.
+
+    Omnisend's analytics API only exposes subscribe/unsubscribe EVENTS, so
+    there is no metric for the standing list size. A segment whose only rule
+    is subscriptionStatus == subscribed on email gives exactly the number the
+    Contacts page shows as "Email subscribers" (NOT "Total contacts", which
+    counts unsubscribed and non-email contacts too — 7,982 vs 8,296 on
+    2026-08-09).
+
+    Set OMNISEND_SEGMENT_ID to skip discovery and spend one request per run
+    instead of two; the daily cap is 55. Returns None rather than dying if
+    the segment is gone, so merge_previous keeps the last known value.
+    """
+    if not segment_id:
+        segments = omnisend_get(api_key, "/api/segments?limit=50").get("segments") or []
+        matches = [s for s in segments if _is_email_subscribers_segment(s)]
+        if not matches:
+            print("Omnisend: no 'subscribed on email' segment found — list size "
+                  "left blank. Create one, or set OMNISEND_SEGMENT_ID.")
+            return None
+        segment_id = matches[0]["segmentID"]
+        print("Omnisend: list-size segment '%s' (%s). Set OMNISEND_SEGMENT_ID=%s "
+              "to skip this lookup." % (matches[0].get("name"), segment_id, segment_id))
+        time.sleep(1)
+    body = omnisend_get(api_key, "/api/segments/%s/statistics" % segment_id)
+    count = body.get("contactsCount")
+    return int(count) if count is not None else None
+
+
 # ------------------------------------------------------------- ShipStation
 
 def fetch_shipstation(api_key, api_secret, since, today, store_ids):
@@ -909,6 +968,16 @@ def main():
     print("Omnisend: %d days" % len(omni) if omni_key
           else "Omnisend: no OMNISEND_API_KEY, leaving email columns blank")
 
+    # A point-in-time reading, so it is stamped on today's row only. Older
+    # days keep whatever was recorded when they were today, which is what
+    # turns this column into a real list-size history over time.
+    list_size = (fetch_omnisend_list_size(
+        omni_key, os.environ.get("OMNISEND_SEGMENT_ID", "").strip())
+        if omni_key else None)
+    if list_size is not None:
+        print("Omnisend: list size %d (email subscribers) as at %s"
+              % (list_size, today))
+
     ss_key = os.environ.get("SHIPSTATION_API_KEY", "").strip()
     ss_secret = os.environ.get("SHIPSTATION_API_SECRET", "").strip()
     store_ids = {s.strip() for s in os.environ.get(
@@ -959,7 +1028,8 @@ def main():
             "Meta spend": "",
             "Meta conv value": "",
             "Puzzles sold": units.get(day, 0),
-            "Subscriber list size": "",
+            "Subscriber list size": (list_size if list_size is not None
+                                     and day == today.isoformat() else ""),
             "Shipping charged": to_num(s.get("shipping_charges")),
             # A day ShipStation covered with no Premium Puzzles shipment cost
             # $0, not "unknown" — writing 0 rather than a blank also stops

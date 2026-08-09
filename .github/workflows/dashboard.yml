@@ -55,6 +55,11 @@ jobs:
           CHANNELS_CSV: ${{ secrets.CHANNELS_CSV }}
           DAYS: ${{ vars.DASHBOARD_DAYS }}
           OMNISEND_DAYS: ${{ vars.OMNISEND_DAYS }}
+          # Optional. The "subscribed on email" segment used for the list-size
+          # tile. Set it to 6a4a0a773d2497c30fdbbf11 to skip the discovery
+          # lookup and spend one Omnisend request per run instead of two
+          # (the API allows 55/day; this workflow runs 12 times).
+          OMNISEND_SEGMENT_ID: ${{ vars.OMNISEND_SEGMENT_ID }}
         run: python dashboard/collect.py
 
       - name: Commit the feeds if they changed

@@ -224,7 +224,7 @@
       <h3>List health</h3>
       <div class="hint">Your best-ROI channel (inherited list, $0 acquisition). The number to protect is the <b>engaged</b> list &amp; open rate — not raw count.</div>
       <div class="big2" style="margin:10px 0 4px">
-        <div class="stat"><div class="v">11,822</div><div class="k">Subscribed contacts (engaged)</div></div>
+        <div class="stat"><div class="v" id="sub-size">—</div><div class="k" id="sub-size-k">Email subscribers</div></div>
         <div class="stat"><div class="v" id="sub-net">−72</div><div class="k" id="sub-net-k">Organic net, selected range</div></div>
       </div>
       <div id="subtrend" style="margin-top:8px"></div>
@@ -366,7 +366,12 @@ const prettyD = s => { const d=parseD(s); return d.getDate()+' '+MONTHS[d.getMon
 
 function aggregate(rows){
   const S=k=>rows.reduce((a,r)=>a+(+r[k]||0),0);
-  const last=k=>{for(let i=rows.length-1;i>=0;i--) if(rows[i][k]!=null) return +rows[i][k]; return null;};
+  // Skips blanks as well as nulls: "" would coerce to 0 and paint an empty
+  // list. Only days the collector actually stamped carry a list size.
+  const last=k=>{for(let i=rows.length-1;i>=0;i--){const v=rows[i][k];
+    if(v!=null && v!=='') return +v;} return null;};
+  const lastAt=k=>{for(let i=rows.length-1;i>=0;i--){const v=rows[i][k];
+    if(v!=null && v!=='') return rows[i].Date;} return null;};
   return {n:rows.length, rows,
     orders:S('Orders'), gross:S('Gross sales'), disc:S('Discounts'), returns:S('Returns'),
     net:S('Net sales'), total:S('Total sales'),
@@ -378,6 +383,7 @@ function aggregate(rows){
     googleRev:S('Google conv value'), googleClicks:S('Google clicks'),
     metaConv:S('Meta conversions'), googleConv:S('Google conversions'),
     listSize:last('Subscriber list size'),
+    listSizeAt:lastAt('Subscriber list size'),
     shipCharged:S('Shipping charged'), shipCost:S('Shipping cost')};
 }
 
@@ -453,7 +459,8 @@ function buildModel(a,p){
     ],
     sales:a.rows.map(r=>[prettyMD(r.Date), +r['Total sales']||0]),
     subs:a.rows.map(r=>[prettyMD(r.Date), +r['Email subscribes']||0, +r['Email unsubscribes']||0]),
-    listSize:a.listSize, netSub:a.netSub, subsIn:a.subs, unsubs:a.unsubs
+    listSize:a.listSize, listSizeAt:a.listSizeAt?prettyD(a.listSizeAt):null,
+    netSub:a.netSub, subsIn:a.subs, unsubs:a.unsubs
   };
 }
 function prettyMD(s){const d=parseD(s);return String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
@@ -543,9 +550,13 @@ function renderModel(m){
   paintSubStats(m);
 }
 
-/* Organic net for the selected range. The engaged-contact count stays static —
-   the daily sheet has no "Subscriber list size" column populated yet, so it is
-   read from Omnisend by hand. */
+/* List health, both tiles from the daily feed.
+
+   "Email subscribers" is Omnisend's own mailable count (contacts subscribed on
+   email), NOT its "Total contacts" — total includes unsubscribed and non-email
+   contacts and runs a few hundred higher, so quoting it would overstate the
+   list you can actually send to. The collector stamps it on the day it read it,
+   so the tile shows the latest reading inside the selected range. */
 function paintSubStats(m){
   const el=document.getElementById('sub-net'); if(!el) return;
   const n=Math.round(m.netSub||0);
@@ -553,6 +564,17 @@ function paintSubStats(m){
   el.style.color = n<0 ? 'var(--warn)' : n>0 ? 'var(--up)' : 'var(--ink)';
   document.getElementById('sub-net-k').innerHTML='Organic net, selected range'
     + (n<0?' <span class="pill" style="color:var(--warn);background:rgba(255,176,32,.13)">watch</span>':'');
+
+  const sz=document.getElementById('sub-size'); if(!sz) return;
+  const k=document.getElementById('sub-size-k');
+  if(m.listSize){
+    sz.textContent=fmt(m.listSize);
+    k.innerHTML='Email subscribers'+(m.listSizeAt?' <span class="tag">'+m.listSizeAt+'</span>':'');
+  }else{
+    // No reading in this range — say so rather than showing a stale number.
+    sz.textContent='—';
+    k.innerHTML='Email subscribers <span class="tag">no reading in range</span>';
+  }
 }
 
 /* ---------- DATE RANGE PICKER ---------- */
