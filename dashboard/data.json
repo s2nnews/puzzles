@@ -25,7 +25,12 @@
   "Meta clicks": "",
   "Google spend": "",
   "Google conv value": "",
-  "Google clicks": ""
+  "Google clicks": "",
+  "Meta conversions": "",
+  "Google conversions": "",
+  "COGS": "",
+  "Costed revenue": "",
+  "Costed units": ""
  },
  {
   "Date": "2026-03-31",
@@ -55,7 +60,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": "",
+  "Costed revenue": "",
+  "Costed units": ""
  },
  {
   "Date": "2026-04-01",
@@ -85,7 +93,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": "",
+  "Costed revenue": "",
+  "Costed units": ""
  },
  {
   "Date": "2026-04-02",
@@ -115,7 +126,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": "",
+  "Costed revenue": "",
+  "Costed units": ""
  },
  {
   "Date": "2026-04-03",
@@ -145,7 +159,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": "",
+  "Costed revenue": "",
+  "Costed units": ""
  },
  {
   "Date": "2026-04-04",
@@ -175,7 +192,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": "",
+  "Costed revenue": "",
+  "Costed units": ""
  },
  {
   "Date": "2026-04-05",
@@ -205,7 +225,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": "",
+  "Costed revenue": "",
+  "Costed units": ""
  },
  {
   "Date": "2026-04-06",
@@ -235,7 +258,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": "",
+  "Costed revenue": "",
+  "Costed units": ""
  },
  {
   "Date": "2026-04-07",
@@ -265,7 +291,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": "",
+  "Costed revenue": "",
+  "Costed units": ""
  },
  {
   "Date": "2026-04-08",
@@ -295,7 +324,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": "",
+  "Costed revenue": "",
+  "Costed units": ""
  },
  {
   "Date": "2026-04-09",
@@ -325,7 +357,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": "",
+  "Costed revenue": "",
+  "Costed units": ""
  },
  {
   "Date": "2026-04-10",
@@ -355,7 +390,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": "",
+  "Costed revenue": "",
+  "Costed units": ""
  },
  {
   "Date": "2026-04-11",
@@ -385,7 +423,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-04-12",
@@ -415,7 +456,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 129.75,
+  "Costed revenue": 165.85,
+  "Costed units": 3
  },
  {
   "Date": "2026-04-13",
@@ -445,7 +489,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 45.81,
+  "Costed revenue": 89.85,
+  "Costed units": 3
  },
  {
   "Date": "2026-04-14",
@@ -475,7 +522,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 3284.41,
+  "Costed revenue": 4409.75,
+  "Costed units": 185
  },
  {
   "Date": "2026-04-15",
@@ -505,7 +555,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 1417.92,
+  "Costed revenue": 1905.7,
+  "Costed units": 86
  },
  {
   "Date": "2026-04-16",
@@ -535,7 +588,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 790.47,
+  "Costed revenue": 975.55,
+  "Costed units": 43
  },
  {
   "Date": "2026-04-17",
@@ -565,7 +621,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 372.7,
+  "Costed revenue": 539.04,
+  "Costed units": 20
  },
  {
   "Date": "2026-04-18",
@@ -595,7 +654,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 554.07,
+  "Costed revenue": 859.65,
+  "Costed units": 41
  },
  {
   "Date": "2026-04-19",
@@ -625,7 +687,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 1466.51,
+  "Costed revenue": 1422.7,
+  "Costed units": 26
  },
  {
   "Date": "2026-04-20",
@@ -655,7 +720,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 320.75,
+  "Costed revenue": 349.25,
+  "Costed units": 15
  },
  {
   "Date": "2026-04-21",
@@ -685,7 +753,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 95.51,
+  "Costed revenue": 108.75,
+  "Costed units": 5
  },
  {
   "Date": "2026-04-22",
@@ -715,7 +786,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 4174.02,
+  "Costed revenue": 4582.55,
+  "Costed units": 217
  },
  {
   "Date": "2026-04-23",
@@ -745,7 +819,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 1095.56,
+  "Costed revenue": 1191.55,
+  "Costed units": 49
  },
  {
   "Date": "2026-04-24",
@@ -775,7 +852,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 436.37,
+  "Costed revenue": 475.6,
+  "Costed units": 22
  },
  {
   "Date": "2026-04-25",
@@ -805,7 +885,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 106.16,
+  "Costed revenue": 149.7,
+  "Costed units": 6
  },
  {
   "Date": "2026-04-26",
@@ -835,7 +918,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 298.22,
+  "Costed revenue": 354.2,
+  "Costed units": 16
  },
  {
   "Date": "2026-04-27",
@@ -865,7 +951,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 423.25,
+  "Costed revenue": 586.75,
+  "Costed units": 25
  },
  {
   "Date": "2026-04-28",
@@ -895,7 +984,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 308.08,
+  "Costed revenue": 380.15,
+  "Costed units": 17
  },
  {
   "Date": "2026-04-29",
@@ -925,7 +1017,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 123.22,
+  "Costed revenue": 127.7,
+  "Costed units": 6
  },
  {
   "Date": "2026-04-30",
@@ -955,7 +1050,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": -74.8,
+  "Costed revenue": -18.9,
+  "Costed units": -2
  },
  {
   "Date": "2026-05-01",
@@ -985,7 +1083,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 7.5,
+  "Costed revenue": 10.95,
+  "Costed units": 1
  },
  {
   "Date": "2026-05-02",
@@ -1015,7 +1116,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-05-03",
@@ -1045,7 +1149,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 66.73,
+  "Costed revenue": 90.75,
+  "Costed units": 5
  },
  {
   "Date": "2026-05-04",
@@ -1075,7 +1182,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 356.9,
+  "Costed revenue": 266.3,
+  "Costed units": 14
  },
  {
   "Date": "2026-05-05",
@@ -1105,7 +1215,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 101.38,
+  "Costed revenue": 116.75,
+  "Costed units": 5
  },
  {
   "Date": "2026-05-06",
@@ -1135,7 +1248,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 176.35,
+  "Costed revenue": 195.55,
+  "Costed units": 9
  },
  {
   "Date": "2026-05-07",
@@ -1165,7 +1281,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": -9.88,
+  "Costed revenue": 7,
+  "Costed units": 0
  },
  {
   "Date": "2026-05-08",
@@ -1195,7 +1314,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 17.93,
+  "Costed revenue": 29.95,
+  "Costed units": 1
  },
  {
   "Date": "2026-05-09",
@@ -1225,7 +1347,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 17.93,
+  "Costed revenue": 29.95,
+  "Costed units": 1
  },
  {
   "Date": "2026-05-10",
@@ -1255,7 +1380,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 179.88,
+  "Costed revenue": 207.55,
+  "Costed units": 9
  },
  {
   "Date": "2026-05-11",
@@ -1285,7 +1413,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 40.27,
+  "Costed revenue": 63.9,
+  "Costed units": 2
  },
  {
   "Date": "2026-05-12",
@@ -1315,7 +1446,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 357.36,
+  "Costed revenue": 415.1,
+  "Costed units": 18
  },
  {
   "Date": "2026-05-13",
@@ -1345,7 +1479,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 103.2,
+  "Costed revenue": 76.8,
+  "Costed units": 4
  },
  {
   "Date": "2026-05-14",
@@ -1375,7 +1512,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 45.93,
+  "Costed revenue": 52.9,
+  "Costed units": 2
  },
  {
   "Date": "2026-05-15",
@@ -1405,7 +1545,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 138.2,
+  "Costed revenue": 143.7,
+  "Costed units": 6
  },
  {
   "Date": "2026-05-16",
@@ -1435,7 +1578,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 157.24,
+  "Costed revenue": 191.7,
+  "Costed units": 6
  },
  {
   "Date": "2026-05-17",
@@ -1465,7 +1611,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 191.23,
+  "Costed revenue": 231.75,
+  "Costed units": 5
  },
  {
   "Date": "2026-05-18",
@@ -1495,7 +1644,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 31.05,
+  "Costed revenue": 43.9,
+  "Costed units": 2
  },
  {
   "Date": "2026-05-19",
@@ -1525,7 +1677,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 85.08,
+  "Costed revenue": 128.75,
+  "Costed units": 5
  },
  {
   "Date": "2026-05-20",
@@ -1555,7 +1710,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 55.03,
+  "Costed revenue": 91.85,
+  "Costed units": 3
  },
  {
   "Date": "2026-05-21",
@@ -1585,7 +1743,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-05-22",
@@ -1615,7 +1776,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 23.5,
+  "Costed revenue": 56.85,
+  "Costed units": 3
  },
  {
   "Date": "2026-05-23",
@@ -1645,7 +1809,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 17.93,
+  "Costed revenue": 16.95,
+  "Costed units": 1
  },
  {
   "Date": "2026-05-24",
@@ -1675,7 +1842,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 204.67,
+  "Costed revenue": 256.65,
+  "Costed units": 7
  },
  {
   "Date": "2026-05-25",
@@ -1705,7 +1875,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 553.93,
+  "Costed revenue": 704.6,
+  "Costed units": 28
  },
  {
   "Date": "2026-05-26",
@@ -1735,7 +1908,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 42.15,
+  "Costed revenue": 39.95,
+  "Costed units": 1
  },
  {
   "Date": "2026-05-27",
@@ -1765,7 +1941,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 13801.57,
+  "Costed revenue": 12157.55,
+  "Costed units": 689
  },
  {
   "Date": "2026-05-28",
@@ -1795,7 +1974,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 964.66,
+  "Costed revenue": 834,
+  "Costed units": 40
  },
  {
   "Date": "2026-05-29",
@@ -1825,7 +2007,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 158.85,
+  "Costed revenue": 198.6,
+  "Costed units": 8
  },
  {
   "Date": "2026-05-30",
@@ -1855,7 +2040,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 94.98,
+  "Costed revenue": 114.75,
+  "Costed units": 5
  },
  {
   "Date": "2026-05-31",
@@ -1885,7 +2073,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 37.66,
+  "Costed revenue": 46.9,
+  "Costed units": 2
  },
  {
   "Date": "2026-06-01",
@@ -1915,7 +2106,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 15.26,
+  "Costed revenue": 19.95,
+  "Costed units": 1
  },
  {
   "Date": "2026-06-02",
@@ -1945,7 +2139,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": -84.81,
+  "Costed revenue": -76.8,
+  "Costed units": -4
  },
  {
   "Date": "2026-06-03",
@@ -1975,7 +2172,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": -79.59,
+  "Costed revenue": -62.8,
+  "Costed units": -4
  },
  {
   "Date": "2026-06-04",
@@ -2005,7 +2205,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-06-05",
@@ -2035,7 +2238,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 925.67,
+  "Costed revenue": 779,
+  "Costed units": 0
  },
  {
   "Date": "2026-06-06",
@@ -2065,7 +2271,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-06-07",
@@ -2095,7 +2304,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 41.71,
+  "Costed revenue": 45.9,
+  "Costed units": 2
  },
  {
   "Date": "2026-06-08",
@@ -2125,7 +2337,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 34.15,
+  "Costed revenue": 29.9,
+  "Costed units": 2
  },
  {
   "Date": "2026-06-09",
@@ -2155,7 +2370,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 11.93,
+  "Costed revenue": 6.95,
+  "Costed units": 1
  },
  {
   "Date": "2026-06-10",
@@ -2185,7 +2403,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 35.49,
+  "Costed revenue": 35.9,
+  "Costed units": 2
  },
  {
   "Date": "2026-06-11",
@@ -2215,7 +2436,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 62.26,
+  "Costed revenue": 72.9,
+  "Costed units": 2
  },
  {
   "Date": "2026-06-12",
@@ -2245,7 +2469,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-06-13",
@@ -2275,7 +2502,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-06-14",
@@ -2305,7 +2535,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-06-15",
@@ -2335,7 +2568,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 85.49,
+  "Costed revenue": 69.48,
+  "Costed units": 5
  },
  {
   "Date": "2026-06-16",
@@ -2365,7 +2601,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 57.84,
+  "Costed revenue": 73.83,
+  "Costed units": 3
  },
  {
   "Date": "2026-06-17",
@@ -2395,7 +2634,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 524.92,
+  "Costed revenue": 662.21,
+  "Costed units": 23
  },
  {
   "Date": "2026-06-18",
@@ -2425,7 +2667,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-06-19",
@@ -2455,7 +2700,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 22.34,
+  "Costed revenue": 34.99,
+  "Costed units": 1
  },
  {
   "Date": "2026-06-20",
@@ -2485,7 +2733,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 17.93,
+  "Costed revenue": 9.95,
+  "Costed units": 1
  },
  {
   "Date": "2026-06-21",
@@ -2515,7 +2766,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 58.08,
+  "Costed revenue": 98.67,
+  "Costed units": 3
  },
  {
   "Date": "2026-06-22",
@@ -2545,7 +2799,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 25.95,
+  "Costed revenue": 29.95,
+  "Costed units": 1
  },
  {
   "Date": "2026-06-23",
@@ -2575,7 +2832,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-06-24",
@@ -2605,7 +2865,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-06-25",
@@ -2635,7 +2898,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-06-26",
@@ -2665,7 +2931,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 22.34,
+  "Costed revenue": 34.99,
+  "Costed units": 1
  },
  {
   "Date": "2026-06-27",
@@ -2695,7 +2964,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-06-28",
@@ -2725,7 +2997,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 168.85,
+  "Costed revenue": 300.83,
+  "Costed units": 8
  },
  {
   "Date": "2026-06-29",
@@ -2755,7 +3030,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 395.38,
+  "Costed revenue": 649.7,
+  "Costed units": 19
  },
  {
   "Date": "2026-06-30",
@@ -2785,7 +3063,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 149.13,
+  "Costed revenue": 210.27,
+  "Costed units": 6
  },
  {
   "Date": "2026-07-01",
@@ -2815,7 +3096,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 53.19,
+  "Costed revenue": 79.59,
+  "Costed units": 3
  },
  {
   "Date": "2026-07-02",
@@ -2845,7 +3129,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 108.16,
+  "Costed revenue": 153.57,
+  "Costed units": 3
  },
  {
   "Date": "2026-07-03",
@@ -2875,7 +3162,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 96.7,
+  "Costed revenue": 125.07,
+  "Costed units": 5
  },
  {
   "Date": "2026-07-04",
@@ -2905,7 +3195,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-07-05",
@@ -2935,7 +3228,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 88.01,
+  "Costed revenue": 135.83,
+  "Costed units": 5
  },
  {
   "Date": "2026-07-06",
@@ -2965,7 +3261,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 38.81,
+  "Costed revenue": 51.94,
+  "Costed units": 2
  },
  {
   "Date": "2026-07-07",
@@ -2995,7 +3294,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 689.69,
+  "Costed revenue": 1155.04,
+  "Costed units": 34
  },
  {
   "Date": "2026-07-08",
@@ -3025,7 +3327,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 154.06,
+  "Costed revenue": 256.76,
+  "Costed units": 8
  },
  {
   "Date": "2026-07-09",
@@ -3055,7 +3360,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 108.34,
+  "Costed revenue": 184.95,
+  "Costed units": 5
  },
  {
   "Date": "2026-07-10",
@@ -3085,7 +3393,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 20.42,
+  "Costed revenue": 37.99,
+  "Costed units": 1
  },
  {
   "Date": "2026-07-11",
@@ -3115,7 +3426,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-07-12",
@@ -3145,7 +3459,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-07-13",
@@ -3175,7 +3492,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-07-14",
@@ -3205,7 +3525,10 @@
   "Google conv value": "",
   "Google clicks": "",
   "Meta conversions": "",
-  "Google conversions": ""
+  "Google conversions": "",
+  "COGS": 270.59,
+  "Costed revenue": 499.67,
+  "Costed units": 17
  },
  {
   "Date": "2026-07-15",
@@ -3235,7 +3558,10 @@
   "Google conv value": 0,
   "Google clicks": 0,
   "Meta conversions": 0,
-  "Google conversions": 0
+  "Google conversions": 0,
+  "COGS": 136.57,
+  "Costed revenue": 279.55,
+  "Costed units": 9
  },
  {
   "Date": "2026-07-16",
@@ -3265,7 +3591,10 @@
   "Google conv value": 0,
   "Google clicks": 0,
   "Meta conversions": 0,
-  "Google conversions": 0
+  "Google conversions": 0,
+  "COGS": 186.46,
+  "Costed revenue": 349.77,
+  "Costed units": 11
  },
  {
   "Date": "2026-07-17",
@@ -3295,7 +3624,10 @@
   "Google conv value": 0,
   "Google clicks": 0,
   "Meta conversions": 0,
-  "Google conversions": 0
+  "Google conversions": 0,
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-07-18",
@@ -3325,7 +3657,10 @@
   "Google conv value": 0,
   "Google clicks": 0,
   "Meta conversions": 0,
-  "Google conversions": 0
+  "Google conversions": 0,
+  "COGS": 32.58,
+  "Costed revenue": 59.9,
+  "Costed units": 2
  },
  {
   "Date": "2026-07-19",
@@ -3355,7 +3690,10 @@
   "Google conv value": 0,
   "Google clicks": 0,
   "Meta conversions": 0,
-  "Google conversions": 0
+  "Google conversions": 0,
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-07-20",
@@ -3385,7 +3723,10 @@
   "Google conv value": 0,
   "Google clicks": 0,
   "Meta conversions": 0,
-  "Google conversions": 0
+  "Google conversions": 0,
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-07-21",
@@ -3415,7 +3756,10 @@
   "Google conv value": 0,
   "Google clicks": 18,
   "Meta conversions": 0,
-  "Google conversions": 0
+  "Google conversions": 0,
+  "COGS": 185.34,
+  "Costed revenue": 354.82,
+  "Costed units": 10
  },
  {
   "Date": "2026-07-22",
@@ -3445,7 +3789,10 @@
   "Google conv value": 110.97,
   "Google clicks": 51,
   "Meta conversions": 0,
-  "Google conversions": 1
+  "Google conversions": 1,
+  "COGS": 161.79,
+  "Costed revenue": 291.84,
+  "Costed units": 7
  },
  {
   "Date": "2026-07-23",
@@ -3475,7 +3822,10 @@
   "Google conv value": 126.97,
   "Google clicks": 65,
   "Meta conversions": 0,
-  "Google conversions": 2
+  "Google conversions": 2,
+  "COGS": 60.22,
+  "Costed revenue": 112.97,
+  "Costed units": 3
  },
  {
   "Date": "2026-07-24",
@@ -3505,7 +3855,10 @@
   "Google conv value": 338.78,
   "Google clicks": 62,
   "Meta conversions": 0,
-  "Google conversions": 3
+  "Google conversions": 3,
+  "COGS": 254.93,
+  "Costed revenue": 443.91,
+  "Costed units": 13
  },
  {
   "Date": "2026-07-25",
@@ -3535,7 +3888,10 @@
   "Google conv value": 0,
   "Google clicks": 73,
   "Meta conversions": 0,
-  "Google conversions": 0
+  "Google conversions": 0,
+  "COGS": 43.6,
+  "Costed revenue": 74.98,
+  "Costed units": 2
  },
  {
   "Date": "2026-07-26",
@@ -3565,7 +3921,10 @@
   "Google conv value": 183.95,
   "Google clicks": 95,
   "Meta conversions": 1,
-  "Google conversions": 3
+  "Google conversions": 3,
+  "COGS": 259.76,
+  "Costed revenue": 488.8,
+  "Costed units": 12
  },
  {
   "Date": "2026-07-27",
@@ -3595,7 +3954,10 @@
   "Google conv value": 0,
   "Google clicks": 72,
   "Meta conversions": 0,
-  "Google conversions": 0
+  "Google conversions": 0,
+  "COGS": 0,
+  "Costed revenue": 0,
+  "Costed units": 0
  },
  {
   "Date": "2026-07-28",
@@ -3625,7 +3987,10 @@
   "Google conv value": 0,
   "Google clicks": 78,
   "Meta conversions": 1,
-  "Google conversions": 0
+  "Google conversions": 0,
+  "COGS": 515.94,
+  "Costed revenue": 915.89,
+  "Costed units": 27
  },
  {
   "Date": "2026-07-29",
@@ -3636,11 +4001,11 @@
   "Net sales": 292.63,
   "Total sales": 366.33,
   "AOV": 48.77,
-  "Sessions": 288,
-  "Sessions with cart adds": 21,
-  "Sessions reached checkout": 4,
-  "Sessions completed checkout": 6,
-  "Conversion rate": 0.0208,
+  "Sessions": 177,
+  "Sessions with cart adds": 7,
+  "Sessions reached checkout": 2,
+  "Sessions completed checkout": 2,
+  "Conversion rate": 0.0113,
   "Email subscribes": 9,
   "Email unsubscribes": 6,
   "Net subscriber growth": 3,
@@ -3651,11 +4016,14 @@
   "Shipping charged": 73.7,
   "Shipping cost": 164.36,
   "Meta clicks": 0,
-  "Google spend": 101.05,
-  "Google conv value": 299.13,
-  "Google clicks": 179,
+  "Google spend": 85.26,
+  "Google conv value": 269.47,
+  "Google clicks": 148,
   "Meta conversions": 0,
-  "Google conversions": 5
+  "Google conversions": 4,
+  "COGS": 147.78,
+  "Costed revenue": 286.71,
+  "Costed units": 9
  },
  {
   "Date": "2026-07-30",
@@ -3685,7 +4053,10 @@
   "Google conv value": 83.55,
   "Google clicks": 202,
   "Meta conversions": 0,
-  "Google conversions": 2
+  "Google conversions": 2,
+  "COGS": 59.59,
+  "Costed revenue": 109.88,
+  "Costed units": 4
  },
  {
   "Date": "2026-07-31",
@@ -3715,7 +4086,10 @@
   "Google conv value": 0,
   "Google clicks": 134,
   "Meta conversions": 0,
-  "Google conversions": 0
+  "Google conversions": 0,
+  "COGS": 17.93,
+  "Costed revenue": 29.95,
+  "Costed units": 1
  },
  {
   "Date": "2026-08-01",
@@ -3745,7 +4119,10 @@
   "Google conv value": 165.26,
   "Google clicks": 189,
   "Meta conversions": 0,
-  "Google conversions": 1
+  "Google conversions": 1,
+  "COGS": 89.32,
+  "Costed revenue": 183.62,
+  "Costed units": 3
  },
  {
   "Date": "2026-08-02",
@@ -3775,7 +4152,10 @@
   "Google conv value": 39.99,
   "Google clicks": 185,
   "Meta conversions": 0,
-  "Google conversions": 1
+  "Google conversions": 1,
+  "COGS": 20.88,
+  "Costed revenue": 39.99,
+  "Costed units": 1
  },
  {
   "Date": "2026-08-03",
@@ -3805,7 +4185,10 @@
   "Google conv value": 19.95,
   "Google clicks": 130,
   "Meta conversions": 0,
-  "Google conversions": 1
+  "Google conversions": 1,
+  "COGS": 27.52,
+  "Costed revenue": 54.9,
+  "Costed units": 2
  },
  {
   "Date": "2026-08-04",
@@ -3835,7 +4218,10 @@
   "Google conv value": 74.94,
   "Google clicks": 104,
   "Meta conversions": 0,
-  "Google conversions": 1
+  "Google conversions": 1,
+  "COGS": 345.71,
+  "Costed revenue": 643.37,
+  "Costed units": 19
  },
  {
   "Date": "2026-08-05",
@@ -3865,7 +4251,10 @@
   "Google conv value": 31.5,
   "Google clicks": 102,
   "Meta conversions": 0,
-  "Google conversions": 1
+  "Google conversions": 1,
+  "COGS": 286.11,
+  "Costed revenue": 505.01,
+  "Costed units": 15
  },
  {
   "Date": "2026-08-06",
@@ -3895,7 +4284,10 @@
   "Google conv value": 138.43,
   "Google clicks": 84,
   "Meta conversions": 0,
-  "Google conversions": 2
+  "Google conversions": 2,
+  "COGS": 41.76,
+  "Costed revenue": 69.98,
+  "Costed units": 2
  },
  {
   "Date": "2026-08-07",
@@ -3925,7 +4317,10 @@
   "Google conv value": 0,
   "Google clicks": 99,
   "Meta conversions": 0,
-  "Google conversions": 0
+  "Google conversions": 0,
+  "COGS": 195.63,
+  "Costed revenue": 360.78,
+  "Costed units": 10
  },
  {
   "Date": "2026-08-08",
@@ -3955,7 +4350,10 @@
   "Google conv value": 37.99,
   "Google clicks": 105,
   "Meta conversions": 0,
-  "Google conversions": 1
+  "Google conversions": 1,
+  "COGS": 74.63,
+  "Costed revenue": 137.96,
+  "Costed units": 4
  },
  {
   "Date": "2026-08-09",
@@ -3985,6 +4383,9 @@
   "Google conv value": 0,
   "Google clicks": 32,
   "Meta conversions": 0,
-  "Google conversions": 0
+  "Google conversions": 0,
+  "COGS": 49.94,
+  "Costed revenue": 94.89,
+  "Costed units": 3
  }
 ]

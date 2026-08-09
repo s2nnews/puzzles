@@ -59,6 +59,11 @@ COLUMNS = [
     # Platform-reported conversion COUNTS, so paid CAC is a real division
     # rather than attributed-revenue / AOV.
     "Meta conversions", "Google conversions",
+    # Real cost of goods, from Shopify unit costs, aggregated to the day.
+    # ONLY the aggregate crosses into this public repo — per-SKU wholesale
+    # costs never do. "Costed revenue" and "Costed units" are the coverage
+    # base: they cover the same lines as COGS and nothing else.
+    "COGS", "Costed revenue", "Costed units",
 ]
 
 # Porter feed header -> data.json column(s). The feed carries Meta Ads, GA4
@@ -291,9 +296,12 @@ def fetch_shopifyql_sessions(store, token, days):
     return {row["day"][:10]: row for row in shopifyql(store, token, ql)}
 
 
+# Page size is 25, not 100: the line-item and refund-line sub-selections that
+# carry unit cost multiply the query's calculated cost, and 100 orders deep
+# exceeds the 1000-point limit.
 ORDERS_GQL = (
     "query($q: String!, $cursor: String) { "
-    "orders(first: 100, query: $q, after: $cursor) { "
+    "orders(first: 25, query: $q, after: $cursor) { "
     "pageInfo { hasNextPage endCursor } "
     "nodes { createdAt test taxesIncluded "
     "currentSubtotalLineItemsQuantity "
@@ -302,10 +310,28 @@ ORDERS_GQL = (
     "totalPriceSet { shopMoney { amount } } "
     "totalTaxSet { shopMoney { amount } } "
     "totalShippingPriceSet { shopMoney { amount } } "
+    "lineItems(first: 50) { nodes { quantity "
+    "discountedTotalSet { shopMoney { amount } } "
+    "variant { inventoryItem { unitCost { amount } } } } } "
     "refunds { createdAt totalRefundedSet { shopMoney { amount } } "
+    "refundLineItems(first: 50) { nodes { quantity "
+    "subtotalSet { shopMoney { amount } } "
+    "lineItem { variant { inventoryItem { unitCost { amount } } } } } } "
     "refundShippingLines(first: 10) { nodes { "
     "subtotalAmountSet { shopMoney { amount } } "
     "taxAmountSet { shopMoney { amount } } } } } } } }")
+
+
+def _unit_cost(node):
+    """unitCost off a lineItem/refundLineItem's variant, or None if unset.
+
+    None is not zero. A variant with no cost loaded must be excluded from
+    COGS and from the costed-revenue base, or it reads as pure profit and
+    silently inflates the margin.
+    """
+    variant = node.get("variant") or {}
+    cost = ((variant.get("inventoryItem") or {}).get("unitCost") or {}).get("amount")
+    return None if cost is None else float(cost)
 
 
 def _money(node, key):
@@ -336,7 +362,12 @@ def fetch_orders(store, token, since):
     def bucket(day):
         return days.setdefault(day, {
             "orders": 0, "units": 0, "gross": 0.0, "discounts": 0.0,
-            "returns": 0.0, "total": 0.0, "shipping": 0.0})
+            "returns": 0.0, "total": 0.0, "shipping": 0.0,
+            # COGS and the revenue it was earned against, counting ONLY the
+            # lines that carry a unit cost. Keeping the matching revenue is
+            # what lets the dashboard measure a real margin on the costed
+            # part and extrapolate it honestly over the rest.
+            "cogs": 0.0, "costed_rev": 0.0, "costed_units": 0})
 
     cursor, n = None, 0
     while True:
@@ -361,6 +392,18 @@ def fetch_orders(store, token, since):
                 rb["total"] -= amount
                 rb["returns"] -= amount - ship
                 rb["shipping"] -= ship
+                # Returned goods come back off COGS on the refund date, so
+                # cost stays aligned with net sales (which is already net of
+                # returns). Without this, a refund removes the revenue but
+                # leaves its cost behind and margin reads too low.
+                for rli in (refund.get("refundLineItems") or {}).get("nodes") or []:
+                    unit = _unit_cost(rli.get("lineItem") or {})
+                    if unit is None:
+                        continue
+                    qty = rli.get("quantity") or 0
+                    rb["cogs"] -= unit * qty
+                    rb["costed_rev"] -= _money(rli, "subtotalSet")
+                    rb["costed_units"] -= qty
             n += 1
             b = bucket(sydney_day(node["createdAt"]))
             b["orders"] += 1
@@ -371,6 +414,14 @@ def fetch_orders(store, token, since):
             b["discounts"] -= disc
             b["shipping"] += _money(node, "totalShippingPriceSet")
             b["total"] += _money(node, "totalPriceSet")
+            for li in (node.get("lineItems") or {}).get("nodes") or []:
+                unit = _unit_cost(li)
+                if unit is None:
+                    continue
+                qty = li.get("quantity") or 0
+                b["cogs"] += unit * qty
+                b["costed_rev"] += _money(li, "discountedTotalSet")
+                b["costed_units"] += qty
         if not conn["pageInfo"]["hasNextPage"]:
             break
         cursor = conn["pageInfo"]["endCursor"]
@@ -396,11 +447,15 @@ def derived_sales_rows(order_days, since, today):
                 "total_sales": round(b["total"], 2),
                 "average_order_value": round(net / b["orders"], 3) if b["orders"] else None,
                 "shipping_charges": round(b["shipping"], 2),
+                "cogs": round(b["cogs"], 2),
+                "costed_revenue": round(b["costed_rev"], 2),
+                "costed_units": b["costed_units"],
             }
         else:
             out[iso] = {"orders": 0, "gross_sales": 0, "discounts": 0,
                         "returns": 0, "net_sales": 0, "total_sales": 0,
-                        "average_order_value": None, "shipping_charges": 0}
+                        "average_order_value": None, "shipping_charges": 0,
+                        "cogs": 0, "costed_revenue": 0, "costed_units": 0}
         day += one
     return out
 
@@ -914,7 +969,11 @@ def merge_previous(rows):
                     row[col] = prev[col]
                     filled += 1
         by_date[row["Date"]] = row
-    kept = [r for d, r in old.items() if d not in by_date]
+    # Normalise kept rows to the current COLUMNS. A day written before a
+    # column existed is missing the key entirely, and a consumer that indexes
+    # it gets undefined rather than a blank.
+    kept = [{c: r.get(c, "") for c in COLUMNS}
+            for d, r in old.items() if d not in by_date]
     if filled or kept:
         print("Merged previous data.json: %d blanks filled, %d older days kept"
               % (filled, len(kept)))
@@ -953,6 +1012,20 @@ def main():
 
     order_days = fetch_orders(store, token, since)
     units = {d: b["units"] for d, b in order_days.items()}
+    cogs_day = order_days
+    # Report on the window actually written, NOT on every day fetch_orders
+    # touched: it reaches 90 days further back so late refunds land on their
+    # own date, and those extra days include the May clearance, which has a
+    # very different margin and makes the logged figure unrecognisable.
+    in_window = [b for d, b in order_days.items() if d >= since.isoformat()]
+    covered = sum(b["costed_units"] for b in in_window)
+    sold = sum(b["units"] for b in in_window)
+    cogs_rev = sum(b["costed_rev"] for b in in_window)
+    cogs_amt = sum(b["cogs"] for b in in_window)
+    print("COGS %s to %s: %d of %d units costed (%.1f%%); "
+          "margin on costed lines %.1f%%"
+          % (since, today, covered, sold, 100.0 * covered / sold if sold else 0,
+             100.0 * (cogs_rev - cogs_amt) / cogs_rev if cogs_rev else 0))
     if sales is None:
         sales = derived_sales_rows(order_days, since, today)
     if sessions is None:
@@ -1041,6 +1114,12 @@ def main():
             "Google clicks": "",
             "Meta conversions": "",
             "Google conversions": "",
+            # From the Orders pass, not `s`: the ShopifyQL sales dataset has
+            # no cost columns, so reading these off `s` would leave them
+            # blank on any plan where ShopifyQL is available.
+            "COGS": to_num(round(cogs_day.get(day, {}).get("cogs", 0), 2)),
+            "Costed revenue": to_num(round(cogs_day.get(day, {}).get("costed_rev", 0), 2)),
+            "Costed units": to_num(cogs_day.get(day, {}).get("costed_units", 0)),
         }
         # Porter owns the ad columns, and the funnel wherever it reaches:
         # GA4 is the only funnel source now that ShopifyQL sessions are

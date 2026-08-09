@@ -175,7 +175,7 @@
   <div class="cols c-2" style="margin-top:14px">
     <div class="card">
       <h3>Where the money goes — net sales to contribution profit</h3>
-      <div class="hint">Every dollar of the period's <b>$6,182</b> net sales, drained by the real costs of doing business. What's left — <b style="color:var(--up)">contribution profit</b> — is what pays overheads (rent, software, your time) and funds growth. Cost of goods is extrapolated from the 37% margin measured on the ~54% of sales with cost data loaded.</div>
+      <div class="hint">Every dollar of the period's <b>$6,182</b> net sales, drained by the real costs of doing business. What's left — <b style="color:var(--up)">contribution profit</b> — is what pays overheads (rent, software, your time) and funds growth. Cost of goods is now <b>measured</b>: real Shopify unit costs, GST-inclusive to match the revenue basis, on every line that carries one, then extrapolated across the rest at that measured rate. The Gross margin tile above states the coverage for whatever range you have selected.</div>
       <div id="waterfall"></div>
       <div class="notes">Bottom line: after making and shipping the puzzles, boxing them and buying the traffic, you kept about <b style="color:var(--up)">$1,223</b> this period — roughly <b>$13 per order</b>, a <b>19.8% contribution margin</b>. That's the number to grow. The two biggest levers are cost of goods (load supplier costs on the other ~46% of SKUs so this stops being an estimate) and the shipping bleed (you eat ~$5.51 a parcel).</div>
     </div>
@@ -227,8 +227,9 @@
         <div class="stat"><div class="v" id="sub-size">—</div><div class="k" id="sub-size-k">Email subscribers</div></div>
         <div class="stat"><div class="v" id="sub-net">−72</div><div class="k" id="sub-net-k">Organic net, selected range</div></div>
       </div>
+      <div id="sub-excl" class="hint" style="margin:2px 0 0"></div>
       <div id="subtrend" style="margin-top:8px"></div>
-      <div class="notes">The <b>7 Jul</b> spike was the <b>Klaviyo → Omnisend migration</b>. During warm-up you deliberately dropped <b>~4,000 unengaged</b> subscribers — which is exactly why opens jumped (Klaviyo ~53% across 12k → 64–85% on engaged Omnisend sends). That's healthy pruning, not loss, and it is history now rather than a metric to track. The number to watch is the <b>organic net</b> above, which moves with the date range: consistently negative means the list is eroding faster than it refills. Omnisend is the go-forward source of truth.</div>
+      <div class="notes">Two planned events sit in this history and are excluded from the organic number above. The <b>7 Jul</b> spike is the <b>Klaviyo → Omnisend migration</b> import. The <b>9 Aug</b> drop is the <b>prune of unengaged contacts</b> finally executing: ~3.8k dormant contacts suppressed in one action, taking the list from ~11.8k to <b>7,982</b> mailable. That is the decision that made opens jump (Klaviyo ~53% across 12k → 64–85% on engaged Omnisend sends), and it is a smaller list that is worth more, not a list that is failing. Counting it as churn would read as though the business lost a third of its audience in a day. The number to watch is the <b>organic net</b>: consistently negative means the list is eroding faster than it refills.</div>
     </div>
     <div class="card">
       <h3>Revenue by channel <span class="tag">attribution-limited</span></h3>
@@ -345,19 +346,43 @@ function parseCSV(text){
    NOT move when you change the date range. Google Ads and Meta moved out of
    here once the daily feed started carrying them.
 
-   Margin: Shopify reports 36.9% on the sales where a cost is recorded, and
-   that cost is the supplier's LIST price (ex-GST, as invoices state it).
-   Stock is actually bought around 20% under list, so a conservative 15% is
-   taken off cost. Money columns are GST-inclusive; the cost bears GST too
-   (Premium Puzzles isn't registered, so it can't reclaim the input credit),
-   and the two cancel — the same margin % applies on a GST-inclusive base.
-       margin = 1 − (1 − 0.369) × 0.85 = 46.4% */
+   Margin is now MEASURED, not modelled. The collector sums real Shopify unit
+   costs per day into COGS, with the revenue those costed lines earned, so
+   margin = 1 − COGS ÷ costed revenue and moves with the date range.
+
+   Costs are carried GST-INCLUSIVE on purpose (landed ex-GST × 1.1). Premium
+   Puzzles is not registered for GST, so GST paid to a supplier is a real
+   unrecoverable cost and revenue here is GST-inclusive too. Both sides of the
+   margin are therefore on the same basis.
+
+   fallbackMarginPct is the old modelled constant, used ONLY for a range with
+   no costed lines at all: 36.9% at supplier list, improved by buying ~15%
+   under list. 1 − (1 − 0.369) × 0.85 = 46.4%. Measured margin has come in
+   below it (43.0% July, 45.9% August), so the model was flattering. */
 const CONFIG = {
   listMarginPct:0.369, buyingDiscount:0.15,
   packagingPerOrder:1.50,
+  // Below this share of units costed, the measured margin is still used but
+  // the tiles say so — a margin read off a fifth of the units is a sample,
+  // not a fact.
+  coverageWarnBelow:0.60,
+  /* Declared list-hygiene events, by date. These are deliberate bulk actions
+     on the subscriber list, not churn, so they are excluded from organic net
+     and annotated on the chart instead of being allowed to swamp it. One
+     3,828-contact prune otherwise dwarfs every real day and reads as the
+     business collapsing.
+
+     Exclusion is BY DECLARATION, never by size: an undeclared spike stays in
+     the number and gets flagged for review, because "unusually large" is
+     exactly what a genuine problem looks like too. */
+  listHygiene:{
+    '2026-08-09':'Planned prune of unengaged contacts, the Omnisend dormant segment. ~3.8k suppressed in one action.',
+    '2026-07-07':'Klaviyo → Omnisend migration import.'
+  },
+  hygieneReviewAbove:400,
   ltv:82.70, repeatRate:0.534, repeatPrev:0.623
 };
-CONFIG.marginPct = 1 - (1 - CONFIG.listMarginPct) * (1 - CONFIG.buyingDiscount);
+CONFIG.fallbackMarginPct = 1 - (1 - CONFIG.listMarginPct) * (1 - CONFIG.buyingDiscount);
 
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const parseD = s => new Date(s+'T00:00:00');
@@ -377,26 +402,60 @@ function aggregate(rows){
     net:S('Net sales'), total:S('Total sales'),
     sessions:S('Sessions'), cart:S('Sessions with cart adds'),
     checkout:S('Sessions reached checkout'), completed:S('Sessions completed checkout'),
-    subs:S('Email subscribes'), unsubs:S('Email unsubscribes'), netSub:S('Net subscriber growth'),
+    subs:S('Email subscribes'), unsubs:S('Email unsubscribes'),
+    // ORGANIC net: declared bulk hygiene days are left out entirely, so this
+    // is the day-to-day trickle in and out. `hygiene` carries what was taken
+    // out so the page can state it rather than quietly dropping it.
+    netSub:rows.reduce((t,r)=>t+(CONFIG.listHygiene[r.Date]?0:(+r['Net subscriber growth']||0)),0),
+    hygiene:rows.filter(r=>CONFIG.listHygiene[r.Date])
+      .map(r=>({date:r.Date, net:+r['Net subscriber growth']||0,
+                note:CONFIG.listHygiene[r.Date]})),
+    // Undeclared big movements: kept IN netSub, surfaced for a human to judge.
+    hygieneReview:rows.filter(r=>!CONFIG.listHygiene[r.Date]
+      && Math.abs(+r['Net subscriber growth']||0)>=CONFIG.hygieneReviewAbove)
+      .map(r=>({date:r.Date, net:+r['Net subscriber growth']||0})),
     metaSpend:S('Meta spend'), metaRev:S('Meta conv value'), puzzles:S('Puzzles sold'),
     metaClicks:S('Meta clicks'), googleSpend:S('Google spend'),
     googleRev:S('Google conv value'), googleClicks:S('Google clicks'),
     metaConv:S('Meta conversions'), googleConv:S('Google conversions'),
+    cogs:S('COGS'), costedRev:S('Costed revenue'), costedUnits:S('Costed units'),
     listSize:last('Subscriber list size'),
     listSizeAt:lastAt('Subscriber list size'),
     shipCharged:S('Shipping charged'), shipCost:S('Shipping cost')};
 }
 
+/* Margin actually earned on the lines that carry a real unit cost. Returns
+   null when nothing in the range is costed, so callers can fall back rather
+   than divide by zero. Revenue-weighted, not a mean of per-line margins: a
+   $70 puzzle and a $10 accessory must not count equally. */
+function measuredMargin(a){
+  return a.costedRev>0 ? (a.costedRev-a.cogs)/a.costedRev : null;
+}
+function marginOf(a){
+  const m=measuredMargin(a);
+  return m===null?CONFIG.fallbackMarginPct:m;
+}
+
 function buildModel(a,p){
   const adSpend=a.googleSpend+a.metaSpend;
   const shipBleed=a.shipCost-a.shipCharged;                 // net loss on shipping
-  const estGP=a.net*CONFIG.marginPct;
+  const margin=marginOf(a);
+  const measured=measuredMargin(a)!==null;
+  // Share of units sold whose cost is known. The margin above is measured on
+  // these and extrapolated across the rest, so this number is how much of the
+  // gross-profit figure is fact rather than inference.
+  const coverage=a.puzzles?a.costedUnits/a.puzzles:0;
+  const thin=measured && coverage<CONFIG.coverageWarnBelow;
+  const estGP=a.net*margin;
   const packaging=a.orders*CONFIG.packagingPerOrder;
   const contribution=estGP-shipBleed-packaging-adSpend;
   // Same sum on the previous window, so the tile can answer the only question
-  // that matters about ad spend: did the extra sales cover it?
+  // that matters about ad spend: did the extra sales cover it? The previous
+  // period gets its OWN measured margin — reusing this one would attribute a
+  // margin change to the ads.
   const prevAdSpend=p.googleSpend+p.metaSpend;
-  const prevContribution=(p.net*CONFIG.marginPct)-(p.shipCost-p.shipCharged)
+  const prevMargin=marginOf(p);
+  const prevContribution=(p.net*prevMargin)-(p.shipCost-p.shipCharged)
                          -(p.orders*CONFIG.packagingPerOrder)-prevAdSpend;
   const aov=a.orders?a.net/a.orders:0, paov=p.orders?p.net/p.orders:0;
   const conv=a.sessions?a.orders/a.sessions:0, pconv=p.sessions?p.orders/p.sessions:0;
@@ -431,9 +490,30 @@ function buildModel(a,p){
       {label:'Conversion rate',val:pct(conv,2),prev:pconv,cur:conv,pv:pct(pconv,2)+' prev',tip:'Orders ÷ sessions — one source of truth for a sale.'},
     ],
     profit:[
-      {label:'Gross margin',val:pct(CONFIG.marginPct,1),prev:null,pv:'assumption · fixed for every range',sm:1,tip:'A modelled rate, not measured per day: '+pct(CONFIG.listMarginPct,1)+' at supplier list price, improved by buying '+pct(CONFIG.buyingDiscount,0)+' under list. It cannot move with the date range. Only 58% of units sold have a cost recorded in Shopify — fill the rest in and this can become a real, range-aware margin.'},
+      {label:'Gross margin',val:pct(margin,1),
+        prev:measured?marginOf(p):null,cur:measured?margin:null,
+        pv:measured
+          ?('measured · '+pct(coverage,0)+' of units costed'+(thin?' ⚠':''))
+          :'modelled · no costed sales in range',
+        sm:1,
+        tip:measured
+          ?('REAL margin for this range: '+money(a.cogs,0)+' cost against '
+            +money(a.costedRev,0)+' of revenue on the '+fmt(a.costedUnits)+' of '
+            +fmt(a.puzzles)+' units that carry a Shopify unit cost, applied to all '
+            +'net sales. Cost is GST-inclusive, matching the revenue basis, because '
+            +'Premium Puzzles is not GST-registered and cannot reclaim purchase GST. '
+            +(thin?'COVERAGE IS THIN here — read it as a sample. ':'')
+            +'Caveat: Shopify stores one undated cost per variant, so a repriced buy '
+            +'re-costs past sales. The dated ledger is the source of truth for history.')
+          :'No unit costs on anything sold in this range, so this falls back to the modelled '
+            +pct(CONFIG.fallbackMarginPct,1)+' ('+pct(CONFIG.listMarginPct,1)
+            +' at supplier list, improved by buying '+pct(CONFIG.buyingDiscount,0)+' under list).'},
       {label:'Shipping bleed',val:'<span style="color:var(--down)">−'+money(Math.max(shipBleed,0),0)+'</span>',prev:null,pv:(a.shipCost?pct(a.shipCharged/a.shipCost,0):'0%')+' recovered · −'+money(a.orders?shipBleed/a.orders:0,2)+'/parcel',sm:1,tip:'Carrier cost for Premium Puzzles shipments only (funbox.fun and manual orders are excluded) against what customers paid, GST included.'},
-      {label:'Est. gross profit',val:money(estGP,0),prev:p.net*CONFIG.marginPct,cur:estGP,pv:'net sales × '+pct(CONFIG.marginPct,1),sm:1,accent:1},
+      {label:(measured?'Gross profit':'Est. gross profit'),val:money(estGP,0),
+        prev:p.net*prevMargin,cur:estGP,pv:'net sales × '+pct(margin,1),sm:1,accent:1,
+        tip:measured
+          ?'Net sales times the margin measured on this range’s costed lines. Still an estimate over the uncosted units, but the rate is now real rather than assumed.'
+          :'Net sales times the modelled margin — nothing in this range has a unit cost loaded.'},
       {label:'Contribution profit',val:'<span style="color:var(--up)">'+money(contribution,0)+'</span>',
         prev:prevContribution,cur:contribution,
         pv:'≈'+money(a.orders?contribution/a.orders:0,0)+'/order · '+(a.net?pct(contribution/a.net,0):'0%')+' · '+money(prevContribution,0)+' prev',
@@ -458,7 +538,8 @@ function buildModel(a,p){
       {t:'Contribution profit',v:Math.round(contribution),type:'end'},
     ],
     sales:a.rows.map(r=>[prettyMD(r.Date), +r['Total sales']||0]),
-    subs:a.rows.map(r=>[prettyMD(r.Date), +r['Email subscribes']||0, +r['Email unsubscribes']||0]),
+    subs:a.rows.map(r=>[prettyMD(r.Date), +r['Email subscribes']||0, +r['Email unsubscribes']||0, r.Date]),
+    hygiene:a.hygiene, hygieneReview:a.hygieneReview,
     listSize:a.listSize, listSizeAt:a.listSizeAt?prettyD(a.listSizeAt):null,
     netSub:a.netSub, subsIn:a.subs, unsubs:a.unsubs
   };
@@ -564,6 +645,19 @@ function paintSubStats(m){
   el.style.color = n<0 ? 'var(--warn)' : n>0 ? 'var(--up)' : 'var(--ink)';
   document.getElementById('sub-net-k').innerHTML='Organic net, selected range'
     + (n<0?' <span class="pill" style="color:var(--warn);background:rgba(255,176,32,.13)">watch</span>':'');
+
+  // Say what was excluded, in the same breath as the number it changed.
+  const ex=document.getElementById('sub-excl');
+  if(ex){
+    const h=m.hygiene||[], rev=m.hygieneReview||[];
+    let out='';
+    if(h.length) out+='Excludes '+h.map(x=>(x.net<0?'−':'+')+fmt(Math.abs(x.net))
+      +' on '+prettyD(x.date)).join(' and ')+', planned list hygiene rather than churn.';
+    if(rev.length) out+=' <span style="color:var(--warn)">Undeclared movement of '
+      +rev.map(x=>(x.net<0?'−':'+')+fmt(Math.abs(x.net))+' on '+prettyD(x.date)).join(', ')
+      +' is still counted — check whether it was deliberate.</span>';
+    ex.innerHTML=out;
+  }
 
   const sz=document.getElementById('sub-size'); if(!sz) return;
   const k=document.getElementById('sub-size-k');
@@ -804,18 +898,27 @@ renderSalesTrend(sales);
 /* ---------- SUBSCRIBER TREND (30d net) ---------- */
 const subs=[["06-27",0,0],["06-28",0,0],["06-29",0,11],["06-30",0,1],["07-01",0,0],["07-02",0,0],["07-03",0,0],["07-04",0,0],["07-05",0,2],["07-06",0,0],["07-07",24059,21007],["07-08",0,0],["07-09",4,55],["07-10",4,1],["07-11",2,0],["07-12",4,0],["07-13",56,3],["07-14",6,8],["07-15",2,25],["07-16",7,28],["07-17",3,5],["07-18",0,4],["07-19",1,0],["07-20",0,1],["07-21",0,26],["07-22",4,8],["07-23",5,6],["07-24",5,1],["07-25",2,1],["07-26",9,0]];
 function renderSubTrend(subs){
-  // cap the 7 Jul migration so the organic signal stays readable
+  /* Declared hygiene days are drawn as a labelled grey column, not a bar.
+     They are one-off bulk actions worth thousands of contacts; plotted to
+     scale they flatten every real day to a hairline and turn a routine prune
+     into a picture of collapse. The label keeps them visible and honest. */
   const W=1300,H=150,pad=34,mid=H/2, n=subs.length, bw=(W-pad*2)/n;
-  const capped=subs.map(s=>({d:s[0],net:s[0]==='07-07'?null:s[1]-s[2]}));
+  const capped=subs.map(s=>({d:s[0], iso:s[3],
+    net:CONFIG.listHygiene[s[3]]?null:s[1]-s[2],
+    raw:s[1]-s[2]}));
   const mx=Math.max(...capped.filter(c=>c.net!=null).map(c=>Math.abs(c.net)),30);
   let bars=`<line x1="${pad}" y1="${mid}" x2="${W-pad}" y2="${mid}" stroke="#26374b"/>`;
   capped.forEach((c,i)=>{const x=pad+i*bw;
-    if(c.net==null){bars+=`<rect x="${x+1}" y="10" width="${bw-2}" height="${H-30}" fill="#26374b" opacity=".5"/>
-      <text x="${x+bw/2}" y="${mid-4}" text-anchor="middle" fill="#8fa3b8" font-size="9">7 Jul migration ±23k (off-scale)</text>`;return;}
+    if(c.net==null){
+      const near=i>n-6, anchor=near?'end':(i<5?'start':'middle');
+      const tx=near?x+bw-2:(i<5?x+2:x+bw/2);
+      bars+=`<rect x="${x+1}" y="10" width="${Math.max(bw-2,2)}" height="${H-30}" fill="#26374b" opacity=".5"/>
+      <text x="${tx}" y="${mid-4}" text-anchor="${anchor}" fill="#8fa3b8" font-size="9">${c.raw>=0?'+':'−'}${fmt(Math.abs(c.raw))} planned (off-scale)</text>`;
+      return;}
     const h=Math.abs(c.net)/mx*(mid-14);
     bars+=`<rect x="${x+1}" y="${c.net>=0?mid-h:mid}" width="${bw-2}" height="${h||0.5}" rx="1" fill="${c.net>=0?'#34d39a':'#ff6b6b'}"><title>${c.d}: ${c.net>=0?'+':''}${c.net} net</title></rect>`;});
   const ticks=capped.filter((_,i)=>i%6===0).map((c,i)=>`<text x="${pad+capped.indexOf(c)*bw+bw/2}" y="${H-3}" text-anchor="middle" fill="#5f7488" font-size="9">${c.d}</text>`).join('');
-  document.getElementById('subtrend').innerHTML=`<div class="hint" style="margin:0 0 4px">Daily net subscribers (green +, red −). More red than green = erosion.</div><svg width="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="max-height:150px">${bars}${ticks}</svg>`;
+  document.getElementById('subtrend').innerHTML=`<div class="hint" style="margin:0 0 4px">Daily <b>organic</b> net subscribers (green +, red −). Planned bulk actions are greyed out and excluded — they are decisions, not churn.</div><svg width="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="max-height:150px">${bars}${ticks}</svg>`;
 }
 renderSubTrend(subs);
 
@@ -869,7 +972,7 @@ Channel revenue splits are attribution-limited (UTM tagging sparse); "Direct/Org
 Shipping bleed (−$595) is from your ShipStation export (15 Jun–23 Jul): carrier cost $1,885 vs $1,290 collected, ~68% recovered — now wired to pull daily. &nbsp;•&nbsp;
 <b>One source of truth for a sale:</b> Orders, funnel base and conversion rate all use the same Shopify order count (94), not the sessions report. &nbsp;•&nbsp;
 <b>Paid CAC</b> = ad spend $400.44 ÷ ~9 paid-attributed orders (platform-attributed revenue ÷ AOV); Google ~$21, Meta ~$275. Firms up when Google Ads conversions feed the daily sheet. &nbsp;•&nbsp;
-Gross profit &amp; contribution are estimates — Shopify has supplier cost on ~54% of sales; the 36.9% tracked margin is extrapolated to the full base. Loading cost on all SKUs makes these exact.`;
+Gross margin is <b>measured, not modelled</b>: the collector sums real Shopify unit costs per day into a COGS column with the revenue those lines earned, so margin = 1 − COGS ÷ costed revenue and moves with the date range. Cost is carried GST-inclusive (landed ex-GST × 1.1) because Premium Puzzles is not GST-registered and cannot reclaim purchase GST, so both sides sit on the same basis. The rate is extrapolated over units with no cost loaded; the Gross margin tile states that coverage. Two caveats: Shopify holds one <i>undated</i> cost per variant, so repricing a buy silently re-costs past sales (the dated ledger is the source of truth for history), and only the daily aggregate is published here, never per-SKU costs.`;
 </script>
 </body>
 </html>
