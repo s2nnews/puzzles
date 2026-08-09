@@ -138,7 +138,7 @@
       <button class="dr-chip" data-r="custom">Custom</button>
     </div>
     <div class="dr-dates">
-      <input type="date" id="dr-from" value="2026-06-28">
+      <input type="date" id="dr-from" value="2026-06-28" min="2026-06-15">
       <span>→</span>
       <input type="date" id="dr-to" value="2026-07-27">
       <button class="dr-apply" id="dr-apply">Apply</button>
@@ -213,7 +213,7 @@
   <div class="section-title">Sales &amp; the story behind the numbers</div>
   <div class="card">
     <h3>Daily total sales — last 60 days</h3>
-    <div class="hint">The <b style="color:var(--warn)">27 May flash sale</b> ($15.5k / 201 orders in one day) sits in the <i>previous</i> comparison window — that's why the period-on-period deltas above read so red. Judge the trend, not just the delta.</div>
+    <div class="hint">The <b style="color:var(--warn)">27 May flash sale</b> ($15.5k / 201 orders in one day) is deliberately out of reach. Everything on this page starts at the <b>15 June handover</b>: the previous owner's trading was clearance pricing on inherited stock at negative gross margin, and including it inverts every margin and contribution figure it touches. The history is kept in the data and in the kb note, it just is not this business's P&amp;L.</div>
     <div id="salestrend"></div>
   </div>
 
@@ -360,6 +360,20 @@ function parseCSV(text){
    under list. 1 − (1 − 0.369) × 0.85 = 46.4%. Measured margin has come in
    below it (43.0% July, 45.9% August), so the model was flattering. */
 const CONFIG = {
+  /* Michael took over on 15 June 2026. Nothing before it is his trading, and
+     mixing the two does not just muddy the picture, it inverts it: the last
+     90 days read 11.1% margin and MINUS $1,088 contribution with the previous
+     owner's clearance included, and 40.9% / PLUS $2,318 without. Same button,
+     opposite conclusion.
+
+     So every range is floored here. The history stays in data.json and is
+     still the evidence for what clearance pricing costs (see the kb note),
+     it just does not get to masquerade as this business's P&L.
+
+     Customer-lifetime figures are deliberately NOT floored: repeat rate and
+     12-month value are trailing-12-month customer measures, and a customer
+     who first bought under the old owner is still a real repeat customer. */
+  ownershipStart:'2026-06-15',
   listMarginPct:0.369, buyingDiscount:0.15,
   packagingPerOrder:1.50,
   // Below this share of units costed, the measured margin is still used but
@@ -692,24 +706,65 @@ function initPicker(){
 
   // LIVE mode
   live.innerHTML='<span class="dot" style="background:var(--up)"></span>live';
-  const minDate=DAILY_DATA[0].Date, maxDate=DAILY_DATA[DAILY_DATA.length-1].Date;
+  // Nothing before the handover is selectable. See CONFIG.ownershipStart.
+  const OWN=CONFIG.ownershipStart;
+  const minDate=DAILY_DATA[0].Date>OWN?DAILY_DATA[0].Date:OWN;
+  const maxDate=DAILY_DATA[DAILY_DATA.length-1].Date;
   fromEl.min=toEl.min=minDate; fromEl.max=toEl.max=maxDate;
 
   function apply(fromS,toS){
+    // Floor first, so a preset like "last 90 days" simply starts at handover
+    // rather than reaching back into the previous owner's clearance.
+    const clamped = fromS<minDate;
+    if(clamped) fromS=minDate;
     const inR=DAILY_DATA.filter(r=>r.Date>=fromS && r.Date<=toS);
     if(!inR.length){note.innerHTML='No data in that range yet — the sheet has '+minDate+' to '+maxDate+'.';note.style.display='block';return;}
     const days=Math.round((parseD(toS)-parseD(fromS))/86400000)+1;
-    const prevTo=isoD(new Date(parseD(fromS)-86400000));
-    const prevFrom=isoD(new Date(parseD(prevTo)-86400000*(days-1)));
-    const prevR=DAILY_DATA.filter(r=>r.Date>=prevFrom && r.Date<=prevTo);
-    renderModel(buildModel(aggregate(inR), aggregate(prevR)));
+    let prevTo=isoD(new Date(parseD(fromS)-86400000));
+    let prevFrom=isoD(new Date(parseD(prevTo)-86400000*(days-1)));
+    // The comparison window is floored too. A previous period that straddles
+    // the handover is worse than no comparison: 6 pre-handover days at 5.2%
+    // margin were dragging the "previous" figure down and flattering every
+    // delta measured against it.
+    const prevShort = prevFrom<minDate;
+    if(prevShort) prevFrom=minDate;
+    const prevR = prevTo<minDate ? []
+      : DAILY_DATA.filter(r=>r.Date>=prevFrom && r.Date<=prevTo);
+    const prevDays = prevR.length;
+    // Totals are only comparable across equal-length windows. When the
+    // previous window is short, rate deltas (margin, AOV, conversion) still
+    // hold but absolute ones do not, so buildModel drops those chips.
+    const m=buildModel(aggregate(inR), aggregate(prevR));
+    if(prevDays && prevDays<days) dropTotalDeltas(m);
+    renderModel(m);
     renderCampaigns(fromS,toS);
     renderTraffic(fromS,toS);
     noteFunnelSource(fromS,toS);
-    document.getElementById('period-label').innerHTML='vs previous '+days+' days · AUD · <span style="color:var(--up)">live</span> from your daily sheet · '+prettyD(maxDate)+' latest';
+    document.getElementById('period-label').innerHTML='vs previous '
+      +(prevDays&&prevDays<days?prevDays+' days (short)':days+' days')
+      +' · AUD · <span style="color:var(--up)">live</span> from your daily sheet · '
+      +prettyD(maxDate)+' latest';
     fromEl.value=fromS; toEl.value=toS;
-    note.style.display= prevR.length? 'none' : 'block';
-    if(!prevR.length){note.innerHTML='Showing '+days+' days. Not enough history yet for a full previous-period comparison — deltas fill in as the sheet grows.';}
+    const msgs=[];
+    if(clamped) msgs.push('Starts at the <b>15 June handover</b>. Earlier trading was the previous owner\'s, at clearance prices and negative gross margin, and including it inverts the read: the same 90-day window shows 11.1% margin and −$1,088 contribution with it, 40.9% and +$2,318 without.');
+    if(!prevDays) msgs.push('No comparable previous period inside the ownership window, so deltas are blank.');
+    else if(prevDays<days) msgs.push('The previous period is only <b>'+prevDays+' days</b> because it is floored at the handover, so deltas on totals are hidden. Rates (margin, AOV, conversion) still compare.');
+    note.innerHTML=msgs.join(' ');
+    note.style.display= msgs.length? 'block':'none';
+  }
+
+  /* Blank the previous-period figure on anything that is a TOTAL, leaving
+     rates alone. Keyed on label because the tiles are plain data objects. */
+  const RATE_TILES=new Set(['Avg order value','Conversion rate','Gross margin',
+    'Repeat-customer rate','12-mo customer value']);
+  function dropTotalDeltas(m){
+    ['money','mktg','profit'].forEach(k=>m[k].forEach(t=>{
+      if(RATE_TILES.has(t.label)) return;
+      t.prev=null; t.cur=null;
+      // The sub-label often quotes the previous figure inline ("$5,361 prev").
+      // Leaving that behind while hiding the delta is the worst of both.
+      if(t.pv) t.pv=t.pv.replace(/\s*·?\s*[^·]*\bprev\b\s*$/,'').trim();
+    }));
   }
   function preset(nDays){ const to=maxDate; const from=isoD(new Date(parseD(to)-86400000*(nDays-1))); apply(from,to); }
 
