@@ -175,7 +175,7 @@
   <div class="cols c-2" style="margin-top:14px">
     <div class="card">
       <h3>Where the money goes — net sales to contribution profit</h3>
-      <div class="hint">Every dollar of the period's <b>$6,182</b> net sales, drained by the real costs of doing business. What's left — <b style="color:var(--up)">contribution profit</b> — is what pays overheads (rent, software, your time) and funds growth. Cost of goods is now <b>measured</b>: real Shopify unit costs, GST-inclusive to match the revenue basis, on every line that carries one, then extrapolated across the rest at that measured rate. The Gross margin tile above states the coverage for whatever range you have selected.</div>
+      <div class="hint">Every dollar of the period's <b>$6,182</b> net sales, drained by the real costs of doing business. What's left — <b style="color:var(--up)">contribution profit</b> — is what pays overheads (rent, software, your time) and funds growth. Cost of goods is <b>real</b>: actual Shopify unit costs, GST-inclusive to match the revenue basis, on every line that carries one. Only the revenue with no cost loaded is plugged, at the modelled rate, so the assumption is confined to the gap instead of being applied to everything. The Gross margin tile above states how much of the revenue is at real cost for the range you have selected.</div>
       <div id="waterfall"></div>
       <div class="notes">Bottom line: after making and shipping the puzzles, boxing them and buying the traffic, you kept about <b style="color:var(--up)">$1,223</b> this period — roughly <b>$13 per order</b>, a <b>19.8% contribution margin</b>. That's the number to grow. The two biggest levers are cost of goods (load supplier costs on the other ~46% of SKUs so this stops being an estimate) and the shipping bleed (you eat ~$5.51 a parcel).</div>
     </div>
@@ -433,34 +433,57 @@ function aggregate(rows){
     googleRev:S('Google conv value'), googleClicks:S('Google clicks'),
     metaConv:S('Meta conversions'), googleConv:S('Google conversions'),
     cogs:S('COGS'), costedRev:S('Costed revenue'), costedUnits:S('Costed units'),
+    lineRev:S('Line revenue'),
     listSize:last('Subscriber list size'),
     listSizeAt:lastAt('Subscriber list size'),
     shipCharged:S('Shipping charged'), shipCost:S('Shipping cost')};
 }
 
-/* Margin actually earned on the lines that carry a real unit cost. Returns
-   null when nothing in the range is costed, so callers can fall back rather
-   than divide by zero. Revenue-weighted, not a mean of per-line margins: a
-   $70 puzzle and a $10 accessory must not count equally. */
-function measuredMargin(a){
-  return a.costedRev>0 ? (a.costedRev-a.cogs)/a.costedRev : null;
-}
-function marginOf(a){
-  const m=measuredMargin(a);
-  return m===null?CONFIG.fallbackMarginPct:m;
+/* Cost of goods for a range, built from REAL costs wherever they exist.
+
+   Real COGS covers the lines that carry a Shopify unit cost. The revenue with
+   no cost behind it is plugged at the modelled rate, and ONLY that slice is.
+   So the headline margin is genuine to the extent the data is, and the
+   assumption is confined to the hole it is filling rather than being smeared
+   over everything.
+
+   This is deliberately not "measure the rate on costed lines and apply it to
+   all sales". That assumes uncosted stock earns what costed stock earns,
+   which is exactly the assumption the cost analysis exists to remove. */
+function costing(a){
+  const lineRev=a.lineRev>0?a.lineRev:a.costedRev;   // pre-'Line revenue' days
+  const uncostedRev=Math.max(0,lineRev-a.costedRev);
+  const pluggedCogs=uncostedRev*(1-CONFIG.fallbackMarginPct);
+  const cogs=a.cogs+pluggedCogs;
+  // Gross profit and margin both come off NET SALES, the same revenue line
+  // the rest of the page uses, so the tiles tie to each other: margin is
+  // literally gross profit ÷ net sales. Line revenue is only ever used to
+  // size the uncosted hole, never as the revenue base — it runs a few per
+  // cent above net sales because a refund without line items reduces net
+  // sales but has no line to take back.
+  const grossProfit=a.net-cogs;
+  return {
+    lineRev, uncostedRev, pluggedCogs,
+    realCogs:a.cogs,
+    cogs, grossProfit,
+    // Share of product revenue costed from real data. The honest headline
+    // for how much of the margin below is fact rather than assumption.
+    covered: lineRev>0 ? a.costedRev/lineRev : 0,
+    margin: a.net>0 ? grossProfit/a.net : CONFIG.fallbackMarginPct,
+    any: a.costedRev>0
+  };
 }
 
 function buildModel(a,p){
   const adSpend=a.googleSpend+a.metaSpend;
   const shipBleed=a.shipCost-a.shipCharged;                 // net loss on shipping
-  const margin=marginOf(a);
-  const measured=measuredMargin(a)!==null;
-  // Share of units sold whose cost is known. The margin above is measured on
-  // these and extrapolated across the rest, so this number is how much of the
-  // gross-profit figure is fact rather than inference.
-  const coverage=a.puzzles?a.costedUnits/a.puzzles:0;
+  const C=costing(a), Cp=costing(p);
+  const margin=C.margin, measured=C.any, coverage=C.covered;
   const thin=measured && coverage<CONFIG.coverageWarnBelow;
-  const estGP=a.net*margin;
+  // Gross profit is net sales LESS the cost of goods, not net sales times a
+  // rate. The cost is the thing that was measured; the rate is what falls
+  // out of it.
+  const estGP=C.grossProfit;
   const packaging=a.orders*CONFIG.packagingPerOrder;
   const contribution=estGP-shipBleed-packaging-adSpend;
   // Same sum on the previous window, so the tile can answer the only question
@@ -468,8 +491,8 @@ function buildModel(a,p){
   // period gets its OWN measured margin — reusing this one would attribute a
   // margin change to the ads.
   const prevAdSpend=p.googleSpend+p.metaSpend;
-  const prevMargin=marginOf(p);
-  const prevContribution=(p.net*prevMargin)-(p.shipCost-p.shipCharged)
+  const prevMargin=Cp.margin;
+  const prevContribution=Cp.grossProfit-(p.shipCost-p.shipCharged)
                          -(p.orders*CONFIG.packagingPerOrder)-prevAdSpend;
   const aov=a.orders?a.net/a.orders:0, paov=p.orders?p.net/p.orders:0;
   const conv=a.sessions?a.orders/a.sessions:0, pconv=p.sessions?p.orders/p.sessions:0;
@@ -505,29 +528,36 @@ function buildModel(a,p){
     ],
     profit:[
       {label:'Gross margin',val:pct(margin,1),
-        prev:measured?marginOf(p):null,cur:measured?margin:null,
+        prev:measured?Cp.margin:null,cur:measured?margin:null,
         pv:measured
-          ?('measured · '+pct(coverage,0)+' of units costed'+(thin?' ⚠':''))
+          ?(pct(coverage,0)+' of revenue at real cost'+(thin?' ⚠':''))
           :'modelled · no costed sales in range',
         sm:1,
         tip:measured
-          ?('REAL margin for this range: '+money(a.cogs,0)+' cost against '
-            +money(a.costedRev,0)+' of revenue on the '+fmt(a.costedUnits)+' of '
-            +fmt(a.puzzles)+' units that carry a Shopify unit cost, applied to all '
-            +'net sales. Cost is GST-inclusive, matching the revenue basis, because '
-            +'Premium Puzzles is not GST-registered and cannot reclaim purchase GST. '
-            +(thin?'COVERAGE IS THIN here — read it as a sample. ':'')
-            +'Caveat: Shopify stores one undated cost per variant, so a repriced buy '
-            +'re-costs past sales. The dated ledger is the source of truth for history.')
-          :'No unit costs on anything sold in this range, so this falls back to the modelled '
+          ?('Real cost wherever it exists: '+money(C.realCogs,0)+' of actual Shopify unit costs '
+            +'against '+money(a.costedRev,0)+' of revenue ('+fmt(a.costedUnits)+' of '
+            +fmt(a.puzzles)+' units). The remaining '+money(C.uncostedRev,0)+' of revenue has no '
+            +'cost loaded and is plugged at the modelled '+pct(CONFIG.fallbackMarginPct,1)
+            +', adding '+money(C.pluggedCogs,0)+'. Total COGS '+money(C.cogs,0)+' against '
+            +money(a.net,0)+' net sales = '+pct(margin,1)+'. '
+            +'The assumption is confined to the gap; it is not smeared over the whole base. '
+            +(thin?'COVERAGE IS THIN here, so more of this is assumption than fact. ':'')
+            +'Cost is GST-inclusive to match the revenue basis, since Premium Puzzles is not '
+            +'GST-registered and cannot reclaim purchase GST. Caveat: Shopify stores one undated '
+            +'cost per variant, so a repriced buy re-costs past sales.')
+          :'No unit costs on anything sold in this range, so this falls back entirely to the modelled '
             +pct(CONFIG.fallbackMarginPct,1)+' ('+pct(CONFIG.listMarginPct,1)
             +' at supplier list, improved by buying '+pct(CONFIG.buyingDiscount,0)+' under list).'},
       {label:'Shipping bleed',val:'<span style="color:var(--down)">−'+money(Math.max(shipBleed,0),0)+'</span>',prev:null,pv:(a.shipCost?pct(a.shipCharged/a.shipCost,0):'0%')+' recovered · −'+money(a.orders?shipBleed/a.orders:0,2)+'/parcel',sm:1,tip:'Carrier cost for Premium Puzzles shipments only (funbox.fun and manual orders are excluded) against what customers paid, GST included.'},
       {label:(measured?'Gross profit':'Est. gross profit'),val:money(estGP,0),
-        prev:p.net*prevMargin,cur:estGP,pv:'net sales × '+pct(margin,1),sm:1,accent:1,
+        prev:Cp.grossProfit,cur:estGP,
+        pv:'net sales − '+money(C.cogs,0)+' COGS',sm:1,accent:1,
         tip:measured
-          ?'Net sales times the margin measured on this range’s costed lines. Still an estimate over the uncosted units, but the rate is now real rather than assumed.'
-          :'Net sales times the modelled margin — nothing in this range has a unit cost loaded.'},
+          ?('Net sales '+money(a.net,0)+' less cost of goods '+money(C.cogs,0)+', of which '
+            +money(C.realCogs,0)+' is real measured cost and '+money(C.pluggedCogs,0)
+            +' is plugged at the modelled rate for revenue with no cost loaded. '
+            +'Subtracted, not multiplied: the cost is what was measured.')
+          :'Nothing in this range has a unit cost loaded, so the whole cost of goods is modelled.'},
       {label:'Contribution profit',val:'<span style="color:var(--up)">'+money(contribution,0)+'</span>',
         prev:prevContribution,cur:contribution,
         pv:'≈'+money(a.orders?contribution/a.orders:0,0)+'/order · '+(a.net?pct(contribution/a.net,0):'0%')+' · '+money(prevContribution,0)+' prev',

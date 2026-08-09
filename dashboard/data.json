@@ -30,7 +30,8 @@
   "Google conversions": "",
   "COGS": "",
   "Costed revenue": "",
-  "Costed units": ""
+  "Costed units": "",
+  "Line revenue": ""
  },
  {
   "Date": "2026-03-31",
@@ -63,7 +64,8 @@
   "Google conversions": "",
   "COGS": "",
   "Costed revenue": "",
-  "Costed units": ""
+  "Costed units": "",
+  "Line revenue": ""
  },
  {
   "Date": "2026-04-01",
@@ -96,7 +98,8 @@
   "Google conversions": "",
   "COGS": "",
   "Costed revenue": "",
-  "Costed units": ""
+  "Costed units": "",
+  "Line revenue": ""
  },
  {
   "Date": "2026-04-02",
@@ -129,7 +132,8 @@
   "Google conversions": "",
   "COGS": "",
   "Costed revenue": "",
-  "Costed units": ""
+  "Costed units": "",
+  "Line revenue": ""
  },
  {
   "Date": "2026-04-03",
@@ -162,7 +166,8 @@
   "Google conversions": "",
   "COGS": "",
   "Costed revenue": "",
-  "Costed units": ""
+  "Costed units": "",
+  "Line revenue": ""
  },
  {
   "Date": "2026-04-04",
@@ -195,7 +200,8 @@
   "Google conversions": "",
   "COGS": "",
   "Costed revenue": "",
-  "Costed units": ""
+  "Costed units": "",
+  "Line revenue": ""
  },
  {
   "Date": "2026-04-05",
@@ -228,7 +234,8 @@
   "Google conversions": "",
   "COGS": "",
   "Costed revenue": "",
-  "Costed units": ""
+  "Costed units": "",
+  "Line revenue": ""
  },
  {
   "Date": "2026-04-06",
@@ -261,7 +268,8 @@
   "Google conversions": "",
   "COGS": "",
   "Costed revenue": "",
-  "Costed units": ""
+  "Costed units": "",
+  "Line revenue": ""
  },
  {
   "Date": "2026-04-07",
@@ -294,7 +302,8 @@
   "Google conversions": "",
   "COGS": "",
   "Costed revenue": "",
-  "Costed units": ""
+  "Costed units": "",
+  "Line revenue": ""
  },
  {
   "Date": "2026-04-08",
@@ -327,7 +336,8 @@
   "Google conversions": "",
   "COGS": "",
   "Costed revenue": "",
-  "Costed units": ""
+  "Costed units": "",
+  "Line revenue": ""
  },
  {
   "Date": "2026-04-09",
@@ -360,7 +370,8 @@
   "Google conversions": "",
   "COGS": "",
   "Costed revenue": "",
-  "Costed units": ""
+  "Costed units": "",
+  "Line revenue": ""
  },
  {
   "Date": "2026-04-10",
@@ -393,7 +404,8 @@
   "Google conversions": "",
   "COGS": "",
   "Costed revenue": "",
-  "Costed units": ""
+  "Costed units": "",
+  "Line revenue": ""
  },
  {
   "Date": "2026-04-11",
@@ -426,7 +438,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-04-12",
@@ -459,7 +472,8 @@
   "Google conversions": "",
   "COGS": 129.75,
   "Costed revenue": 165.85,
-  "Costed units": 3
+  "Costed units": 3,
+  "Line revenue": 165.85
  },
  {
   "Date": "2026-04-13",
@@ -492,7 +506,8 @@
   "Google conversions": "",
   "COGS": 45.81,
   "Costed revenue": 89.85,
-  "Costed units": 3
+  "Costed units": 3,
+  "Line revenue": 89.85
  },
  {
   "Date": "2026-04-14",
@@ -525,7 +540,8 @@
   "Google conversions": "",
   "COGS": 3284.41,
   "Costed revenue": 4409.75,
-  "Costed units": 185
+  "Costed units": 185,
+  "Line revenue": 4696.05
  },
  {
   "Date": "2026-04-15",
@@ -558,7 +574,8 @@
   "Google conversions": "",
   "COGS": 1417.92,
   "Costed revenue": 1905.7,
-  "Costed units": 86
+  "Costed units": 86,
+  "Line revenue": 2020.5
  },
  {
   "Date": "2026-04-16",
@@ -591,7 +608,8 @@
   "Google conversions": "",
   "COGS": 790.47,
   "Costed revenue": 975.55,
-  "Costed units": 43
+  "Costed units": 43,
+  "Line revenue": 1038.4
  },
  {
   "Date": "2026-04-17",
@@ -624,7 +642,8 @@
   "Google conversions": "",
   "COGS": 372.7,
   "Costed revenue": 539.04,
-  "Costed units": 20
+  "Costed units": 20,
+  "Line revenue": 618.84
  },
  {
   "Date": "2026-04-18",
@@ -657,7 +676,8 @@
   "Google conversions": "",
   "COGS": 554.07,
   "Costed revenue": 859.65,
-  "Costed units": 41
+  "Costed units": 41,
+  "Line revenue": 979.35
  },
  {
   "Date": "2026-04-19",
@@ -690,7 +710,8 @@
   "Google conversions": "",
   "COGS": 1466.51,
   "Costed revenue": 1422.7,
-  "Costed units": 26
+  "Costed units": 26,
+  "Line revenue": 1469.6
  },
  {
   "Date": "2026-04-20",
@@ -723,7 +744,8 @@
   "Google conversions": "",
   "COGS": 320.75,
   "Costed revenue": 349.25,
-  "Costed units": 15
+  "Costed units": 15,
+  "Line revenue": 366.2
  },
  {
   "Date": "2026-04-21",
@@ -756,7 +778,8 @@
   "Google conversions": "",
   "COGS": 95.51,
   "Costed revenue": 108.75,
-  "Costed units": 5
+  "Costed units": 5,
+  "Line revenue": 108.75
  },
  {
   "Date": "2026-04-22",
@@ -789,7 +812,8 @@
   "Google conversions": "",
   "COGS": 4174.02,
   "Costed revenue": 4582.55,
-  "Costed units": 217
+  "Costed units": 217,
+  "Line revenue": 5124
  },
  {
   "Date": "2026-04-23",
@@ -822,7 +846,8 @@
   "Google conversions": "",
   "COGS": 1095.56,
   "Costed revenue": 1191.55,
-  "Costed units": 49
+  "Costed units": 49,
+  "Line revenue": 1269.25
  },
  {
   "Date": "2026-04-24",
@@ -855,7 +880,8 @@
   "Google conversions": "",
   "COGS": 436.37,
   "Costed revenue": 475.6,
-  "Costed units": 22
+  "Costed units": 22,
+  "Line revenue": 488.55
  },
  {
   "Date": "2026-04-25",
@@ -888,7 +914,8 @@
   "Google conversions": "",
   "COGS": 106.16,
   "Costed revenue": 149.7,
-  "Costed units": 6
+  "Costed units": 6,
+  "Line revenue": 162.65
  },
  {
   "Date": "2026-04-26",
@@ -921,7 +948,8 @@
   "Google conversions": "",
   "COGS": 298.22,
   "Costed revenue": 354.2,
-  "Costed units": 16
+  "Costed units": 16,
+  "Line revenue": 390.1
  },
  {
   "Date": "2026-04-27",
@@ -954,7 +982,8 @@
   "Google conversions": "",
   "COGS": 423.25,
   "Costed revenue": 586.75,
-  "Costed units": 25
+  "Costed units": 25,
+  "Line revenue": 612.65
  },
  {
   "Date": "2026-04-28",
@@ -987,7 +1016,8 @@
   "Google conversions": "",
   "COGS": 308.08,
   "Costed revenue": 380.15,
-  "Costed units": 17
+  "Costed units": 17,
+  "Line revenue": 403.05
  },
  {
   "Date": "2026-04-29",
@@ -1020,7 +1050,8 @@
   "Google conversions": "",
   "COGS": 123.22,
   "Costed revenue": 127.7,
-  "Costed units": 6
+  "Costed units": 6,
+  "Line revenue": 127.7
  },
  {
   "Date": "2026-04-30",
@@ -1053,7 +1084,8 @@
   "Google conversions": "",
   "COGS": -74.8,
   "Costed revenue": -18.9,
-  "Costed units": -2
+  "Costed units": -2,
+  "Line revenue": -18.9
  },
  {
   "Date": "2026-05-01",
@@ -1086,7 +1118,8 @@
   "Google conversions": "",
   "COGS": 7.5,
   "Costed revenue": 10.95,
-  "Costed units": 1
+  "Costed units": 1,
+  "Line revenue": 10.95
  },
  {
   "Date": "2026-05-02",
@@ -1119,7 +1152,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-05-03",
@@ -1152,7 +1186,8 @@
   "Google conversions": "",
   "COGS": 66.73,
   "Costed revenue": 90.75,
-  "Costed units": 5
+  "Costed units": 5,
+  "Line revenue": 100.7
  },
  {
   "Date": "2026-05-04",
@@ -1185,7 +1220,8 @@
   "Google conversions": "",
   "COGS": 356.9,
   "Costed revenue": 266.3,
-  "Costed units": 14
+  "Costed units": 14,
+  "Line revenue": 266.3
  },
  {
   "Date": "2026-05-05",
@@ -1218,7 +1254,8 @@
   "Google conversions": "",
   "COGS": 101.38,
   "Costed revenue": 116.75,
-  "Costed units": 5
+  "Costed units": 5,
+  "Line revenue": 126.7
  },
  {
   "Date": "2026-05-06",
@@ -1251,7 +1288,8 @@
   "Google conversions": "",
   "COGS": 176.35,
   "Costed revenue": 195.55,
-  "Costed units": 9
+  "Costed units": 9,
+  "Line revenue": 205.5
  },
  {
   "Date": "2026-05-07",
@@ -1284,7 +1322,8 @@
   "Google conversions": "",
   "COGS": -9.88,
   "Costed revenue": 7,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 7
  },
  {
   "Date": "2026-05-08",
@@ -1317,7 +1356,8 @@
   "Google conversions": "",
   "COGS": 17.93,
   "Costed revenue": 29.95,
-  "Costed units": 1
+  "Costed units": 1,
+  "Line revenue": 29.95
  },
  {
   "Date": "2026-05-09",
@@ -1350,7 +1390,8 @@
   "Google conversions": "",
   "COGS": 17.93,
   "Costed revenue": 29.95,
-  "Costed units": 1
+  "Costed units": 1,
+  "Line revenue": 29.95
  },
  {
   "Date": "2026-05-10",
@@ -1383,7 +1424,8 @@
   "Google conversions": "",
   "COGS": 179.88,
   "Costed revenue": 207.55,
-  "Costed units": 9
+  "Costed units": 9,
+  "Line revenue": 207.55
  },
  {
   "Date": "2026-05-11",
@@ -1416,7 +1458,8 @@
   "Google conversions": "",
   "COGS": 40.27,
   "Costed revenue": 63.9,
-  "Costed units": 2
+  "Costed units": 2,
+  "Line revenue": 63.9
  },
  {
   "Date": "2026-05-12",
@@ -1449,7 +1492,8 @@
   "Google conversions": "",
   "COGS": 357.36,
   "Costed revenue": 415.1,
-  "Costed units": 18
+  "Costed units": 18,
+  "Line revenue": 435
  },
  {
   "Date": "2026-05-13",
@@ -1482,7 +1526,8 @@
   "Google conversions": "",
   "COGS": 103.2,
   "Costed revenue": 76.8,
-  "Costed units": 4
+  "Costed units": 4,
+  "Line revenue": 76.8
  },
  {
   "Date": "2026-05-14",
@@ -1515,7 +1560,8 @@
   "Google conversions": "",
   "COGS": 45.93,
   "Costed revenue": 52.9,
-  "Costed units": 2
+  "Costed units": 2,
+  "Line revenue": 52.9
  },
  {
   "Date": "2026-05-15",
@@ -1548,7 +1594,8 @@
   "Google conversions": "",
   "COGS": 138.2,
   "Costed revenue": 143.7,
-  "Costed units": 6
+  "Costed units": 6,
+  "Line revenue": 153.65
  },
  {
   "Date": "2026-05-16",
@@ -1581,7 +1628,8 @@
   "Google conversions": "",
   "COGS": 157.24,
   "Costed revenue": 191.7,
-  "Costed units": 6
+  "Costed units": 6,
+  "Line revenue": 191.7
  },
  {
   "Date": "2026-05-17",
@@ -1614,7 +1662,8 @@
   "Google conversions": "",
   "COGS": 191.23,
   "Costed revenue": 231.75,
-  "Costed units": 5
+  "Costed units": 5,
+  "Line revenue": 241.7
  },
  {
   "Date": "2026-05-18",
@@ -1647,7 +1696,8 @@
   "Google conversions": "",
   "COGS": 31.05,
   "Costed revenue": 43.9,
-  "Costed units": 2
+  "Costed units": 2,
+  "Line revenue": 43.9
  },
  {
   "Date": "2026-05-19",
@@ -1680,7 +1730,8 @@
   "Google conversions": "",
   "COGS": 85.08,
   "Costed revenue": 128.75,
-  "Costed units": 5
+  "Costed units": 5,
+  "Line revenue": 128.75
  },
  {
   "Date": "2026-05-20",
@@ -1713,7 +1764,8 @@
   "Google conversions": "",
   "COGS": 55.03,
   "Costed revenue": 91.85,
-  "Costed units": 3
+  "Costed units": 3,
+  "Line revenue": 91.85
  },
  {
   "Date": "2026-05-21",
@@ -1746,7 +1798,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-05-22",
@@ -1779,7 +1832,8 @@
   "Google conversions": "",
   "COGS": 23.5,
   "Costed revenue": 56.85,
-  "Costed units": 3
+  "Costed units": 3,
+  "Line revenue": 66.8
  },
  {
   "Date": "2026-05-23",
@@ -1812,7 +1866,8 @@
   "Google conversions": "",
   "COGS": 17.93,
   "Costed revenue": 16.95,
-  "Costed units": 1
+  "Costed units": 1,
+  "Line revenue": 16.95
  },
  {
   "Date": "2026-05-24",
@@ -1845,7 +1900,8 @@
   "Google conversions": "",
   "COGS": 204.67,
   "Costed revenue": 256.65,
-  "Costed units": 7
+  "Costed units": 7,
+  "Line revenue": 256.65
  },
  {
   "Date": "2026-05-25",
@@ -1878,7 +1934,8 @@
   "Google conversions": "",
   "COGS": 553.93,
   "Costed revenue": 704.6,
-  "Costed units": 28
+  "Costed units": 28,
+  "Line revenue": 724.5
  },
  {
   "Date": "2026-05-26",
@@ -1911,7 +1968,8 @@
   "Google conversions": "",
   "COGS": 42.15,
   "Costed revenue": 39.95,
-  "Costed units": 1
+  "Costed units": 1,
+  "Line revenue": 39.95
  },
  {
   "Date": "2026-05-27",
@@ -1943,8 +2001,9 @@
   "Meta conversions": "",
   "Google conversions": "",
   "COGS": 13801.57,
-  "Costed revenue": 12157.55,
-  "Costed units": 689
+  "Costed revenue": 12154.56,
+  "Costed units": 689,
+  "Line revenue": 13136.9
  },
  {
   "Date": "2026-05-28",
@@ -1977,7 +2036,8 @@
   "Google conversions": "",
   "COGS": 964.66,
   "Costed revenue": 834,
-  "Costed units": 40
+  "Costed units": 40,
+  "Line revenue": 953.25
  },
  {
   "Date": "2026-05-29",
@@ -2010,7 +2070,8 @@
   "Google conversions": "",
   "COGS": 158.85,
   "Costed revenue": 198.6,
-  "Costed units": 8
+  "Costed units": 8,
+  "Line revenue": 222.45
  },
  {
   "Date": "2026-05-30",
@@ -2043,7 +2104,8 @@
   "Google conversions": "",
   "COGS": 94.98,
   "Costed revenue": 114.75,
-  "Costed units": 5
+  "Costed units": 5,
+  "Line revenue": 122.7
  },
  {
   "Date": "2026-05-31",
@@ -2076,7 +2138,8 @@
   "Google conversions": "",
   "COGS": 37.66,
   "Costed revenue": 46.9,
-  "Costed units": 2
+  "Costed units": 2,
+  "Line revenue": 46.9
  },
  {
   "Date": "2026-06-01",
@@ -2109,7 +2172,8 @@
   "Google conversions": "",
   "COGS": 15.26,
   "Costed revenue": 19.95,
-  "Costed units": 1
+  "Costed units": 1,
+  "Line revenue": 27.9
  },
  {
   "Date": "2026-06-02",
@@ -2142,7 +2206,8 @@
   "Google conversions": "",
   "COGS": -84.81,
   "Costed revenue": -76.8,
-  "Costed units": -4
+  "Costed units": -4,
+  "Line revenue": -93.75
  },
  {
   "Date": "2026-06-03",
@@ -2175,7 +2240,8 @@
   "Google conversions": "",
   "COGS": -79.59,
   "Costed revenue": -62.8,
-  "Costed units": -4
+  "Costed units": -4,
+  "Line revenue": -70.75
  },
  {
   "Date": "2026-06-04",
@@ -2208,7 +2274,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 30.9
  },
  {
   "Date": "2026-06-05",
@@ -2241,7 +2308,8 @@
   "Google conversions": "",
   "COGS": 925.67,
   "Costed revenue": 779,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 779
  },
  {
   "Date": "2026-06-06",
@@ -2274,7 +2342,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-06-07",
@@ -2307,7 +2376,8 @@
   "Google conversions": "",
   "COGS": 41.71,
   "Costed revenue": 45.9,
-  "Costed units": 2
+  "Costed units": 2,
+  "Line revenue": 53.85
  },
  {
   "Date": "2026-06-08",
@@ -2340,7 +2410,8 @@
   "Google conversions": "",
   "COGS": 34.15,
   "Costed revenue": 29.9,
-  "Costed units": 2
+  "Costed units": 2,
+  "Line revenue": 60.8
  },
  {
   "Date": "2026-06-09",
@@ -2373,7 +2444,8 @@
   "Google conversions": "",
   "COGS": 11.93,
   "Costed revenue": 6.95,
-  "Costed units": 1
+  "Costed units": 1,
+  "Line revenue": 6.95
  },
  {
   "Date": "2026-06-10",
@@ -2406,7 +2478,8 @@
   "Google conversions": "",
   "COGS": 35.49,
   "Costed revenue": 35.9,
-  "Costed units": 2
+  "Costed units": 2,
+  "Line revenue": 35.9
  },
  {
   "Date": "2026-06-11",
@@ -2439,7 +2512,8 @@
   "Google conversions": "",
   "COGS": 62.26,
   "Costed revenue": 72.9,
-  "Costed units": 2
+  "Costed units": 2,
+  "Line revenue": 88.8
  },
  {
   "Date": "2026-06-12",
@@ -2472,7 +2546,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-06-13",
@@ -2505,7 +2580,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-06-14",
@@ -2538,7 +2614,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-06-15",
@@ -2571,7 +2648,8 @@
   "Google conversions": "",
   "COGS": 85.49,
   "Costed revenue": 69.48,
-  "Costed units": 5
+  "Costed units": 5,
+  "Line revenue": 85.38
  },
  {
   "Date": "2026-06-16",
@@ -2604,7 +2682,8 @@
   "Google conversions": "",
   "COGS": 57.84,
   "Costed revenue": 73.83,
-  "Costed units": 3
+  "Costed units": 3,
+  "Line revenue": 123.33
  },
  {
   "Date": "2026-06-17",
@@ -2637,7 +2716,8 @@
   "Google conversions": "",
   "COGS": 524.92,
   "Costed revenue": 662.21,
-  "Costed units": 23
+  "Costed units": 23,
+  "Line revenue": 869.31
  },
  {
   "Date": "2026-06-18",
@@ -2670,7 +2750,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-06-19",
@@ -2703,7 +2784,8 @@
   "Google conversions": "",
   "COGS": 22.34,
   "Costed revenue": 34.99,
-  "Costed units": 1
+  "Costed units": 1,
+  "Line revenue": 139.82
  },
  {
   "Date": "2026-06-20",
@@ -2736,7 +2818,8 @@
   "Google conversions": "",
   "COGS": 17.93,
   "Costed revenue": 9.95,
-  "Costed units": 1
+  "Costed units": 1,
+  "Line revenue": 9.95
  },
  {
   "Date": "2026-06-21",
@@ -2769,7 +2852,8 @@
   "Google conversions": "",
   "COGS": 58.08,
   "Costed revenue": 98.67,
-  "Costed units": 3
+  "Costed units": 3,
+  "Line revenue": 133.66
  },
  {
   "Date": "2026-06-22",
@@ -2802,7 +2886,8 @@
   "Google conversions": "",
   "COGS": 25.95,
   "Costed revenue": 29.95,
-  "Costed units": 1
+  "Costed units": 1,
+  "Line revenue": 78.95
  },
  {
   "Date": "2026-06-23",
@@ -2835,7 +2920,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-06-24",
@@ -2868,7 +2954,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-06-25",
@@ -2901,7 +2988,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-06-26",
@@ -2934,7 +3022,8 @@
   "Google conversions": "",
   "COGS": 22.34,
   "Costed revenue": 34.99,
-  "Costed units": 1
+  "Costed units": 1,
+  "Line revenue": 34.99
  },
  {
   "Date": "2026-06-27",
@@ -2967,7 +3056,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-06-28",
@@ -3000,7 +3090,8 @@
   "Google conversions": "",
   "COGS": 168.85,
   "Costed revenue": 300.83,
-  "Costed units": 8
+  "Costed units": 8,
+  "Line revenue": 300.83
  },
  {
   "Date": "2026-06-29",
@@ -3033,7 +3124,8 @@
   "Google conversions": "",
   "COGS": 395.38,
   "Costed revenue": 649.7,
-  "Costed units": 19
+  "Costed units": 19,
+  "Line revenue": 805.99
  },
  {
   "Date": "2026-06-30",
@@ -3066,7 +3158,8 @@
   "Google conversions": "",
   "COGS": 149.13,
   "Costed revenue": 210.27,
-  "Costed units": 6
+  "Costed units": 6,
+  "Line revenue": 275.92
  },
  {
   "Date": "2026-07-01",
@@ -3099,7 +3192,8 @@
   "Google conversions": "",
   "COGS": 53.19,
   "Costed revenue": 79.59,
-  "Costed units": 3
+  "Costed units": 3,
+  "Line revenue": 79.59
  },
  {
   "Date": "2026-07-02",
@@ -3132,7 +3226,8 @@
   "Google conversions": "",
   "COGS": 108.16,
   "Costed revenue": 153.57,
-  "Costed units": 3
+  "Costed units": 3,
+  "Line revenue": 176.52
  },
  {
   "Date": "2026-07-03",
@@ -3165,7 +3260,8 @@
   "Google conversions": "",
   "COGS": 96.7,
   "Costed revenue": 125.07,
-  "Costed units": 5
+  "Costed units": 5,
+  "Line revenue": 167.77
  },
  {
   "Date": "2026-07-04",
@@ -3198,7 +3294,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-07-05",
@@ -3231,7 +3328,8 @@
   "Google conversions": "",
   "COGS": 88.01,
   "Costed revenue": 135.83,
-  "Costed units": 5
+  "Costed units": 5,
+  "Line revenue": 158.78
  },
  {
   "Date": "2026-07-06",
@@ -3264,7 +3362,8 @@
   "Google conversions": "",
   "COGS": 38.81,
   "Costed revenue": 51.94,
-  "Costed units": 2
+  "Costed units": 2,
+  "Line revenue": 51.94
  },
  {
   "Date": "2026-07-07",
@@ -3297,7 +3396,8 @@
   "Google conversions": "",
   "COGS": 689.69,
   "Costed revenue": 1155.04,
-  "Costed units": 34
+  "Costed units": 34,
+  "Line revenue": 1255.64
  },
  {
   "Date": "2026-07-08",
@@ -3330,7 +3430,8 @@
   "Google conversions": "",
   "COGS": 154.06,
   "Costed revenue": 256.76,
-  "Costed units": 8
+  "Costed units": 8,
+  "Line revenue": 330.95
  },
  {
   "Date": "2026-07-09",
@@ -3362,8 +3463,9 @@
   "Meta conversions": "",
   "Google conversions": "",
   "COGS": 108.34,
-  "Costed revenue": 184.95,
-  "Costed units": 5
+  "Costed revenue": 173.46,
+  "Costed units": 5,
+  "Line revenue": 202.25
  },
  {
   "Date": "2026-07-10",
@@ -3396,7 +3498,8 @@
   "Google conversions": "",
   "COGS": 20.42,
   "Costed revenue": 37.99,
-  "Costed units": 1
+  "Costed units": 1,
+  "Line revenue": 37.99
  },
  {
   "Date": "2026-07-11",
@@ -3429,7 +3532,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 71.99
  },
  {
   "Date": "2026-07-12",
@@ -3462,7 +3566,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-07-13",
@@ -3495,7 +3600,8 @@
   "Google conversions": "",
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-07-14",
@@ -3527,8 +3633,9 @@
   "Meta conversions": "",
   "Google conversions": "",
   "COGS": 270.59,
-  "Costed revenue": 499.67,
-  "Costed units": 17
+  "Costed revenue": 491.69,
+  "Costed units": 17,
+  "Line revenue": 521.64
  },
  {
   "Date": "2026-07-15",
@@ -3560,8 +3667,9 @@
   "Meta conversions": 0,
   "Google conversions": 0,
   "COGS": 136.57,
-  "Costed revenue": 279.55,
-  "Costed units": 9
+  "Costed revenue": 259.6,
+  "Costed units": 9,
+  "Line revenue": 259.6
  },
  {
   "Date": "2026-07-16",
@@ -3593,8 +3701,9 @@
   "Meta conversions": 0,
   "Google conversions": 0,
   "COGS": 186.46,
-  "Costed revenue": 349.77,
-  "Costed units": 11
+  "Costed revenue": 341.16,
+  "Costed units": 11,
+  "Line revenue": 360.91
  },
  {
   "Date": "2026-07-17",
@@ -3627,7 +3736,8 @@
   "Google conversions": 0,
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-07-18",
@@ -3660,7 +3770,8 @@
   "Google conversions": 0,
   "COGS": 32.58,
   "Costed revenue": 59.9,
-  "Costed units": 2
+  "Costed units": 2,
+  "Line revenue": 59.9
  },
  {
   "Date": "2026-07-19",
@@ -3693,7 +3804,8 @@
   "Google conversions": 0,
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-07-20",
@@ -3726,7 +3838,8 @@
   "Google conversions": 0,
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-07-21",
@@ -3759,7 +3872,8 @@
   "Google conversions": 0,
   "COGS": 185.34,
   "Costed revenue": 354.82,
-  "Costed units": 10
+  "Costed units": 10,
+  "Line revenue": 383.61
  },
  {
   "Date": "2026-07-22",
@@ -3792,7 +3906,8 @@
   "Google conversions": 1,
   "COGS": 161.79,
   "Costed revenue": 291.84,
-  "Costed units": 7
+  "Costed units": 7,
+  "Line revenue": 291.84
  },
  {
   "Date": "2026-07-23",
@@ -3824,8 +3939,9 @@
   "Meta conversions": 0,
   "Google conversions": 2,
   "COGS": 60.22,
-  "Costed revenue": 112.97,
-  "Costed units": 3
+  "Costed revenue": 108.98,
+  "Costed units": 3,
+  "Line revenue": 162.97
  },
  {
   "Date": "2026-07-24",
@@ -3858,7 +3974,8 @@
   "Google conversions": 3,
   "COGS": 254.93,
   "Costed revenue": 443.91,
-  "Costed units": 13
+  "Costed units": 13,
+  "Line revenue": 497.9
  },
  {
   "Date": "2026-07-25",
@@ -3891,7 +4008,8 @@
   "Google conversions": 0,
   "COGS": 43.6,
   "Costed revenue": 74.98,
-  "Costed units": 2
+  "Costed units": 2,
+  "Line revenue": 74.98
  },
  {
   "Date": "2026-07-26",
@@ -3924,7 +4042,8 @@
   "Google conversions": 3,
   "COGS": 259.76,
   "Costed revenue": 488.8,
-  "Costed units": 12
+  "Costed units": 12,
+  "Line revenue": 488.8
  },
  {
   "Date": "2026-07-27",
@@ -3957,7 +4076,8 @@
   "Google conversions": 0,
   "COGS": 0,
   "Costed revenue": 0,
-  "Costed units": 0
+  "Costed units": 0,
+  "Line revenue": 0
  },
  {
   "Date": "2026-07-28",
@@ -3989,8 +4109,9 @@
   "Meta conversions": 1,
   "Google conversions": 0,
   "COGS": 515.94,
-  "Costed revenue": 915.89,
-  "Costed units": 27
+  "Costed revenue": 900.81,
+  "Costed units": 27,
+  "Line revenue": 1006.85
  },
  {
   "Date": "2026-07-29",
@@ -4001,11 +4122,11 @@
   "Net sales": 292.63,
   "Total sales": 366.33,
   "AOV": 48.77,
-  "Sessions": 288,
-  "Sessions with cart adds": 21,
-  "Sessions reached checkout": 4,
-  "Sessions completed checkout": 6,
-  "Conversion rate": 0.0208,
+  "Sessions": 177,
+  "Sessions with cart adds": 7,
+  "Sessions reached checkout": 2,
+  "Sessions completed checkout": 2,
+  "Conversion rate": 0.0113,
   "Email subscribes": 9,
   "Email unsubscribes": 6,
   "Net subscriber growth": 3,
@@ -4016,14 +4137,15 @@
   "Shipping charged": 73.7,
   "Shipping cost": 164.36,
   "Meta clicks": 0,
-  "Google spend": 101.05,
-  "Google conv value": 299.13,
-  "Google clicks": 179,
+  "Google spend": 85.26,
+  "Google conv value": 269.47,
+  "Google clicks": 148,
   "Meta conversions": 0,
-  "Google conversions": 5,
+  "Google conversions": 4,
   "COGS": 147.78,
-  "Costed revenue": 286.71,
-  "Costed units": 9
+  "Costed revenue": 276.64,
+  "Costed units": 9,
+  "Line revenue": 330.63
  },
  {
   "Date": "2026-07-30",
@@ -4056,7 +4178,8 @@
   "Google conversions": 2,
   "COGS": 59.59,
   "Costed revenue": 109.88,
-  "Costed units": 4
+  "Costed units": 4,
+  "Line revenue": 282.37
  },
  {
   "Date": "2026-07-31",
@@ -4089,7 +4212,8 @@
   "Google conversions": 0,
   "COGS": 17.93,
   "Costed revenue": 29.95,
-  "Costed units": 1
+  "Costed units": 1,
+  "Line revenue": 29.95
  },
  {
   "Date": "2026-08-01",
@@ -4121,8 +4245,9 @@
   "Meta conversions": 0,
   "Google conversions": 1,
   "COGS": 89.32,
-  "Costed revenue": 183.62,
-  "Costed units": 3
+  "Costed revenue": 165.26,
+  "Costed units": 3,
+  "Line revenue": 165.26
  },
  {
   "Date": "2026-08-02",
@@ -4155,7 +4280,8 @@
   "Google conversions": 1,
   "COGS": 20.88,
   "Costed revenue": 39.99,
-  "Costed units": 1
+  "Costed units": 1,
+  "Line revenue": 39.99
  },
  {
   "Date": "2026-08-03",
@@ -4188,7 +4314,8 @@
   "Google conversions": 1,
   "COGS": 27.52,
   "Costed revenue": 54.9,
-  "Costed units": 2
+  "Costed units": 2,
+  "Line revenue": 54.9
  },
  {
   "Date": "2026-08-04",
@@ -4221,7 +4348,8 @@
   "Google conversions": 1,
   "COGS": 345.71,
   "Costed revenue": 643.37,
-  "Costed units": 19
+  "Costed units": 19,
+  "Line revenue": 643.37
  },
  {
   "Date": "2026-08-05",
@@ -4253,8 +4381,9 @@
   "Meta conversions": 0,
   "Google conversions": 1,
   "COGS": 286.11,
-  "Costed revenue": 505.01,
-  "Costed units": 15
+  "Costed revenue": 483.54,
+  "Costed units": 15,
+  "Line revenue": 483.54
  },
  {
   "Date": "2026-08-06",
@@ -4287,7 +4416,8 @@
   "Google conversions": 2,
   "COGS": 41.76,
   "Costed revenue": 69.98,
-  "Costed units": 2
+  "Costed units": 2,
+  "Line revenue": 69.98
  },
  {
   "Date": "2026-08-07",
@@ -4319,8 +4449,9 @@
   "Meta conversions": 0,
   "Google conversions": 0,
   "COGS": 195.63,
-  "Costed revenue": 360.78,
-  "Costed units": 10
+  "Costed revenue": 349.29,
+  "Costed units": 10,
+  "Line revenue": 349.29
  },
  {
   "Date": "2026-08-08",
@@ -4353,7 +4484,8 @@
   "Google conversions": 1,
   "COGS": 74.63,
   "Costed revenue": 137.96,
-  "Costed units": 4
+  "Costed units": 4,
+  "Line revenue": 137.96
  },
  {
   "Date": "2026-08-09",
@@ -4364,28 +4496,29 @@
   "Net sales": 132.88,
   "Total sales": 177.73,
   "AOV": 44.29,
-  "Sessions": 137,
-  "Sessions with cart adds": 8,
-  "Sessions reached checkout": 1,
-  "Sessions completed checkout": 2,
-  "Conversion rate": 0.0146,
-  "Email subscribes": 7,
+  "Sessions": 80,
+  "Sessions with cart adds": 2,
+  "Sessions reached checkout": 0,
+  "Sessions completed checkout": 0,
+  "Conversion rate": 0.0,
+  "Email subscribes": 8,
   "Email unsubscribes": 3828,
-  "Net subscriber growth": -3821,
+  "Net subscriber growth": -3820,
   "Meta spend": 0,
   "Meta conv value": 0,
   "Puzzles sold": 4,
-  "Subscriber list size": 7985,
+  "Subscriber list size": 7986,
   "Shipping charged": 44.85,
   "Shipping cost": 0,
   "Meta clicks": 0,
-  "Google spend": 50.33,
-  "Google conv value": 37.99,
-  "Google clicks": 67,
+  "Google spend": 25.29,
+  "Google conv value": 0,
+  "Google clicks": 32,
   "Meta conversions": 0,
-  "Google conversions": 1,
+  "Google conversions": 0,
   "COGS": 70.25,
   "Costed revenue": 132.88,
-  "Costed units": 4
+  "Costed units": 4,
+  "Line revenue": 132.88
  }
 ]

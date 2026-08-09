@@ -63,7 +63,7 @@ COLUMNS = [
     # ONLY the aggregate crosses into this public repo — per-SKU wholesale
     # costs never do. "Costed revenue" and "Costed units" are the coverage
     # base: they cover the same lines as COGS and nothing else.
-    "COGS", "Costed revenue", "Costed units",
+    "COGS", "Costed revenue", "Costed units", "Line revenue",
 ]
 
 # Porter feed header -> data.json column(s). The feed carries Meta Ads, GA4
@@ -367,7 +367,11 @@ def fetch_orders(store, token, since):
             # lines that carry a unit cost. Keeping the matching revenue is
             # what lets the dashboard measure a real margin on the costed
             # part and extrapolate it honestly over the rest.
-            "cogs": 0.0, "costed_rev": 0.0, "costed_units": 0})
+            "cogs": 0.0, "costed_rev": 0.0, "costed_units": 0,
+            # ALL line revenue, costed or not. Subtracting costed_rev gives
+            # exactly the revenue with no cost behind it, which is the base
+            # the dashboard plugs at the modelled rate.
+            "line_rev": 0.0})
 
     cursor, n = None, 0
     while True:
@@ -397,6 +401,7 @@ def fetch_orders(store, token, since):
                 # returns). Without this, a refund removes the revenue but
                 # leaves its cost behind and margin reads too low.
                 for rli in (refund.get("refundLineItems") or {}).get("nodes") or []:
+                    rb["line_rev"] -= _money(rli, "subtotalSet")
                     unit = _unit_cost(rli.get("lineItem") or {})
                     if unit is None:
                         continue
@@ -414,13 +419,27 @@ def fetch_orders(store, token, since):
             b["discounts"] -= disc
             b["shipping"] += _money(node, "totalShippingPriceSet")
             b["total"] += _money(node, "totalPriceSet")
-            for li in (node.get("lineItems") or {}).get("nodes") or []:
+            # A line's discountedTotalSet carries LINE-level discounts only.
+            # An order-level discount code — which is how most Premium Puzzles
+            # promotions run — is not in it, so the lines sum HIGHER than the
+            # order subtotal (#PP27919: lines $109.93, subtotal $98.94 after a
+            # $10.99 code). Left alone that overstates revenue against an
+            # unchanged cost, and flatters gross margin on exactly the
+            # discounted sales where margin is really being given away.
+            # Rescaling to the order subtotal allocates it pro rata, the same
+            # way Shopify does.
+            lines = (node.get("lineItems") or {}).get("nodes") or []
+            gross_lines = sum(_money(li, "discountedTotalSet") for li in lines)
+            factor = (prod / gross_lines) if gross_lines else 1.0
+            for li in lines:
+                rev = _money(li, "discountedTotalSet") * factor
+                b["line_rev"] += rev
                 unit = _unit_cost(li)
                 if unit is None:
                     continue
                 qty = li.get("quantity") or 0
                 b["cogs"] += unit * qty
-                b["costed_rev"] += _money(li, "discountedTotalSet")
+                b["costed_rev"] += rev
                 b["costed_units"] += qty
         if not conn["pageInfo"]["hasNextPage"]:
             break
@@ -450,12 +469,14 @@ def derived_sales_rows(order_days, since, today):
                 "cogs": round(b["cogs"], 2),
                 "costed_revenue": round(b["costed_rev"], 2),
                 "costed_units": b["costed_units"],
+                "line_revenue": round(b["line_rev"], 2),
             }
         else:
             out[iso] = {"orders": 0, "gross_sales": 0, "discounts": 0,
                         "returns": 0, "net_sales": 0, "total_sales": 0,
                         "average_order_value": None, "shipping_charges": 0,
-                        "cogs": 0, "costed_revenue": 0, "costed_units": 0}
+                        "cogs": 0, "costed_revenue": 0, "costed_units": 0,
+                        "line_revenue": 0}
         day += one
     return out
 
@@ -1120,6 +1141,7 @@ def main():
             "COGS": to_num(round(cogs_day.get(day, {}).get("cogs", 0), 2)),
             "Costed revenue": to_num(round(cogs_day.get(day, {}).get("costed_rev", 0), 2)),
             "Costed units": to_num(cogs_day.get(day, {}).get("costed_units", 0)),
+            "Line revenue": to_num(round(cogs_day.get(day, {}).get("line_rev", 0), 2)),
         }
         # Porter owns the ad columns, and the funnel wherever it reaches:
         # GA4 is the only funnel source now that ShopifyQL sessions are
