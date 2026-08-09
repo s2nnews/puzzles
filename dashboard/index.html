@@ -152,11 +152,11 @@
   <div class="section-title">The Snapshot — did we make money?</div>
   <div class="grid kpis" id="kpis-money"></div>
 
-  <div class="section-title">Marketing efficiency — what did it cost?</div>
-  <div class="grid kpis-2" id="kpis-mktg"></div>
-
   <div class="section-title">Profit — what's actually left after the real costs</div>
   <div class="grid kpis-2" id="kpis-profit"></div>
+
+  <div class="section-title">Marketing efficiency — what did it cost?</div>
+  <div class="grid kpis-2" id="kpis-mktg"></div>
 
   <!-- CAMPAIGNS -->
   <div class="section-title">Campaigns — which ads are actually working</div>
@@ -225,11 +225,10 @@
       <div class="hint">Your best-ROI channel (inherited list, $0 acquisition). The number to protect is the <b>engaged</b> list &amp; open rate — not raw count.</div>
       <div class="big2" style="margin:10px 0 4px">
         <div class="stat"><div class="v">11,822</div><div class="k">Subscribed contacts (engaged)</div></div>
-        <div class="stat"><div class="v" style="color:var(--up)">~4,000</div><div class="k">Unengaged pruned <span class="pill ok">opens ↑</span></div></div>
-        <div class="stat"><div class="v" style="color:var(--warn)">−72</div><div class="k">Organic net 30d <span class="pill" style="color:var(--warn);background:rgba(255,176,32,.13)">watch</span></div></div>
+        <div class="stat"><div class="v" id="sub-net">−72</div><div class="k" id="sub-net-k">Organic net, selected range</div></div>
       </div>
       <div id="subtrend" style="margin-top:8px"></div>
-      <div class="notes">The <b>7 Jul</b> spike was the <b>Klaviyo → Omnisend migration</b>. During warm-up you deliberately dropped <b>~4,000 unengaged</b> subscribers — which is exactly why opens jumped (Klaviyo ~53% across 12k → 64–85% on engaged Omnisend sends). That's healthy pruning, not loss. The <b>−72</b> organic net is the ongoing trickle to keep an eye on. Omnisend is the go-forward source of truth.</div>
+      <div class="notes">The <b>7 Jul</b> spike was the <b>Klaviyo → Omnisend migration</b>. During warm-up you deliberately dropped <b>~4,000 unengaged</b> subscribers — which is exactly why opens jumped (Klaviyo ~53% across 12k → 64–85% on engaged Omnisend sends). That's healthy pruning, not loss, and it is history now rather than a metric to track. The number to watch is the <b>organic net</b> above, which moves with the date range: consistently negative means the list is eroding faster than it refills. Omnisend is the go-forward source of truth.</div>
     </div>
     <div class="card">
       <h3>Revenue by channel <span class="tag">attribution-limited</span></h3>
@@ -243,7 +242,7 @@
   <div class="card">
     <h3>Campaign performance — full history <span class="tag">opens re-measured to +72h after send</span></h3>
     <div class="hint">Both platforms shown: <b style="color:#a06bff">Klaviyo</b> through early July, <b style="color:#2dd4bf">Omnisend</b> from mid-July (the migration). Email drove <b>$5,991</b> across 8 sends — your strongest channel. Bars show open rate. Note: Klaviyo revenue is placed-order attribution, Omnisend is its own model, so cross-platform totals are directional, not identical methodology.</div>
-    <table id="campaigns"></table>
+    <table id="email-campaigns"></table>
   </div>
 
   <div class="section-title">Make it live — from snapshot to always-on website</div>
@@ -388,6 +387,11 @@ function buildModel(a,p){
   const estGP=a.net*CONFIG.marginPct;
   const packaging=a.orders*CONFIG.packagingPerOrder;
   const contribution=estGP-shipBleed-packaging-adSpend;
+  // Same sum on the previous window, so the tile can answer the only question
+  // that matters about ad spend: did the extra sales cover it?
+  const prevAdSpend=p.googleSpend+p.metaSpend;
+  const prevContribution=(p.net*CONFIG.marginPct)-(p.shipCost-p.shipCharged)
+                         -(p.orders*CONFIG.packagingPerOrder)-prevAdSpend;
   const aov=a.orders?a.net/a.orders:0, paov=p.orders?p.net/p.orders:0;
   const conv=a.sessions?a.orders/a.sessions:0, pconv=p.sessions?p.orders/p.sessions:0;
   const metaRoas=a.metaSpend?a.metaRev/a.metaSpend:0;
@@ -424,7 +428,11 @@ function buildModel(a,p){
       {label:'Gross margin',val:pct(CONFIG.marginPct,1),prev:null,pv:'assumption · fixed for every range',sm:1,tip:'A modelled rate, not measured per day: '+pct(CONFIG.listMarginPct,1)+' at supplier list price, improved by buying '+pct(CONFIG.buyingDiscount,0)+' under list. It cannot move with the date range. Only 58% of units sold have a cost recorded in Shopify — fill the rest in and this can become a real, range-aware margin.'},
       {label:'Shipping bleed',val:'<span style="color:var(--down)">−'+money(Math.max(shipBleed,0),0)+'</span>',prev:null,pv:(a.shipCost?pct(a.shipCharged/a.shipCost,0):'0%')+' recovered · −'+money(a.orders?shipBleed/a.orders:0,2)+'/parcel',sm:1,tip:'Carrier cost for Premium Puzzles shipments only (funbox.fun and manual orders are excluded) against what customers paid, GST included.'},
       {label:'Est. gross profit',val:money(estGP,0),prev:p.net*CONFIG.marginPct,cur:estGP,pv:'net sales × '+pct(CONFIG.marginPct,1),sm:1,accent:1},
-      {label:'Contribution profit',val:'<span style="color:var(--up)">'+money(contribution,0)+'</span>',prev:null,pv:'≈'+money(a.orders?contribution/a.orders:0,0)+'/order · '+(a.net?pct(contribution/a.net,0):'0%'),sm:1,accent:1},
+      {label:'Contribution profit',val:'<span style="color:var(--up)">'+money(contribution,0)+'</span>',
+        prev:prevContribution,cur:contribution,
+        pv:'≈'+money(a.orders?contribution/a.orders:0,0)+'/order · '+(a.net?pct(contribution/a.net,0):'0%')+' · '+money(prevContribution,0)+' prev',
+        sm:1,accent:1,
+        tip:'What is left after COGS, the shipping bleed, packaging and ad spend. Ad spend IS bounded by the date range — it is summed from the same daily rows as sales. The previous-period figure is the honest test of paid: if contribution falls while sales rise, the ads are buying revenue you are paying for twice.'},
       {label:'Repeat-customer rate',val:pct(CONFIG.repeatRate,1),prev:CONFIG.repeatPrev,cur:CONFIG.repeatRate,pv:pct(CONFIG.repeatPrev,1)+' prev',sm:1},
       {label:'12-mo customer value',val:money(CONFIG.ltv,2),prev:null,pv:'trailing 12m',sm:1},
     ],
@@ -532,6 +540,19 @@ function renderModel(m){
   paintMoney(m.money); paintMktg(m.mktg); paintProfit(m.profit);
   renderFunnel(m.funnel); renderWaterfall(m.wf);
   renderSalesTrend(m.sales); renderSubTrend(m.subs);
+  paintSubStats(m);
+}
+
+/* Organic net for the selected range. The engaged-contact count stays static —
+   the daily sheet has no "Subscriber list size" column populated yet, so it is
+   read from Omnisend by hand. */
+function paintSubStats(m){
+  const el=document.getElementById('sub-net'); if(!el) return;
+  const n=Math.round(m.netSub||0);
+  el.textContent=(n>0?'+':n<0?'−':'')+fmt(Math.abs(n));
+  el.style.color = n<0 ? 'var(--warn)' : n>0 ? 'var(--up)' : 'var(--ink)';
+  document.getElementById('sub-net-k').innerHTML='Organic net, selected range'
+    + (n<0?' <span class="pill" style="color:var(--warn);background:rgba(255,176,32,.13)">watch</span>':'');
 }
 
 /* ---------- DATE RANGE PICKER ---------- */
@@ -810,7 +831,7 @@ const camps=[
   const totRow=(lbl,x)=>`<tr style="border-top:1px solid #26374b;color:var(--muted)"><td><b>${lbl}</b></td><td></td><td>${fmt(x.s)}</td><td></td><td></td><td><b>${x.o}</b></td><td><b>${money(x.r,0)}</b></td><td></td></tr>`;
   h+=totRow('Klaviyo subtotal (3)',K)+totRow('Omnisend subtotal (5)',O);
   h+=`<tr style="border-top:2px solid #26374b"><td><b>All email (8 sends, both platforms)</b></td><td></td><td><b>${fmt(T.s)}</b></td><td></td><td></td><td><b>${T.o}</b></td><td><b style="color:var(--up)">${money(T.r,0)}</b></td><td></td></tr>`;
-  document.getElementById('campaigns').innerHTML=h;
+  document.getElementById('email-campaigns').innerHTML=h;
 })();
 
 /* ---------- FOOTNOTES ---------- */
