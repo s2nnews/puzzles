@@ -1444,23 +1444,30 @@
  {
   "Date": "2026-08-09",
   "Channel": "AI Assistant",
-  "Sessions": 1,
+  "Sessions": 2,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-09",
   "Channel": "Cross-network",
-  "Sessions": 11,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 30,
+  "Purchases": 1,
+  "Revenue": 37.99
  },
  {
   "Date": "2026-08-09",
   "Channel": "Direct",
-  "Sessions": 27,
+  "Sessions": 34,
   "Purchases": 1,
   "Revenue": 54.99
+ },
+ {
+  "Date": "2026-08-09",
+  "Channel": "Display",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
  },
  {
   "Date": "2026-08-09",
@@ -1472,28 +1479,42 @@
  {
   "Date": "2026-08-09",
   "Channel": "Organic Search",
-  "Sessions": 16,
+  "Sessions": 23,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-09",
+  "Channel": "Organic Social",
+  "Sessions": 1,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-09",
   "Channel": "Paid Search",
-  "Sessions": 7,
+  "Sessions": 11,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-09",
   "Channel": "Paid Shopping",
-  "Sessions": 7,
+  "Sessions": 10,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-09",
+  "Channel": "Paid Social",
+  "Sessions": 2,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-09",
   "Channel": "Unassigned",
-  "Sessions": 54,
+  "Sessions": 87,
   "Purchases": 0,
   "Revenue": 0
  }
