@@ -241,8 +241,8 @@
   <!-- ===================== EMAIL ===================== -->
   <div class="section-title">Email — opens are the leading indicator</div>
   <div class="card">
-    <h3>Campaign performance — full history <span class="tag">opens re-measured to +72h after send</span></h3>
-    <div class="hint">Both platforms shown: <b style="color:#a06bff">Klaviyo</b> through early July, <b style="color:#2dd4bf">Omnisend</b> from mid-July (the migration). Email drove <b>$5,991</b> across 8 sends — your strongest channel. Bars show open rate. Note: Klaviyo revenue is placed-order attribution, Omnisend is its own model, so cross-platform totals are directional, not identical methodology.</div>
+    <h3>Campaign performance — full history <span class="tag">live from Omnisend</span></h3>
+    <div class="hint">Every send, pulled from Omnisend on each refresh, so a new campaign appears on its own and the numbers keep updating as opens and clicks land. <b style="color:#a06bff">Klaviyo</b> through early July is seeded history, frozen at migration; <b style="color:#2dd4bf">Omnisend</b> from mid-July onward is live. Bars show open rate, and this table is <i>not</i> limited by the date picker above. Klaviyo revenue is placed-order attribution and Omnisend uses its own model, so cross-platform totals are directional rather than one methodology.</div>
     <table id="email-campaigns"></table>
   </div>
 
@@ -374,6 +374,17 @@ const CONFIG = {
      12-month value are trailing-12-month customer measures, and a customer
      who first bought under the old owner is still a real repeat customer. */
   ownershipStart:'2026-06-15',
+  /* Campaigns whose objective is LEADS, not purchases. The Conversions column
+     in the feed is Meta's omni_purchase, so a lead-gen campaign can only ever
+     report 0 and 0.00x ROAS, which renders in red and reads as total failure
+     when the campaign may be doing exactly what it was bought to do. These
+     are shown as "lead gen" instead, and excluded from the blended ROAS line,
+     because dividing purchase revenue by spend that was never aimed at
+     purchases understates every campaign that was.
+
+     Sign-ups are not in this feed at all. Until Meta's lead action is added
+     to the Porter blend, cost per lead has to be read in Ads Manager. */
+  leadGenCampaigns:[/quiz/i, /lead gen/i],
   listMarginPct:0.369, buyingDiscount:0.15,
   packagingPerOrder:1.50,
   // Below this share of units costed, the measured margin is still used but
@@ -518,9 +529,33 @@ function buildModel(a,p){
     ],
     mktg:[
       {label:'Ad spend',val:money(adSpend,2),prev:p.googleSpend+p.metaSpend,cur:adSpend,pv:'Google $'+fmt(a.googleSpend,2)+' · Meta $'+fmt(a.metaSpend,2),accent:1,invert:1},
-      {label:'Blended ROAS (MER)',val:(adSpend?(a.total/adSpend):0).toFixed(1)+'×',prev:null,pv:'total rev ÷ ad spend',accent:1},
+      // MER divides ALL revenue by ad spend, so email and organic sales inflate
+      // it into a number that looks like an ad return and is not one. Shown
+      // next to what the platforms actually claim, the gap speaks for itself.
+      {label:'Blended ROAS (MER)',val:(adSpend?(a.total/adSpend):0).toFixed(1)+'×',prev:null,
+        pv:'ALL revenue ÷ ad spend · paid-attributed only '
+           +(adSpend?(paidRev/adSpend):0).toFixed(2)+'×',accent:1,
+        tip:'Not an ad return. It divides every dollar the business took, most of which comes '
+          +'from the email list and organic search, by ad spend alone. It rises when email has '
+          +'a good week and the ads do nothing. The second figure is the platforms\' own '
+          +'attributed revenue over the same spend, which is the closer read on the ads, and '
+          +'even that is generous because platform attribution counts view-throughs and '
+          +'overlaps between Google and Meta.'},
       {label:'Cost per click',val:money(clicks?adSpend/clicks:0,2),prev:null,pv:fmt(clicks)+' paid clicks',accent:1},
-      {label:'Google / Meta ROAS',val:googleRoas.toFixed(2)+'× / '+metaRoas.toFixed(2)+'×',prev:null,pv:'platform-attributed'},
+      // Two ROAS figures side by side imply equal weight. They are almost
+      // never equal, so the split has to travel with them: a poor return on a
+      // fifth of the budget is a different problem from the same return on
+      // four fifths of it.
+      {label:'Google / Meta ROAS',val:googleRoas.toFixed(2)+'× / '+metaRoas.toFixed(2)+'×',prev:null,
+        pv:adSpend
+          ?('Google '+pct(a.googleSpend/adSpend,0)+' of spend · Meta '+pct(a.metaSpend/adSpend,0))
+          :'platform-attributed',
+        tip:'Platform-attributed revenue ÷ that platform\'s spend. Google '+money(a.googleSpend,0)
+          +' returning '+money(a.googleRev,0)+'; Meta '+money(a.metaSpend,0)+' returning '
+          +money(a.metaRev,0)+'. Weight them by the spend share below the figures: the two are '
+          +'not comparable as a pair without it. Meta spend also includes any lead-generation '
+          +'campaign, which is not trying to produce purchase revenue at all, so its ROAS here '
+          +'reads worse than the buying decision behind it.'},
       {label:'Paid CAC',val:money(cac,0),prev:null,pv:'per order · '+fmt(paidOrders,paidOrders%1?1:0)+(cacEstimated?' est.':'')+' attributed',accent:1,tip:cacEstimated
         ?'Ad spend ÷ an ESTIMATE of paid orders (platform revenue ÷ AOV), used only while conversion counts are missing for this range.'
         :'Ad spend ÷ the conversions Google and Meta each report for the selected range — the same counts as the campaign table below, so the two tie out. Platform attribution overlaps and is not the same as a Shopify order.'},
@@ -635,8 +670,14 @@ function renderCampaigns(fromS,toS){
     if((+r.Spend||0)>0) c.days++;
   });
   const list=Object.values(by).filter(c=>c.spend>0).sort((a,b)=>b.spend-a.spend);
-  const totSpend=list.reduce((a,c)=>a+c.spend,0);
-  const totValue=list.reduce((a,c)=>a+c.value,0);
+  list.forEach(c=>{c.lead=CONFIG.leadGenCampaigns.some(re=>re.test(c.name));});
+  // Blended ROAS covers PURCHASE campaigns only. Lead-gen spend in the
+  // denominator would drag the number down for a reason that has nothing to
+  // do with how the purchase campaigns performed.
+  const sale=list.filter(c=>!c.lead);
+  const totSpend=sale.reduce((a,c)=>a+c.spend,0);
+  const totValue=sale.reduce((a,c)=>a+c.value,0);
+  const leadSpend=list.filter(c=>c.lead).reduce((a,c)=>a+c.spend,0);
 
   const row=c=>{
     const roas=c.spend?c.value/c.spend:0;
@@ -645,12 +686,17 @@ function renderCampaigns(fromS,toS){
     return '<tr>'
       +'<td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;'
         +'background:'+(PLATFORM_COLOUR[c.platform]||'var(--faint)')+';margin-right:7px"></span>'
-        +esc(c.name)+'<div class="src">'+esc(c.platform)+' · '+c.days+' active day'+(c.days===1?'':'s')+'</div></td>'
+        +esc(c.name)+'<div class="src">'+esc(c.platform)+' · '+c.days+' active day'+(c.days===1?'':'s')
+        +(c.lead?' · <span style="color:var(--warn)">optimised for sign-ups</span>':'')+'</div></td>'
       +'<td>'+money(c.spend,2)+'</td>'
-      +'<td>'+money(c.value,2)+'</td>'
-      +'<td style="color:'+col+';font-weight:700">'+roas.toFixed(2)+'×</td>'
-      +'<td>'+fmt(c.conv)+'</td>'
-      +'<td>'+money(c.conv?c.spend/c.conv:0,2)+'</td>'
+      +(c.lead
+        ? '<td colspan="3" style="color:var(--muted)">Lead gen — the Conversions field here is '
+          +'<i>purchases</i>, so it reads 0 by definition. Sign-ups are not in this feed; '
+          +'read cost per lead in Ads Manager.</td>'
+        : '<td>'+money(c.value,2)+'</td>'
+          +'<td style="color:'+col+';font-weight:700">'+roas.toFixed(2)+'×</td>'
+          +'<td>'+fmt(c.conv)+'</td>')
+      +'<td>'+(c.lead?'—':money(c.conv?c.spend/c.conv:0,2))+'</td>'
       +'<td>'+fmt(c.clicks)+'</td>'
       +'<td>'+money(c.clicks?c.spend/c.clicks:0,2)+'</td>'
       +'</tr>';
@@ -660,11 +706,14 @@ function renderCampaigns(fromS,toS){
     +'<th>Campaign</th><th>Spend</th><th>Revenue</th><th>ROAS</th>'
     +'<th>Conv.</th><th>Cost/conv.</th><th>Clicks</th><th>CPC</th>'
     +'</tr></thead><tbody>'+list.map(row).join('')
-    +'<tr style="font-weight:700"><td>All campaigns</td>'
+    +'<tr style="font-weight:700"><td>All purchase campaigns</td>'
       +'<td>'+money(totSpend,2)+'</td><td>'+money(totValue,2)+'</td>'
       +'<td style="color:'+(blended>=1?'var(--up)':'var(--down)')+'">'+blended.toFixed(2)+'×</td>'
       +'<td colspan="4"></td></tr>'
-    +'</tbody></table>';
+    +'</tbody></table>'
+    +(leadSpend>0?'<div class="notes" style="font-size:11.5px">Excludes '+money(leadSpend,2)
+      +' of lead-generation spend, which is not aimed at purchases and would drag the blended '
+      +'figure down for the wrong reason.</div>':'');
 }
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
@@ -819,11 +868,13 @@ function initPicker(){
   const live=document.getElementById('dr-live');
   live.innerHTML='<span class="dot" style="background:var(--warn)"></span>loading…';
   const grab=u=>fetch(u,{cache:'no-store'}).then(r=>r.json()).catch(()=>null);
-  Promise.all([grab('./data.json'), grab('./campaigns.json'), grab('./channels.json')])
-   .then(([rows,camps,chans])=>{
+  Promise.all([grab('./data.json'), grab('./campaigns.json'), grab('./channels.json'),
+               grab('./email-campaigns.json')])
+   .then(([rows,camps,chans,mail])=>{
     if(Array.isArray(rows) && rows.length) DAILY_DATA=rows;
     if(Array.isArray(camps)) CAMPAIGN_DATA=camps;
     if(Array.isArray(chans)) CHANNEL_DATA=chans;
+    if(Array.isArray(mail)){ EMAIL_DATA=mail; renderEmail(); }
     if(!DAILY_DATA.length) live.innerHTML='<span class="dot"></span>feed offline';
     initPicker();
   });
@@ -1010,39 +1061,50 @@ renderSubTrend(subs);
 /* Revenue by channel is rendered by renderTraffic() from channels.json.
    The hardcoded version that used to live here is gone. */
 
-/* ---------- CAMPAIGNS ---------- */
-const camps=[
-  {n:'Eurographics + Puzzle Journal',d:'21 Jul',pf:'Omnisend',sent:7962,open:0.6748,click:0.04647,ord:8,rev:901.11},
-  {n:'Warm-up Day 4 — Clementoni (v2)',d:'16 Jul',pf:'Omnisend',sent:4141,open:0.0640,click:0.01401,ord:2,rev:134.78,lowopen:1},
-  {n:'Warm-up Day 3 — Clementoni (v2)',d:'15 Jul',pf:'Omnisend',sent:4763,open:0.6378,click:0.05753,ord:4,rev:233.25},
-  {n:'Warm-up Day 2 — Clementoni',d:'14 Jul',pf:'Omnisend',sent:1999,open:0.8484,click:0.04752,ord:6,rev:367.19},
-  {n:'Warm-up Day 1 — Clementoni',d:'13 Jul',pf:'Omnisend',sent:999,open:0.8368,click:0.06406,ord:1,rev:124.8},
-  {n:'Newsletter July — Thames &amp; Hudson launch',d:'7 Jul',pf:'Klaviyo',sent:6082,open:0.5114,click:0.0355,ord:15,rev:1671.05,best:1},
-  {n:'Newsletter June — 2nd letter',d:'29 Jun',pf:'Klaviyo',sent:6685,open:0.5600,click:0.0376,ord:15,rev:1277.80},
-  {n:'Newsletter June — New Owner Intro',d:'17 Jun',pf:'Klaviyo',sent:6578,open:0.5471,click:0.0572,ord:14,rev:1280.75},
-];
-(function(){
+/* ---------- EMAIL CAMPAIGNS ----------
+   Rendered from email-campaigns.json, written by collect.py from Omnisend.
+   This table used to be a hardcoded array, which meant every new send was
+   invisible until someone remembered to retype it, and the numbers froze at
+   whatever they were the day they were pasted. Open and click rates keep
+   climbing for days after a send, so a frozen table is not just incomplete,
+   it understates. The three Klaviyo sends predate the migration and are
+   seeded in the JSON, because no Omnisend endpoint can return them. */
+var EMAIL_DATA = [];
+function renderEmail(){
+  const host=document.getElementById('email-campaigns');
+  if(!host) return;
+  const rows=EMAIL_DATA.slice().sort((a,b)=>a.Date<b.Date?1:-1);
+  if(!rows.length){ host.innerHTML='<tr><td>No campaign data loaded.</td></tr>'; return; }
   const pfCol={Klaviyo:'#a06bff',Omnisend:'#2dd4bf'};
-  let h=`<tr><th>Campaign</th><th>Platform</th><th>Sent</th><th>Open rate</th><th>Click rate</th><th>Orders</th><th>Attributed rev</th><th>Rev / email</th></tr>`;
-  camps.forEach(c=>{
-    const ow=Math.round(c.open*120);
+  const best=rows.reduce((a,b)=>(+b.Revenue||0)>(+a.Revenue||0)?b:a,rows[0]);
+  // A near-zero open rate means the send broke, not that the list went cold.
+  const LOW=0.20;
+  let h=`<tr><th>Campaign</th><th>Platform</th><th>Sent</th><th>Open rate</th>`
+       +`<th>Click rate</th><th>Orders</th><th>Attributed rev</th><th>Rev / email</th></tr>`;
+  rows.forEach(c=>{
+    const sent=+c.Sent||0, open=+c['Open rate']||0, rev=+c.Revenue||0;
+    const low=open<LOW, top=c===best;
     h+=`<tr>
-      <td>${c.best?'★ ':''}${c.n} <span class="tag">${c.d}</span></td>
-      <td><span class="tag" style="border-color:${pfCol[c.pf]};color:${pfCol[c.pf]}">${c.pf}</span></td>
-      <td>${fmt(c.sent)}</td>
-      <td><span class="orbar" style="width:${ow}px;background:${c.lowopen?'#ff6b6b':'#34d39a'}"></span><b style="color:${c.lowopen?'#ff6b6b':'#e8eef5'}">${pct(c.open,1)}</b></td>
-      <td>${pct(c.click,1)}</td><td>${c.ord}</td>
-      <td class="${c.best?'best':''}"><b>${money(c.rev,0)}</b></td>
-      <td>${money(c.rev/c.sent,2)}</td></tr>`;
+      <td>${top?'★ ':''}${esc(c.Campaign)} <span class="tag">${prettyD(c.Date)}</span>
+        ${c.Subject?`<div class="src">${esc(c.Subject)}</div>`:''}</td>
+      <td><span class="tag" style="border-color:${pfCol[c.Platform]||'#5f7488'};color:${pfCol[c.Platform]||'#5f7488'}">${esc(c.Platform)}</span></td>
+      <td>${fmt(sent)}</td>
+      <td><span class="orbar" style="width:${Math.round(open*120)}px;background:${low?'#ff6b6b':'#34d39a'}"></span><b style="color:${low?'#ff6b6b':'#e8eef5'}">${pct(open,1)}</b></td>
+      <td>${pct(+c['Click rate']||0,1)}</td><td>${fmt(+c.Orders||0)}</td>
+      <td class="${top?'best':''}"><b>${money(rev,0)}</b></td>
+      <td>${money(sent?rev/sent:0,2)}</td></tr>`;
   });
-  const kl=camps.filter(c=>c.pf==='Klaviyo'), om=camps.filter(c=>c.pf==='Omnisend');
-  const sum=a=>({s:a.reduce((x,y)=>x+y.sent,0),r:a.reduce((x,y)=>x+y.rev,0),o:a.reduce((x,y)=>x+y.ord,0)});
-  const K=sum(kl),O=sum(om),T=sum(camps);
-  const totRow=(lbl,x)=>`<tr style="border-top:1px solid #26374b;color:var(--muted)"><td><b>${lbl}</b></td><td></td><td>${fmt(x.s)}</td><td></td><td></td><td><b>${x.o}</b></td><td><b>${money(x.r,0)}</b></td><td></td></tr>`;
-  h+=totRow('Klaviyo subtotal (3)',K)+totRow('Omnisend subtotal (5)',O);
-  h+=`<tr style="border-top:2px solid #26374b"><td><b>All email (8 sends, both platforms)</b></td><td></td><td><b>${fmt(T.s)}</b></td><td></td><td></td><td><b>${T.o}</b></td><td><b style="color:var(--up)">${money(T.r,0)}</b></td><td></td></tr>`;
-  document.getElementById('email-campaigns').innerHTML=h;
-})();
+  const sum=a=>({s:a.reduce((x,y)=>x+(+y.Sent||0),0),r:a.reduce((x,y)=>x+(+y.Revenue||0),0),
+                 o:a.reduce((x,y)=>x+(+y.Orders||0),0),n:a.length});
+  const totRow=(lbl,x)=>`<tr style="border-top:1px solid #26374b;color:var(--muted)"><td><b>${lbl} (${x.n})</b></td><td></td><td>${fmt(x.s)}</td><td></td><td></td><td><b>${fmt(x.o)}</b></td><td><b>${money(x.r,0)}</b></td><td></td></tr>`;
+  ['Klaviyo','Omnisend'].forEach(pf=>{
+    const g=rows.filter(r=>r.Platform===pf);
+    if(g.length) h+=totRow(pf+' subtotal',sum(g));
+  });
+  const T=sum(rows);
+  h+=`<tr style="border-top:2px solid #26374b"><td><b>All email (${T.n} sends)</b></td><td></td><td><b>${fmt(T.s)}</b></td><td></td><td></td><td><b>${fmt(T.o)}</b></td><td><b style="color:var(--up)">${money(T.r,0)}</b></td><td></td></tr>`;
+  host.innerHTML=h;
+}
 
 /* ---------- FOOTNOTES ---------- */
 document.getElementById('footnotes').innerHTML=`

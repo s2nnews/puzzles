@@ -39,6 +39,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_PATH = os.path.join(HERE, "data.json")
 CAMPAIGNS_PATH = os.path.join(HERE, "campaigns.json")
 CHANNELS_PATH = os.path.join(HERE, "channels.json")
+EMAIL_PATH = os.path.join(HERE, "email-campaigns.json")
 SYDNEY = ZoneInfo("Australia/Sydney")
 SHOPIFY_API_VERSION = "2025-07"
 # ShipStation stores whose shipments are Premium Puzzles' own cost. The same
@@ -584,6 +585,84 @@ def fetch_omnisend_list_size(api_key, segment_id=""):
     return int(count) if count is not None else None
 
 
+EMAIL_COLUMNS = ["Date", "Platform", "Campaign", "Subject", "Sent",
+                 "Open rate", "Click rate", "Orders", "Revenue"]
+
+
+def fetch_omnisend_email_campaigns(api_key):
+    """Per-campaign email performance, joined from two endpoints.
+
+    The analytics report carries the numbers but only a campaign ID and name;
+    /api/campaigns carries the send date and subject line. Two calls, joined
+    on the ID.
+
+    The report is queried WITHOUT a timestamp dimension on purpose. Adding one
+    buckets opens by the day they happened while `sent` lands only on the send
+    day, so openRate per bucket becomes opens-that-day over sent-that-day —
+    Warm-up Day 1 read 51.1% that way against a true 84.8%. Rates are only
+    meaningful over the campaign as a whole.
+
+    Returns rows shaped like EMAIL_COLUMNS. Failures return [] rather than
+    dying: a stale email table is better than no dashboard.
+    """
+    body = omnisend_get(
+        api_key, "/api/campaigns?status=sent&channel=email&limit=100")
+    meta = {}
+    for c in body.get("campaigns") or []:
+        sent_at = c.get("startedAt") or c.get("endedAt") or c.get("createdAt")
+        meta[c.get("id")] = {
+            "date": sydney_day(sent_at) if sent_at else "",
+            "subject": ((c.get("content") or {}).get("email") or {}).get("subject", ""),
+            "name": c.get("name") or "",
+        }
+
+    query = {"queries": [{
+        "alias": "campaign-performance",
+        "metrics": [{"name": n} for n in (
+            "sent", "openRate", "clickRate", "attributedOrders",
+            "attributedRevenue")],
+        "dimensions": [{"name": "marketingActivityID"}],
+        "dateRange": {"interval": "last90Days"},
+        "filters": [{"name": "marketingActivityType",
+                     "operator": "in", "values": ["Campaign"]}],
+    }]}
+    resp = http_retry(lambda: requests.post(
+        "https://api.omnisend.com/api/analytics/reports",
+        json=query,
+        headers={"X-API-KEY": api_key, "Omnisend-Version": "2026-03-15"},
+        timeout=60))
+    if resp.status_code != 200:
+        print("Omnisend campaigns: analytics HTTP %s, keeping previous rows"
+              % resp.status_code)
+        return []
+
+    rows = []
+    for block in resp.json().get("reports", []):
+        for r in block.get("rows", []):
+            if not (r.get("sent") or 0):
+                continue
+            m = meta.get(r.get("marketingActivityID"), {})
+            date = m.get("date")
+            if not date:
+                # No send date means it cannot be placed on the timeline, and
+                # a campaign row with no date would sort to the top forever.
+                continue
+            rows.append({
+                "Date": date,
+                "Platform": "Omnisend",
+                "Campaign": r.get("marketingActivityCurrentName") or m.get("name") or "?",
+                "Subject": m.get("subject", ""),
+                "Sent": to_num(r.get("sent")),
+                # NOT to_num(): it rounds to 2dp, which turns an 84.78% open
+                # rate into 85% and a 4.65% click rate into 5%.
+                "Open rate": round(float(r.get("openRate") or 0), 5),
+                "Click rate": round(float(r.get("clickRate") or 0), 5),
+                "Orders": to_num(r.get("attributedOrders")),
+                "Revenue": to_num(round(float(r.get("attributedRevenue") or 0), 2)),
+            })
+    return rows
+
+
 # ------------------------------------------------------------- ShipStation
 
 def fetch_shipstation(api_key, api_secret, since, today, store_ids):
@@ -1090,6 +1169,12 @@ def main():
 
     write_campaigns(fetch_campaigns(
         os.environ.get("CAMPAIGNS_CSV", "").strip() or "campaigns.csv"))
+    if omni_key:
+        # Keyed on (Date, Campaign) and merged, so the pre-migration Klaviyo
+        # sends seeded into this file survive: Omnisend cannot know about them.
+        write_rows(EMAIL_PATH, fetch_omnisend_email_campaigns(omni_key),
+                   ("Date", "Campaign"), EMAIL_COLUMNS, "Email campaigns")
+
     write_rows(CHANNELS_PATH,
                fetch_channels(os.environ.get("CHANNELS_CSV", "").strip()
                               or "channels.csv"),
