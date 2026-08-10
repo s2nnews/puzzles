@@ -603,10 +603,20 @@
   "Date": "2026-08-10",
   "Platform": "Meta",
   "Campaign": "PP - Quiz Lead Gen - 2026-08",
-  "Spend": 23.53,
+  "Spend": 25.18,
   "Value": 0,
-  "Clicks": 239,
-  "Impressions": 1186,
+  "Clicks": 257,
+  "Impressions": 1279,
+  "Conversions": 0
+ },
+ {
+  "Date": "2026-08-10",
+  "Platform": "Meta",
+  "Campaign": "PP - Retargeting + Lookalike",
+  "Spend": 0,
+  "Value": 0,
+  "Clicks": 0,
+  "Impressions": 0,
   "Conversions": 0
  }
 ]
