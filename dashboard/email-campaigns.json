@@ -60,7 +60,7 @@
   "Campaign": "Warm-up Day 3 - Clementoni + Dinner Date restock (v2)",
   "Subject": "Nearly gone in 48 hours, plus a new arrival from Italy",
   "Sent": 4763,
-  "Open rate": 0.64623,
+  "Open rate": 0.64644,
   "Click rate": 0.05753,
   "Orders": 4,
   "Revenue": 233.25
@@ -71,7 +71,7 @@
   "Campaign": "Warm-up Day 4 - Clementoni + Dinner Date restock (v2)",
   "Subject": "Nearly gone in 48 hours, plus a new arrival from Italy",
   "Sent": 4141,
-  "Open rate": 0.06931,
+  "Open rate": 0.06955,
   "Click rate": 0.01449,
   "Orders": 2,
   "Revenue": 134.78
@@ -82,7 +82,7 @@
   "Campaign": "Eurographics + Puzzle Journal (Jul 2026)",
   "Subject": "The quiet Canadian brand you keep buying",
   "Sent": 7962,
-  "Open rate": 0.69015,
+  "Open rate": 0.6904,
   "Click rate": 0.04798,
   "Orders": 8,
   "Revenue": 901.11
@@ -93,7 +93,7 @@
   "Campaign": "Heye + Dinner With restock (Jul 2026)",
   "Subject": "Meet Heye, the German brand that made puzzles funny",
   "Sent": 7954,
-  "Open rate": 0.69713,
+  "Open rate": 0.69738,
   "Click rate": 0.05205,
   "Orders": 9,
   "Revenue": 1043.87
@@ -104,9 +104,31 @@
   "Campaign": "New Arrivals - Cloudberries + Stephen Wilkes (Aug 2026)",
   "Subject": "Two new brands, and a lot of new puzzles",
   "Sent": 7946,
-  "Open rate": 0.72401,
+  "Open rate": 0.72439,
   "Click rate": 0.06431,
   "Orders": 11,
   "Revenue": 1034.02
+ },
+ {
+  "Date": "2026-08-11",
+  "Platform": "Omnisend",
+  "Campaign": "New Arrivals + First Accessories + Buying Habits (Aug 2026)",
+  "Subject": "A first for us, and a lot of new Ravensburger",
+  "Sent": 8004,
+  "Open rate": 0.39743,
+  "Click rate": 0.06072,
+  "Orders": 12,
+  "Revenue": 1332.3
+ },
+ {
+  "Date": "2026-08-11",
+  "Platform": "Omnisend",
+  "Campaign": "Welcome catch-up - Aug 2026 flow gap",
+  "Subject": "Welcome, and here is your 10%",
+  "Sent": 3,
+  "Open rate": 0.33333,
+  "Click rate": 0.0,
+  "Orders": 0,
+  "Revenue": 0
  }
 ]
