@@ -194,6 +194,20 @@
     </div>
   </div>
 
+  <!-- ===================== QUIZ LEADS ===================== -->
+  <div class="section-title">Quiz leads — did paid acquisition produce buyers?</div>
+  <div class="card">
+    <h3>Lead cohorts <span class="tag">by acquisition source, all time</span></h3>
+    <div class="hint">Last-click cannot answer this question. Someone clicks a Meta ad,
+      takes the quiz, then buys three weeks later from a newsletter link, and GA4,
+      Shopify and Omnisend all hand that sale to email. So this walks the other way:
+      the acquisition tag is written onto the <b>customer</b> at signup and stays there,
+      so every order they ever place can be traced back to what brought them in. Only
+      orders placed <i>after</i> signup count. <b>Revenue per lead is the number that
+      sets the budget</b>: cost per lead has to sit under it.</div>
+    <div id="quizcohort"></div>
+  </div>
+
   <!-- ===================== FUNNEL + TRAFFIC ===================== -->
   <div class="section-title">The funnel — visitors in, buyers out</div>
   <div class="cols c-fun">
@@ -869,13 +883,15 @@ function initPicker(){
   live.innerHTML='<span class="dot" style="background:var(--warn)"></span>loading…';
   const grab=u=>fetch(u,{cache:'no-store'}).then(r=>r.json()).catch(()=>null);
   Promise.all([grab('./data.json'), grab('./campaigns.json'), grab('./channels.json'),
-               grab('./email-campaigns.json')])
-   .then(([rows,camps,chans,mail])=>{
+               grab('./email-campaigns.json'), grab('./quiz-cohort.json')])
+   .then(([rows,camps,chans,mail,quiz])=>{
     if(Array.isArray(rows) && rows.length) DAILY_DATA=rows;
     if(Array.isArray(camps)) CAMPAIGN_DATA=camps;
     if(Array.isArray(chans)) CHANNEL_DATA=chans;
     if(Array.isArray(mail)){ EMAIL_DATA=mail; renderEmail(); }
+    if(quiz && quiz.cohorts){ QUIZ_DATA=quiz; }
     if(!DAILY_DATA.length) live.innerHTML='<span class="dot"></span>feed offline';
+    renderQuizCohort();   // after CAMPAIGN_DATA, which supplies lead-gen spend
     initPicker();
   });
 })();
@@ -1060,6 +1076,71 @@ renderSubTrend(subs);
 
 /* Revenue by channel is rendered by renderTraffic() from channels.json.
    The hardcoded version that used to live here is gone. */
+
+/* ---------- QUIZ LEAD COHORTS ----------
+   Written by collect.py from Shopify customer tags, aggregates only.
+
+   Cost per lead deliberately uses OUR count of signups, not Meta's reported
+   lead count. Meta counts a lead when its pixel fires; this counts a contact
+   that actually reached the database. When they disagree the second one is
+   the one that can be emailed. */
+var QUIZ_DATA = null;
+const SOURCE_LABEL = {
+  'meta-paid':'Meta ads (paid)', 'meta-organic':'Meta social (free)',
+  'google-paid':'Google Ads', 'paid-other':'Other paid',
+  'organic':'Organic / direct', 'untagged':'Untagged'
+};
+function renderQuizCohort(){
+  const host=document.getElementById('quizcohort'); if(!host) return;
+  const C=(QUIZ_DATA&&QUIZ_DATA.cohorts)||{};
+  const keys=Object.keys(C);
+  if(!keys.length){
+    host.innerHTML='<div class="notes">No quiz leads captured yet.</div>'; return;
+  }
+  // Lead-gen spend, all time, so cost per lead is spend ÷ leads it produced.
+  const leadSpend=(CAMPAIGN_DATA||[])
+    .filter(r=>CONFIG.leadGenCampaigns.some(re=>re.test(r.Campaign||'')))
+    .reduce((a,r)=>a+(+r.Spend||0),0);
+  const paidLeads=(C['meta-paid']||{}).leads||0;
+  const cpl=paidLeads?leadSpend/paidLeads:0;
+
+  let h='<table><thead><tr><th>Source</th><th>Leads</th><th>Buyers</th>'
+   +'<th>Conv.</th><th>Orders</th><th>Revenue</th><th>Rev / lead</th>'
+   +'<th>Days to 1st order</th></tr></thead><tbody>';
+  keys.sort((a,b)=>(C[b].revenue||0)-(C[a].revenue||0)).forEach(k=>{
+    const r=C[k], conv=r.leads?r.buyers/r.leads:0;
+    h+='<tr><td>'+esc(SOURCE_LABEL[k]||k)+'</td>'
+      +'<td>'+fmt(r.leads)+'</td><td>'+fmt(r.buyers)+'</td>'
+      +'<td>'+pct(conv,1)+'</td><td>'+fmt(r.orders)+'</td>'
+      +'<td><b>'+money(r.revenue,2)+'</b></td>'
+      +'<td style="color:'+(r.revenuePerLead>0?'var(--up)':'var(--muted)')+'"><b>'
+        +money(r.revenuePerLead,2)+'</b></td>'
+      +'<td>'+(r.medianDaysToFirstOrder==null?'—':r.medianDaysToFirstOrder+' days')+'</td></tr>';
+  });
+  h+='</tbody></table>';
+
+  const notes=[];
+  if(leadSpend>0){
+    notes.push(paidLeads
+      ? 'Cost per lead <b>'+money(cpl,2)+'</b> ('+money(leadSpend,2)+' of lead-gen spend ÷ '
+        +fmt(paidLeads)+' paid signups) against '+money((C['meta-paid']||{}).revenuePerLead||0,2)
+        +' of revenue per paid lead.'
+      : '<span style="color:var(--warn)">'+money(leadSpend,2)+' of lead-gen spend has produced '
+        +'<b>no signup tagged as paid</b> yet.</b> The live quiz ads were checked on 11 Aug and do '
+        +'carry <code>utm_medium=paid_social</code> in the destination link, so the tagging is not '
+        +'the problem: nobody has completed the quiz from an ad yet. If this stays empty while spend '
+        +'climbs, the ad is buying clicks that do not finish the quiz, which is a landing-page or '
+        +'audience problem rather than a measurement one.</span>');
+  }
+  if(C.untagged&&C.untagged.leads){
+    notes.push('<span style="color:var(--warn)">'+fmt(C.untagged.leads)+' lead'
+      +(C.untagged.leads===1?'':'s')+' carry no source tag at all.</span> Those predate the '
+      +'11 Aug fix, where an error inside the quiz submit handler let the form post its default '
+      +'tags and silently dropped every archetype and source tag.');
+  }
+  if(notes.length) h+='<div class="notes">'+notes.join(' ')+'</div>';
+  host.innerHTML=h;
+}
 
 /* ---------- EMAIL CAMPAIGNS ----------
    Rendered from email-campaigns.json, written by collect.py from Omnisend.

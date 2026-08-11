@@ -40,6 +40,7 @@ OUT_PATH = os.path.join(HERE, "data.json")
 CAMPAIGNS_PATH = os.path.join(HERE, "campaigns.json")
 CHANNELS_PATH = os.path.join(HERE, "channels.json")
 EMAIL_PATH = os.path.join(HERE, "email-campaigns.json")
+QUIZ_PATH = os.path.join(HERE, "quiz-cohort.json")
 SYDNEY = ZoneInfo("Australia/Sydney")
 SHOPIFY_API_VERSION = "2025-07"
 # ShipStation stores whose shipments are Premium Puzzles' own cost. The same
@@ -587,6 +588,99 @@ def fetch_omnisend_list_size(api_key, segment_id=""):
 
 EMAIL_COLUMNS = ["Date", "Platform", "Campaign", "Subject", "Sent",
                  "Open rate", "Click rate", "Orders", "Revenue"]
+
+QUIZ_CUSTOMERS_GQL = """
+query($q: String!, $cursor: String) {
+  customers(first: 100, query: $q, after: $cursor) {
+    pageInfo { hasNextPage endCursor }
+    nodes {
+      createdAt tags numberOfOrders
+      orders(first: 50, sortKey: CREATED_AT) {
+        nodes { createdAt test currentTotalPriceSet { shopMoney { amount } } }
+      }
+    }
+  }
+}
+"""
+
+
+def _quiz_source(tags):
+    """Acquisition source off the customer's tags, e.g. 'meta-paid'.
+
+    The quiz writes `source-<something>-quiz`. Anything without one predates
+    the tagging fix (or hit the bug where an error in the submit handler let
+    the form post its default tags) and is reported as 'untagged' rather than
+    quietly folded into organic.
+    """
+    for t in tags or []:
+        if t.startswith("source-") and t.endswith("-quiz"):
+            return t[len("source-"):-len("-quiz")]
+    return "untagged"
+
+
+def fetch_quiz_cohorts(store, token):
+    """Quiz leads by day and source, and what those leads went on to spend.
+
+    This is the only honest answer to "did the Meta ad produce a customer?".
+    Last-click cannot answer it: a lead who signs up from an ad and buys three
+    weeks later off a newsletter is credited to email by GA4, by Shopify and
+    by Omnisend alike. The acquisition tag lives on the CUSTOMER, so walking
+    from customer to orders survives that entirely.
+
+    Only orders placed AFTER signup count. An existing buyer who later takes
+    the quiz did not become a customer because of it, and counting their back
+    catalogue would invent a result.
+
+    Publishes aggregates only. No email address, name or order id crosses into
+    this public repo.
+    """
+    cursor, cohorts, daily = None, {}, {}
+    while True:
+        data = shopify_graphql(store, token, QUIZ_CUSTOMERS_GQL,
+                               {"q": "tag:puzzler-quiz", "cursor": cursor})
+        conn = data["customers"]
+        for c in conn["nodes"]:
+            src = _quiz_source(c.get("tags"))
+            joined = c.get("createdAt") or ""
+            if joined:
+                key = (sydney_day(joined), src)
+                daily[key] = daily.get(key, 0) + 1
+            row = cohorts.setdefault(src, {"leads": 0, "buyers": 0, "orders": 0,
+                                           "revenue": 0.0, "days": []})
+            row["leads"] += 1
+            orders = [o for o in ((c.get("orders") or {}).get("nodes") or [])
+                      if not o.get("test") and o.get("createdAt", "") >= joined]
+            if not orders:
+                continue
+            row["buyers"] += 1
+            row["orders"] += len(orders)
+            row["revenue"] += sum(
+                float(((o.get("currentTotalPriceSet") or {}).get("shopMoney") or {})
+                      .get("amount") or 0) for o in orders)
+            try:
+                d0 = datetime.fromisoformat(joined.replace("Z", "+00:00"))
+                d1 = datetime.fromisoformat(orders[0]["createdAt"].replace("Z", "+00:00"))
+                row["days"].append((d1 - d0).days)
+            except ValueError:
+                pass
+        if not conn["pageInfo"]["hasNextPage"]:
+            break
+        cursor = conn["pageInfo"]["endCursor"]
+
+    out = {}
+    for src, r in cohorts.items():
+        med = sorted(r["days"])[len(r["days"]) // 2] if r["days"] else None
+        out[src] = {
+            "leads": r["leads"], "buyers": r["buyers"], "orders": r["orders"],
+            "revenue": round(r["revenue"], 2),
+            "revenuePerLead": round(r["revenue"] / r["leads"], 2) if r["leads"] else 0,
+            "medianDaysToFirstOrder": med,
+        }
+    return {
+        "cohorts": out,
+        "daily": [{"Date": d, "Source": s, "Leads": n}
+                  for (d, s), n in sorted(daily.items())],
+    }
 
 
 def fetch_omnisend_email_campaigns(api_key):
@@ -1174,6 +1268,23 @@ def main():
         # sends seeded into this file survive: Omnisend cannot know about them.
         write_rows(EMAIL_PATH, fetch_omnisend_email_campaigns(omni_key),
                    ("Date", "Campaign"), EMAIL_COLUMNS, "Email campaigns")
+
+    # Rewritten whole each run rather than merged: it is a live recount of
+    # every quiz lead, and a lead's cohort changes the day they first buy.
+    try:
+        quiz = fetch_quiz_cohorts(store, token)
+        quiz["generatedAt"] = datetime.now(SYDNEY).strftime("%Y-%m-%dT%H:%M:%S%z")
+        with open(QUIZ_PATH, "w", encoding="utf-8", newline="\n") as f:
+            json.dump(quiz, f, indent=1)
+            f.write("\n")
+        print("Quiz cohorts: %d leads across %d sources -> quiz-cohort.json"
+              % (sum(c["leads"] for c in quiz["cohorts"].values()),
+                 len(quiz["cohorts"])))
+    except SystemExit:
+        raise
+    except Exception as exc:                      # noqa: BLE001
+        # A missing read_customers scope must not take the whole feed down.
+        print("Quiz cohorts: skipped (%s)" % str(exc)[:120])
 
     write_rows(CHANNELS_PATH,
                fetch_channels(os.environ.get("CHANNELS_CSV", "").strip()
