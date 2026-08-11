@@ -676,7 +676,12 @@ def fetch_quiz_cohorts(store, token):
     Publishes aggregates only. No email address, name or order id crosses into
     this public repo.
     """
-    cursor, cohorts, daily = None, {}, {}
+    # Test signups are excluded by TAG, not by email address: this app cannot
+    # read customer emails at all (Shopify gates the Customer object's PII
+    # behind the Shopify/Advanced/Plus plans), so a "michael+test@" pattern
+    # match is impossible here. Tag a test contact `qa-test` in Shopify and it
+    # stops polluting cost per lead without anyone having to delete it.
+    cursor, cohorts, daily, skipped = None, {}, {}, 0
     while True:
         # BOTH tags, and the difference between them matters. A successful
         # quiz submit writes CONFIG.cohortTag ('quiz-lead'); 'puzzler-quiz' is
@@ -689,6 +694,9 @@ def fetch_quiz_cohorts(store, token):
                                 "cursor": cursor})
         conn = data["customers"]
         for c in conn["nodes"]:
+            if "qa-test" in (c.get("tags") or []):
+                skipped += 1
+                continue
             src = _quiz_source(c.get("tags"))
             joined = c.get("createdAt") or ""
             if joined:
@@ -725,8 +733,11 @@ def fetch_quiz_cohorts(store, token):
             "revenuePerLead": round(r["revenue"] / r["leads"], 2) if r["leads"] else 0,
             "medianDaysToFirstOrder": med,
         }
+    if skipped:
+        print("Quiz cohorts: excluded %d contact(s) tagged qa-test" % skipped)
     return {
         "cohorts": out,
+        "excludedTestContacts": skipped,
         "daily": [{"Date": d, "Source": s, "Leads": n}
                   for (d, s), n in sorted(daily.items())],
     }
