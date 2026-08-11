@@ -1598,7 +1598,7 @@
  {
   "Date": "2026-08-11",
   "Channel": "Direct",
-  "Sessions": 74,
+  "Sessions": 75,
   "Purchases": 1,
   "Revenue": 79.98
  },
@@ -1612,7 +1612,7 @@
  {
   "Date": "2026-08-11",
   "Channel": "Email",
-  "Sessions": 613,
+  "Sessions": 616,
   "Purchases": 11,
   "Revenue": 1100.81
  },
@@ -1647,7 +1647,7 @@
  {
   "Date": "2026-08-11",
   "Channel": "Paid Social",
-  "Sessions": 64,
+  "Sessions": 66,
   "Purchases": 0,
   "Revenue": 0
  },
