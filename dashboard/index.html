@@ -1156,11 +1156,25 @@ function renderLeadgen(){
    +'<th>Quiz started</th><th>Quiz finished</th><th>Gave an email</th>'
    +'<th>Meta cost/lead</th><th>Our subscribers</th>'
    +'<th>True cost each</th></tr></thead><tbody>';
-  let tSpend=0,tLeads=0;
+  let tSpend=0,tLeads=0,staleSpend=false;
+  /* Spend comes from the LIVE campaign feed, never from the CSV.
+
+     campaigns.json already carries this campaign's spend, refreshed every two
+     hours. Reading a hand-typed copy instead would let the acquisition table
+     disagree with the campaign table directly above it, and nothing on the
+     page would say which was right. The CSV keeps only what cannot be
+     automated: Meta's lead count, landing-page views, and the GA4 quiz
+     funnel. */
+  const liveSpend = name => {
+    const rows=(CAMPAIGN_DATA||[]).filter(c=>(c.Campaign||'')===name);
+    return rows.length ? rows.reduce((a,c)=>a+(+c.Spend||0),0) : null;
+  };
   LEADGEN_DATA.forEach(r=>{
-    const spend=+r.spend||0, leads=+r.leads||0;
+    const live=liveSpend(r.campaign);
+    const spend=live===null?(+r.spend||0):live, leads=+r.leads||0;
     const qs=+r.quiz_start||0, qc=+r.quiz_complete||0;
     tSpend+=spend; tLeads+=leads;
+    if(live===null) staleSpend=true;
     const metaCpl=leads?spend/leads:0;
     const trueCpl=ourPaid?spend/ourPaid:0;
     const col=v=>v===0?'var(--muted)':(v<=T?'var(--up)':'var(--down)');
@@ -1197,6 +1211,9 @@ function renderLeadgen(){
       +'this campaign leaks, and it is a copy and offer problem on one screen, not a traffic '
       +'or targeting one. Quiz events come from GA4 and tie to Meta\'s own lead count exactly.');
   }
+  if(staleSpend) notes.push('<span style="color:var(--warn)">Spend for at least one campaign '
+    +'came from the CSV rather than the live feed, so it may be stale. Check the campaign name '
+    +'matches the one in the campaign table.</span>');
   notes.push('Target is <b>'+money(T,2)+' per subscriber</b>. Meta reports '+fmt(tLeads)
     +' lead'+(tLeads===1?'':'s')+' at <b>'+money(tLeads?tSpend/tLeads:0,2)+'</b> each.');
   if(gap>0){
