@@ -1,0 +1,96 @@
+/* Runtime self-test for index.html.
+ *
+ * `node --check` only catches SYNTAX. It cannot catch a function that is
+ * referenced but never defined, or a parameter that was never added — which
+ * is exactly how a broken build shipped on 2026-08-11: the Total ROAS tile
+ * read `ctx.emailRev` while buildModel still had the signature (a, p). The
+ * tile threw, apply() died before setting the date inputs, and the dashboard
+ * silently froze on its hardcoded snapshot dates while still looking live.
+ *
+ * So this actually RUNS the page's functions against the committed feeds.
+ *
+ *     node dashboard/selftest.js
+ */
+const fs = require('fs'), path = require('path');
+const DIR = __dirname;
+const html = fs.readFileSync(path.join(DIR, 'index.html'), 'utf8');
+const src = (html.match(/<script[^>]*>([\s\S]*?)<\/script>/g) || [])
+  .map(b => b.replace(/^<script[^>]*>/, '').replace(/<\/script>$/, '')).join('\n;\n');
+
+const el = () => ({ innerHTML:'', textContent:'', value:'', style:{}, dataset:{}, min:'', max:'',
+  addEventListener(){}, querySelector:()=>el(), querySelectorAll:()=>[],
+  classList:{add(){},remove(){}}, closest:()=>null, focus(){}, click(){},
+  setAttribute(){}, removeAttribute(){}, offsetParent:null });
+global.document = { getElementById:()=>el(), querySelector:()=>el(), querySelectorAll:()=>[],
+  scripts:[], addEventListener(){}, documentElement:el(), body:el(), createElement:()=>el() };
+global.window = global;
+global.location = { search:'' };
+global.fetch = () => Promise.resolve({ json: () => Promise.resolve([]) });
+global.setTimeout = () => 0;
+
+eval(src);
+
+const read = f => JSON.parse(fs.readFileSync(path.join(DIR, f), 'utf8'));
+DAILY_DATA = read('data.json');
+CHANNEL_DATA = read('channels.json');
+CAMPAIGN_DATA = read('campaigns.json');
+try { QUIZ_DATA = read('quiz-cohort.json'); } catch (e) {}
+try { LEADGEN_DATA = read('leadgen.json'); } catch (e) {}
+try { EMAIL_DATA = read('email-campaigns.json'); } catch (e) {}
+
+const last = DAILY_DATA[DAILY_DATA.length - 1].Date;
+const minus = (d, n) => new Date(new Date(d + 'T00:00:00') - n * 86400000)
+  .toISOString().slice(0, 10);
+
+let failures = 0;
+const check = (name, fn) => {
+  try { const v = fn(); console.log('  ok   ' + name + (v === undefined ? '' : '  ' + v)); }
+  catch (e) { console.log('  FAIL ' + name + '  ' + e.message); failures++; }
+};
+
+console.log('Feeds end ' + last);
+
+// Every preset the picker offers, plus the no-context path.
+[7, 30, 90, 365].forEach(n => {
+  const from = minus(last, n - 1), to = last;
+  check('range ' + n + 'd', () => {
+    const inR = DAILY_DATA.filter(r => r.Date >= from && r.Date <= to);
+    if (!inR.length) return 'no rows';
+    const m = buildModel(aggregate(inR), aggregate(inR), { emailRev: emailRevenueIn(from, to) });
+    ['money', 'mktg', 'profit', 'funnel', 'wf'].forEach(k => {
+      if (!Array.isArray(m[k]) || !m[k].length) throw new Error('empty model.' + k);
+    });
+    m.money.concat(m.mktg, m.profit).forEach(t => {
+      if (t.val === undefined || t.val === null) throw new Error('tile "' + t.label + '" has no value');
+      if (String(t.val).includes('undefined') || String(t.val).includes('NaN'))
+        throw new Error('tile "' + t.label + '" renders ' + t.val);
+      if (t.pv && (String(t.pv).includes('undefined') || String(t.pv).includes('NaN')))
+        throw new Error('tile "' + t.label + '" sub-label renders ' + t.pv);
+    });
+    return m.mktg.find(t => t.label.startsWith('Total ROAS')).val;
+  });
+});
+
+// buildModel must survive a caller that passes no context at all.
+check('buildModel without ctx', () => {
+  const inR = DAILY_DATA.filter(r => r.Date >= minus(last, 29));
+  buildModel(aggregate(inR), aggregate(inR));
+  return 'no throw';
+});
+
+// Checked by identifier, not global[...]: eval() puts function declarations in
+// the enclosing scope rather than on global, so a global[] lookup reports every
+// one of them missing. That false alarm is itself worth the comment.
+const NAMES = ['renderModel','renderCampaigns','renderTraffic','renderEmail',
+  'renderQuizCohort','renderLeadgen','paintSubStats','emailRevenueIn','costing',
+  'buildModel','aggregate'];
+// dropTotalDeltas is deliberately absent: it lives inside initPicker(), so it
+// is not global and a check for it would fail forever.
+check('every renderer is defined', () => {
+  const missing = NAMES.filter(f => eval('typeof ' + f) !== 'function');
+  if (missing.length) throw new Error('not defined: ' + missing.join(', '));
+  return NAMES.length + ' checked';
+});
+
+console.log(failures ? '\nFAILED (' + failures + ')' : '\nAll passed');
+process.exit(failures ? 1 : 0);

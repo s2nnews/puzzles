@@ -181,6 +181,21 @@
     </div>
   </div>
 
+  <!-- ===================== FUNNEL + TRAFFIC ===================== -->
+  <div class="section-title">The funnel — visitors in, buyers out</div>
+  <div class="cols c-fun">
+    <div class="card">
+      <h3>Session → Purchase funnel</h3>
+      <div class="hint" id="funnel-hint">Absolute numbers, % of all sessions, and step-to-step conversion. Previous-period figure in grey. The final step is <b>actual Shopify orders</b> — the same number as the Orders tile up top, so there's one source of truth for a sale. It can exceed session-tracked checkouts because some orders complete without a tracked web session (app, phone, repeat direct).</div>
+      <div class="funnel" id="funnel"></div>
+    </div>
+    <div class="card">
+      <h3>Where the traffic comes from</h3>
+      <div class="hint" id="traffic-hint">Sessions by GA4 channel group.</div>
+      <div id="traffic"></div>
+    </div>
+  </div>
+
   <!-- CAMPAIGNS -->
   <div class="section-title">Campaigns — which ads are actually working</div>
   <div class="card">
@@ -221,21 +236,6 @@
       orders placed <i>after</i> signup count. <b>Revenue per lead is the number that
       sets the budget</b>: cost per lead has to sit under it.</div>
     <div id="quizcohort"></div>
-  </div>
-
-  <!-- ===================== FUNNEL + TRAFFIC ===================== -->
-  <div class="section-title">The funnel — visitors in, buyers out</div>
-  <div class="cols c-fun">
-    <div class="card">
-      <h3>Session → Purchase funnel</h3>
-      <div class="hint" id="funnel-hint">Absolute numbers, % of all sessions, and step-to-step conversion. Previous-period figure in grey. The final step is <b>actual Shopify orders</b> — the same number as the Orders tile up top, so there's one source of truth for a sale. It can exceed session-tracked checkouts because some orders complete without a tracked web session (app, phone, repeat direct).</div>
-      <div class="funnel" id="funnel"></div>
-    </div>
-    <div class="card">
-      <h3>Where the traffic comes from</h3>
-      <div class="hint" id="traffic-hint">Sessions by GA4 channel group.</div>
-      <div id="traffic"></div>
-    </div>
   </div>
 
   <!-- ===================== TREND ===================== -->
@@ -517,7 +517,20 @@ function costing(a){
   };
 }
 
-function buildModel(a,p){
+/* Email revenue for a range, from the GA4 channel feed, used to strip email
+   out of total ROAS. Returns null when the channel feed does not cover the
+   whole range, so the caller refuses to publish half a subtraction rather
+   than quietly under-subtracting. */
+function emailRevenueIn(fromS,toS){
+  if(!CHANNEL_DATA.length) return null;
+  const covFrom=CHANNEL_DATA.reduce((m,r)=>r.Date<m?r.Date:m,CHANNEL_DATA[0].Date);
+  if(fromS<covFrom) return null;
+  return CHANNEL_DATA.filter(r=>r.Date>=fromS && r.Date<=toS && r.Channel==='Email')
+    .reduce((t,r)=>t+(+r.Revenue||0),0);
+}
+
+function buildModel(a,p,ctx){
+  ctx=ctx||{};                       // never let a missing ctx throw on ctx.x
   const adSpend=a.googleSpend+a.metaSpend;
   const shipBleed=a.shipCost-a.shipCharged;                 // net loss on shipping
   const C=costing(a), Cp=costing(p);
@@ -864,7 +877,8 @@ function initPicker(){
     // Totals are only comparable across equal-length windows. When the
     // previous window is short, rate deltas (margin, AOV, conversion) still
     // hold but absolute ones do not, so buildModel drops those chips.
-    const m=buildModel(aggregate(inR), aggregate(prevR));
+    const m=buildModel(aggregate(inR), aggregate(prevR),
+                       {emailRev:emailRevenueIn(fromS,toS)});
     if(prevDays && prevDays<days) dropTotalDeltas(m);
     renderModel(m);
     renderCampaigns(fromS,toS);
