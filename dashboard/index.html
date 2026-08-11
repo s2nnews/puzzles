@@ -1139,8 +1139,8 @@ function renderLeadgen(){
 
   let h='<table><thead><tr><th>Campaign</th><th>Period</th><th>Spend</th>'
    +'<th>Impressions</th><th>Link clicks</th><th>Landing views</th>'
-   +'<th>Meta leads</th><th>Meta cost/lead</th><th>Our subscribers</th>'
-   +'<th>True cost each</th></tr></thead><tbody>';
+   +'<th>Finished the quiz</th><th>Meta leads</th><th>Meta cost/lead</th>'
+   +'<th>Our subscribers</th><th>True cost each</th></tr></thead><tbody>';
   let tSpend=0,tLeads=0;
   LEADGEN_DATA.forEach(r=>{
     const spend=+r.spend||0, leads=+r.leads||0;
@@ -1155,6 +1155,12 @@ function renderLeadgen(){
       +'<td>'+fmt(+r.impressions||0)+'</td>'
       +'<td>'+fmt(+r.link_clicks||0)+'</td>'
       +'<td>'+fmt(+r.landing_page_views||0)+'</td>'
+      // Landing view -> captured subscriber. The honest completion figure:
+      // how many people who actually arrived on the quiz page finished it and
+      // ended up on the list. Meta's lead count is intent; this is arrival.
+      +'<td>'+((+r.landing_page_views||0) && ourPaid
+          ? pct(ourPaid/(+r.landing_page_views||1),1)
+          : '<span style="color:var(--muted)">—</span>')+'</td>'
       +'<td><b>'+fmt(leads)+'</b></td>'
       +'<td style="color:'+col(metaCpl)+';font-weight:700">'+money(metaCpl,2)+'</td>'
       +'<td><b>'+fmt(ourPaid)+'</b></td>'
