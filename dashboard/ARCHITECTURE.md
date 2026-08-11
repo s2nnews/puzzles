@@ -244,3 +244,109 @@ the narrow `Date, Platform, Campaign, …` records the page expects.
 **Claude never handles API keys or secrets.** Mike pastes them into `.env` and
 into GitHub secrets. Claude wires everything _around_ the secrets, and the code
 never logs a URL or token — only header names and mapped-column counts.
+
+
+---
+
+# Metric rules, added 2026-08-11
+
+A full rebuild of the metrics layer. These are the decisions a change to any
+figure has to respect. Written after several of them were got wrong first.
+Commercial reasoning and the private-side detail live in the owner's
+knowledge base (`kb/business/marketing-dashboard.md` in the private repo);
+what follows is everything needed to work on this code.
+
+## Every range starts at the 15 June 2026 handover
+
+`CONFIG.ownershipStart`. The store changed owner then, and the previous
+owner's trading was clearance at negative gross margin. Including it does not
+blur the picture, it inverts it: the same 90-day window read 11.1% margin and
+MINUS $1,088 contribution with it, 40.9% and PLUS $2,318 without.
+
+The comparison window is floored too. When that makes it shorter than the
+current range, deltas on TOTALS are dropped (and the inline "$X prev" stripped
+with them) because totals are only comparable across equal-length windows;
+rate deltas are kept. Repeat rate and 12-month customer value are deliberately
+NOT floored, being trailing-12-month customer measures.
+
+## Gross margin is measured; only the uncosted gap is modelled
+
+`costing()`. Real Shopify unit costs stand as themselves and ONLY the revenue
+with no cost loaded is plugged at `CONFIG.fallbackMarginPct`. Deliberately not
+"measure a rate on costed lines and apply it to everything" — that assumes
+uncosted stock earns what costed stock earns.
+
+Gross profit is `net sales − COGS`, subtracted not multiplied; margin is that
+over net sales. The two tie by construction.
+
+Cost is GST-INCLUSIVE, matching the revenue basis, because Premium Puzzles is
+not GST-registered and cannot reclaim purchase GST.
+
+## Total ROAS excludes email
+
+`Total ROAS (ex-email)` = non-email revenue ÷ TOTAL ad spend. The email list
+was inherited, so its revenue is not caused by current advertising and plain
+MER rose whenever the newsletter had a good week. Denominator is total spend
+so it extends to new ad platforms without change.
+
+Returns `null` and renders a dash when GA4 channel data does not cover the
+whole range, rather than subtracting only the email it can see.
+
+## Lead-gen campaigns are not in the ROAS table
+
+`CONFIG.leadGenCampaigns`. They have no purchase revenue, so a ROAS table
+scores them zero and red. They live in their own table, judged on cost per
+subscriber against `CONFIG.targetCostPerSubscriber`.
+
+## Planned list pruning is excluded from organic net
+
+`CONFIG.listHygiene`, keyed by date. Exclusion is BY DECLARATION, never by
+size: an undeclared spike stays in the number and is flagged for review,
+because "unusually large" is also what a real problem looks like.
+
+## Traps that produced wrong numbers here
+
+- **`discountedTotalSet` excludes ORDER-level discounts.** Lines summed higher
+  than the order subtotal (#PP27919: $109.93 vs $98.94 after a $10.99 code),
+  overstating revenue against unchanged cost and flattering margin on exactly
+  the discounted sales where margin is being given away. Line revenue is
+  rescaled to the order subtotal. Any recomputation of margin from line items
+  needs this, and it always errs flatteringly.
+- **Omnisend rate metrics break when bucketed by day.** A `timestamp`
+  dimension buckets opens by the day they happened while `sent` lands on the
+  send day. Warm-up Day 1 read 51.1% that way against a true 84.8%. Query
+  campaign rates with no timestamp dimension.
+- **`to_num()` rounds to 2dp** — it turned an 84.78% open rate into 85%. Not
+  for rates stored as fractions.
+- **Shopify `unitCost` is undated**, so today's cost is applied to old sales.
+- **This app cannot read customer PII** (Shopify gates it above the Basic
+  plan), so the collector sees customer tags, dates and orders but never an
+  email. All filtering is tag-based, including the `qa-test` exclusion.
+- **Duplicate element ids fail silently.** The email table and the ads table
+  both used `id="campaigns"` and one overwrote the other. Check after editing:
+
+```bash
+python -c "import re;s=open('index.html',encoding='utf-8').read();u=set(re.findall(r\"getElementById\('([^']+)'\)\",s));d=set(re.findall(r'id=\"([^\"]+)\"',s));print('missing',sorted(u-d));print('dupes',sorted(i for i in d if s.count('id=\"%s\"'%i)>1))"
+```
+
+## Attribution, and why the quiz cohort exists
+
+Last-click cannot tell you whether an ad produced a customer: a lead who signs
+up from an ad and buys three weeks later off a newsletter is credited to email
+by GA4, Shopify and Omnisend alike. The durable link is the CONTACT — the quiz
+writes an acquisition tag onto the Shopify customer and it stays there. So
+`fetch_quiz_cohorts` walks customers to their orders, counting only orders
+placed AFTER signup. Revenue per lead is the figure cost per lead must sit
+under.
+
+Leads are counted on the `quiz-lead` tag. `puzzler-quiz` is the hidden field's
+DEFAULT, written only when the tag builder throws, so counting it counts the
+failures — which is exactly the mistake that once made this read 1 lead when
+there were 9.
+
+## Still manual
+
+`leadgen.csv`, Meta's lead count and CPL. `facebook_ads_lead` is not in the
+Porter blend and `update_blend` exposes accounts and data sources but not the
+metric list, so it cannot be added through the API. Refresh from Ads Manager
+or via the Porter action `facebook_ads.insights_get`.
