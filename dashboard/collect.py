@@ -646,6 +646,9 @@ query($q: String!, $cursor: String) {
 def _quiz_source(tags):
     """Acquisition source off the customer's tags, e.g. 'meta-paid'.
 
+    A contact holding only 'puzzler-quiz' and no source tag did not complete
+    tagging: the submit handler threw and the form posted its defaults.
+
     The quiz writes `source-<something>-quiz`. Anything without one predates
     the tagging fix (or hit the bug where an error in the submit handler let
     the form post its default tags) and is reported as 'untagged' rather than
@@ -675,8 +678,15 @@ def fetch_quiz_cohorts(store, token):
     """
     cursor, cohorts, daily = None, {}, {}
     while True:
+        # BOTH tags, and the difference between them matters. A successful
+        # quiz submit writes CONFIG.cohortTag ('quiz-lead'); 'puzzler-quiz' is
+        # the hidden field's DEFAULT, written only when the tag builder threw
+        # and the browser posted the form untouched. Counting only the default
+        # counts only the failures — which is exactly the mistake that made
+        # this read 1 lead when there were 9.
         data = shopify_graphql(store, token, QUIZ_CUSTOMERS_GQL,
-                               {"q": "tag:puzzler-quiz", "cursor": cursor})
+                               {"q": "tag:quiz-lead OR tag:puzzler-quiz",
+                                "cursor": cursor})
         conn = data["customers"]
         for c in conn["nodes"]:
             src = _quiz_source(c.get("tags"))
