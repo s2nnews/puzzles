@@ -1,2 +1,2 @@
-campaign,platform,objective,from,to,spend,impressions,reach,clicks,link_clicks,landing_page_views,leads,as_at
-PP - Quiz Lead Gen - 2026-08,Meta,OUTCOME_LEADS,2026-08-08,2026-08-11,47.13,2345,1975,379,135,127,15,2026-08-11
+campaign,platform,objective,from,to,spend,impressions,reach,clicks,link_clicks,landing_page_views,quiz_start,quiz_complete,leads,as_at
+PP - Quiz Lead Gen - 2026-08,Meta,OUTCOME_LEADS,2026-08-08,2026-08-11,47.13,2345,1975,379,135,127,87,80,15,2026-08-11

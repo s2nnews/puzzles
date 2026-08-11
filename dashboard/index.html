@@ -1139,11 +1139,13 @@ function renderLeadgen(){
 
   let h='<table><thead><tr><th>Campaign</th><th>Period</th><th>Spend</th>'
    +'<th>Impressions</th><th>Link clicks</th><th>Landing views</th>'
-   +'<th>Finished the quiz</th><th>Meta leads</th><th>Meta cost/lead</th>'
-   +'<th>Our subscribers</th><th>True cost each</th></tr></thead><tbody>';
+   +'<th>Quiz started</th><th>Quiz finished</th><th>Gave an email</th>'
+   +'<th>Meta cost/lead</th><th>Our subscribers</th>'
+   +'<th>True cost each</th></tr></thead><tbody>';
   let tSpend=0,tLeads=0;
   LEADGEN_DATA.forEach(r=>{
     const spend=+r.spend||0, leads=+r.leads||0;
+    const qs=+r.quiz_start||0, qc=+r.quiz_complete||0;
     tSpend+=spend; tLeads+=leads;
     const metaCpl=leads?spend/leads:0;
     const trueCpl=ourPaid?spend/ourPaid:0;
@@ -1155,13 +1157,13 @@ function renderLeadgen(){
       +'<td>'+fmt(+r.impressions||0)+'</td>'
       +'<td>'+fmt(+r.link_clicks||0)+'</td>'
       +'<td>'+fmt(+r.landing_page_views||0)+'</td>'
-      // Landing view -> captured subscriber. The honest completion figure:
-      // how many people who actually arrived on the quiz page finished it and
-      // ended up on the list. Meta's lead count is intent; this is arrival.
-      +'<td>'+((+r.landing_page_views||0) && ourPaid
-          ? pct(ourPaid/(+r.landing_page_views||1),1)
-          : '<span style="color:var(--muted)">—</span>')+'</td>'
-      +'<td><b>'+fmt(leads)+'</b></td>'
+      +'<td>'+fmt(qs)+'</td>'
+      // Finishing the questions is not the same as handing over an email, and
+      // the difference is where this campaign actually leaks.
+      +'<td>'+fmt(qc)+(qs?' <span class="src">'+pct(qc/qs,0)+' of starts</span>':'')+'</td>'
+      +'<td><b>'+fmt(leads)+'</b>'
+        +(qc?' <span class="src" style="color:'+(leads/qc<0.4?'var(--down)':'var(--muted)')+'">'
+             +pct(leads/qc,0)+' of finishers</span>':'')+'</td>'
       +'<td style="color:'+col(metaCpl)+';font-weight:700">'+money(metaCpl,2)+'</td>'
       +'<td><b>'+fmt(ourPaid)+'</b></td>'
       +'<td style="color:'+col(trueCpl)+';font-weight:700">'
@@ -1171,6 +1173,16 @@ function renderLeadgen(){
 
   const gap=tLeads-ourPaid;
   const notes=[];
+  const TQS=LEADGEN_DATA.reduce((a,r)=>a+(+r.quiz_start||0),0);
+  const TQC=LEADGEN_DATA.reduce((a,r)=>a+(+r.quiz_complete||0),0);
+  if(TQS && TQC){
+    notes.push('<b>The quiz is not the problem.</b> '+fmt(TQC)+' of '+fmt(TQS)+' who started it '
+      +'finished ('+pct(TQC/TQS,0)+'). But only '+fmt(tLeads)+' handed over an email, '
+      +pct(tLeads/TQC,0)+' of finishers, so <b style="color:var(--down)">'+fmt(TQC-tLeads)
+      +' people completed the whole quiz and walked away at the email step</b>. That is where '
+      +'this campaign leaks, and it is a copy and offer problem on one screen, not a traffic '
+      +'or targeting one. Quiz events come from GA4 and tie to Meta\'s own lead count exactly.');
+  }
   notes.push('Target is <b>'+money(T,2)+' per subscriber</b>. Meta reports '+fmt(tLeads)
     +' lead'+(tLeads===1?'':'s')+' at <b>'+money(tLeads?tSpend/tLeads:0,2)+'</b> each.');
   if(gap>0){

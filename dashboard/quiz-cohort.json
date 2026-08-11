@@ -9,7 +9,7 @@
    "medianDaysToFirstOrder": null
   },
   "meta": {
-   "leads": 9,
+   "leads": 6,
    "buyers": 0,
    "orders": 0,
    "revenue": 0.0,
@@ -31,21 +31,14 @@
    "revenue": 0.0,
    "revenuePerLead": 0.0,
    "medianDaysToFirstOrder": null
-  },
-  "meta-organic": {
-   "leads": 1,
-   "buyers": 0,
-   "orders": 0,
-   "revenue": 0.0,
-   "revenuePerLead": 0.0,
-   "medianDaysToFirstOrder": null
   }
  },
+ "excludedTestContacts": 0,
  "daily": [
   {
    "Date": "2026-08-10",
    "Source": "meta",
-   "Leads": 6
+   "Leads": 5
   },
   {
    "Date": "2026-08-10",
@@ -60,11 +53,6 @@
   {
    "Date": "2026-08-11",
    "Source": "meta",
-   "Leads": 3
-  },
-  {
-   "Date": "2026-08-11",
-   "Source": "meta-organic",
    "Leads": 1
   },
   {
@@ -73,5 +61,5 @@
    "Leads": 1
   }
  ],
- "generatedAt": "2026-08-11T10:50:18+1000"
+ "generatedAt": "2026-08-11T11:23:57+1000"
 }

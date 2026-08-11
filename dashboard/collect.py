@@ -592,7 +592,8 @@ EMAIL_COLUMNS = ["Date", "Platform", "Campaign", "Subject", "Sent",
 
 LEADGEN_COLUMNS = ["campaign", "platform", "objective", "from", "to", "spend",
                    "impressions", "reach", "clicks", "link_clicks",
-                   "landing_page_views", "leads", "as_at"]
+                   "landing_page_views", "quiz_start", "quiz_complete",
+                   "leads", "as_at"]
 
 
 def fetch_leadgen(src):
@@ -604,6 +605,12 @@ def fetch_leadgen(src):
     API. Rather than leave the whole category unmeasured, this is a small
     committed CSV refreshed from Ads Manager (or via the Porter action
     facebook_ads.insights_get, which does return the `lead` action).
+
+    quiz_start / quiz_complete come from GA4 via Porter's query_data
+    (`google_analytics_4_eventName` + `eventCount`, split by
+    `sessionCampaignName`). Porter is the GA4 event source, NOT OpenSEO, whose
+    GA4 connection is not set up, and not Ubersuggest, which is an SEO tool and
+    exposes no event API.
 
     A SNAPSHOT with its own from/to, deliberately not a daily series. Meta's
     connector ignores time_increment here, so a daily split is not available,
@@ -622,7 +629,8 @@ def fetch_leadgen(src):
             continue
         rec = {c: (r.get(c) or "").strip() for c in LEADGEN_COLUMNS}
         for num in ("spend", "impressions", "reach", "clicks", "link_clicks",
-                    "landing_page_views", "leads"):
+                    "landing_page_views", "quiz_start", "quiz_complete",
+                    "leads"):
             rec[num] = to_num(rec[num])
         out.append(rec)
     return out
