@@ -41,6 +41,7 @@ CAMPAIGNS_PATH = os.path.join(HERE, "campaigns.json")
 CHANNELS_PATH = os.path.join(HERE, "channels.json")
 EMAIL_PATH = os.path.join(HERE, "email-campaigns.json")
 QUIZ_PATH = os.path.join(HERE, "quiz-cohort.json")
+LEADGEN_PATH = os.path.join(HERE, "leadgen.json")
 SYDNEY = ZoneInfo("Australia/Sydney")
 SHOPIFY_API_VERSION = "2025-07"
 # ShipStation stores whose shipments are Premium Puzzles' own cost. The same
@@ -588,6 +589,44 @@ def fetch_omnisend_list_size(api_key, segment_id=""):
 
 EMAIL_COLUMNS = ["Date", "Platform", "Campaign", "Subject", "Sent",
                  "Open rate", "Click rate", "Orders", "Revenue"]
+
+LEADGEN_COLUMNS = ["campaign", "platform", "objective", "from", "to", "spend",
+                   "impressions", "reach", "clicks", "link_clicks",
+                   "landing_page_views", "leads", "as_at"]
+
+
+def fetch_leadgen(src):
+    """Hand-maintained lead-generation campaign snapshot.
+
+    Lead campaigns cannot come down the Porter feed: its Conversions column is
+    Meta's omni_purchase, and update_blend exposes accounts and data sources
+    but not the metric list, so facebook_ads_lead cannot be added through the
+    API. Rather than leave the whole category unmeasured, this is a small
+    committed CSV refreshed from Ads Manager (or via the Porter action
+    facebook_ads.insights_get, which does return the `lead` action).
+
+    A SNAPSHOT with its own from/to, deliberately not a daily series. Meta's
+    connector ignores time_increment here, so a daily split is not available,
+    and inventing one would be worse than stating the period plainly.
+    """
+    if not os.path.isabs(src):
+        src = os.path.join(HERE, src)
+    if not os.path.exists(src):
+        print("Lead gen: %s not found, skipping" % os.path.basename(src))
+        return []
+    with open(src, encoding="utf-8-sig") as f:
+        rows = list(csv.DictReader(f))
+    out = []
+    for r in rows:
+        if not (r.get("campaign") or "").strip():
+            continue
+        rec = {c: (r.get(c) or "").strip() for c in LEADGEN_COLUMNS}
+        for num in ("spend", "impressions", "reach", "clicks", "link_clicks",
+                    "landing_page_views", "leads"):
+            rec[num] = to_num(rec[num])
+        out.append(rec)
+    return out
+
 
 QUIZ_CUSTOMERS_GQL = """
 query($q: String!, $cursor: String) {
@@ -1268,6 +1307,13 @@ def main():
         # sends seeded into this file survive: Omnisend cannot know about them.
         write_rows(EMAIL_PATH, fetch_omnisend_email_campaigns(omni_key),
                    ("Date", "Campaign"), EMAIL_COLUMNS, "Email campaigns")
+
+    leadgen = fetch_leadgen(os.environ.get("LEADGEN_CSV", "").strip() or "leadgen.csv")
+    if leadgen:
+        with open(LEADGEN_PATH, "w", encoding="utf-8", newline="\n") as f:
+            json.dump(leadgen, f, indent=1)
+            f.write("\n")
+        print("Lead gen: %d campaign(s) -> leadgen.json" % len(leadgen))
 
     # Rewritten whole each run rather than merged: it is a live recount of
     # every quiz lead, and a lead's cohort changes the day they first buy.

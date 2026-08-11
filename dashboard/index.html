@@ -194,6 +194,21 @@
     </div>
   </div>
 
+  <!-- ===================== ACQUISITION CAMPAIGNS ===================== -->
+  <div class="section-title">Acquisition campaigns — buying subscribers, not sales</div>
+  <div class="card">
+    <h3>Lead-generation performance <span class="tag">target under $3 per subscriber</span></h3>
+    <div class="hint">These campaigns are not trying to sell anything, so they are kept out of
+      the ROAS table above, where a purchase-revenue denominator would score them as total
+      failures. Judge them on <b>cost per subscriber</b> against the $3 target.
+      <b>Two counts are shown deliberately.</b> Meta counts a lead when its pixel fires on
+      submit; we count a subscriber that actually reached the database. When those disagree,
+      the second is the one you can email, and the gap is the thing to fix.
+      Numbers are a manual snapshot from Ads Manager, refreshed in <code>leadgen.csv</code>,
+      because Meta's lead action is not in the Porter feed.</div>
+    <div id="leadgen"></div>
+  </div>
+
   <!-- ===================== QUIZ LEADS ===================== -->
   <div class="section-title">Quiz leads — did paid acquisition produce buyers?</div>
   <div class="card">
@@ -399,6 +414,9 @@ const CONFIG = {
      Sign-ups are not in this feed at all. Until Meta's lead action is added
      to the Porter blend, cost per lead has to be read in Ads Manager. */
   leadGenCampaigns:[/quiz/i, /lead gen/i],
+  // The plan: subscribers for under $3. Everything in the acquisition table
+  // is coloured against this.
+  targetCostPerSubscriber:3.00,
   listMarginPct:0.369, buyingDiscount:0.15,
   packagingPerOrder:1.50,
   // Below this share of units costed, the measured margin is still used but
@@ -683,15 +701,19 @@ function renderCampaigns(fromS,toS){
     c.impr+=+r.Impressions||0; c.conv+=+r.Conversions||0;
     if((+r.Spend||0)>0) c.days++;
   });
-  const list=Object.values(by).filter(c=>c.spend>0).sort((a,b)=>b.spend-a.spend);
-  list.forEach(c=>{c.lead=CONFIG.leadGenCampaigns.some(re=>re.test(c.name));});
+  const all=Object.values(by).filter(c=>c.spend>0).sort((a,b)=>b.spend-a.spend);
+  all.forEach(c=>{c.lead=CONFIG.leadGenCampaigns.some(re=>re.test(c.name));});
+  // Lead-gen campaigns are removed from this table outright rather than shown
+  // with a caveat. They are answering a different question, and a row with no
+  // revenue reads as failure however it is annotated. They get their own table
+  // above, judged on cost per subscriber.
+  const list=all.filter(c=>!c.lead);
   // Blended ROAS covers PURCHASE campaigns only. Lead-gen spend in the
   // denominator would drag the number down for a reason that has nothing to
   // do with how the purchase campaigns performed.
-  const sale=list.filter(c=>!c.lead);
-  const totSpend=sale.reduce((a,c)=>a+c.spend,0);
-  const totValue=sale.reduce((a,c)=>a+c.value,0);
-  const leadSpend=list.filter(c=>c.lead).reduce((a,c)=>a+c.spend,0);
+  const totSpend=list.reduce((a,c)=>a+c.spend,0);
+  const totValue=list.reduce((a,c)=>a+c.value,0);
+  const leadSpend=all.filter(c=>c.lead).reduce((a,c)=>a+c.spend,0);
 
   const row=c=>{
     const roas=c.spend?c.value/c.spend:0;
@@ -701,16 +723,12 @@ function renderCampaigns(fromS,toS){
       +'<td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;'
         +'background:'+(PLATFORM_COLOUR[c.platform]||'var(--faint)')+';margin-right:7px"></span>'
         +esc(c.name)+'<div class="src">'+esc(c.platform)+' · '+c.days+' active day'+(c.days===1?'':'s')
-        +(c.lead?' · <span style="color:var(--warn)">optimised for sign-ups</span>':'')+'</div></td>'
+        +'</div></td>'
       +'<td>'+money(c.spend,2)+'</td>'
-      +(c.lead
-        ? '<td colspan="3" style="color:var(--muted)">Lead gen — the Conversions field here is '
-          +'<i>purchases</i>, so it reads 0 by definition. Sign-ups are not in this feed; '
-          +'read cost per lead in Ads Manager.</td>'
-        : '<td>'+money(c.value,2)+'</td>'
-          +'<td style="color:'+col+';font-weight:700">'+roas.toFixed(2)+'×</td>'
-          +'<td>'+fmt(c.conv)+'</td>')
-      +'<td>'+(c.lead?'—':money(c.conv?c.spend/c.conv:0,2))+'</td>'
+      +'<td>'+money(c.value,2)+'</td>'
+      +'<td style="color:'+col+';font-weight:700">'+roas.toFixed(2)+'×</td>'
+      +'<td>'+fmt(c.conv)+'</td>'
+      +'<td>'+money(c.conv?c.spend/c.conv:0,2)+'</td>'
       +'<td>'+fmt(c.clicks)+'</td>'
       +'<td>'+money(c.clicks?c.spend/c.clicks:0,2)+'</td>'
       +'</tr>';
@@ -726,8 +744,8 @@ function renderCampaigns(fromS,toS){
       +'<td colspan="4"></td></tr>'
     +'</tbody></table>'
     +(leadSpend>0?'<div class="notes" style="font-size:11.5px">Excludes '+money(leadSpend,2)
-      +' of lead-generation spend, which is not aimed at purchases and would drag the blended '
-      +'figure down for the wrong reason.</div>':'');
+      +' of lead-generation spend and its campaigns, which are not aimed at purchases. They are '
+      +'in <b>Acquisition campaigns</b> above, judged on cost per subscriber.</div>':'');
 }
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
@@ -883,15 +901,18 @@ function initPicker(){
   live.innerHTML='<span class="dot" style="background:var(--warn)"></span>loading…';
   const grab=u=>fetch(u,{cache:'no-store'}).then(r=>r.json()).catch(()=>null);
   Promise.all([grab('./data.json'), grab('./campaigns.json'), grab('./channels.json'),
-               grab('./email-campaigns.json'), grab('./quiz-cohort.json')])
-   .then(([rows,camps,chans,mail,quiz])=>{
+               grab('./email-campaigns.json'), grab('./quiz-cohort.json'),
+               grab('./leadgen.json')])
+   .then(([rows,camps,chans,mail,quiz,lg])=>{
     if(Array.isArray(rows) && rows.length) DAILY_DATA=rows;
     if(Array.isArray(camps)) CAMPAIGN_DATA=camps;
     if(Array.isArray(chans)) CHANNEL_DATA=chans;
     if(Array.isArray(mail)){ EMAIL_DATA=mail; renderEmail(); }
     if(quiz && quiz.cohorts){ QUIZ_DATA=quiz; }
+    if(Array.isArray(lg)) LEADGEN_DATA=lg;
     if(!DAILY_DATA.length) live.innerHTML='<span class="dot"></span>feed offline';
-    renderQuizCohort();   // after CAMPAIGN_DATA, which supplies lead-gen spend
+    renderLeadgen();      // both need QUIZ_DATA and CAMPAIGN_DATA loaded first
+    renderQuizCohort();
     initPicker();
   });
 })();
@@ -1076,6 +1097,71 @@ renderSubTrend(subs);
 
 /* Revenue by channel is rendered by renderTraffic() from channels.json.
    The hardcoded version that used to live here is gone. */
+
+/* ---------- ACQUISITION (LEAD-GEN) CAMPAIGNS ----------
+   A manual snapshot, from leadgen.csv, because Meta's `lead` action is not in
+   the Porter blend and update_blend cannot add a metric.
+
+   Not date-filtered: the snapshot carries its own from/to, and Meta's
+   connector ignores time_increment so a daily split is not available.
+   Inventing one would be worse than stating the period. */
+var LEADGEN_DATA = [];
+function renderLeadgen(){
+  const host=document.getElementById('leadgen'); if(!host) return;
+  if(!LEADGEN_DATA.length){
+    host.innerHTML='<div class="notes">No lead-generation campaigns recorded.</div>'; return;
+  }
+  const T=CONFIG.targetCostPerSubscriber;
+  // Subscribers WE actually captured, from the quiz cohort feed. Everything
+  // paid-tagged counts; the untagged bucket is shown separately below because
+  // it cannot be credited to a campaign.
+  const C=(QUIZ_DATA&&QUIZ_DATA.cohorts)||{};
+  const ourPaid=(C['meta-paid']||{}).leads||0;
+
+  let h='<table><thead><tr><th>Campaign</th><th>Period</th><th>Spend</th>'
+   +'<th>Impressions</th><th>Link clicks</th><th>Landing views</th>'
+   +'<th>Meta leads</th><th>Meta cost/lead</th><th>Our subscribers</th>'
+   +'<th>True cost each</th></tr></thead><tbody>';
+  let tSpend=0,tLeads=0;
+  LEADGEN_DATA.forEach(r=>{
+    const spend=+r.spend||0, leads=+r.leads||0;
+    tSpend+=spend; tLeads+=leads;
+    const metaCpl=leads?spend/leads:0;
+    const trueCpl=ourPaid?spend/ourPaid:0;
+    const col=v=>v===0?'var(--muted)':(v<=T?'var(--up)':'var(--down)');
+    h+='<tr><td>'+esc(r.campaign)+'<div class="src">'+esc(r.platform||'')
+        +' · '+esc(r.objective||'')+'</div></td>'
+      +'<td>'+prettyD(r.from)+' – '+prettyD(r.to)+'</td>'
+      +'<td>'+money(spend,2)+'</td>'
+      +'<td>'+fmt(+r.impressions||0)+'</td>'
+      +'<td>'+fmt(+r.link_clicks||0)+'</td>'
+      +'<td>'+fmt(+r.landing_page_views||0)+'</td>'
+      +'<td><b>'+fmt(leads)+'</b></td>'
+      +'<td style="color:'+col(metaCpl)+';font-weight:700">'+money(metaCpl,2)+'</td>'
+      +'<td><b>'+fmt(ourPaid)+'</b></td>'
+      +'<td style="color:'+col(trueCpl)+';font-weight:700">'
+        +(ourPaid?money(trueCpl,2):'—')+'</td></tr>';
+  });
+  h+='</tbody></table>';
+
+  const gap=tLeads-ourPaid;
+  const notes=[];
+  notes.push('Target is <b>'+money(T,2)+' per subscriber</b>. Meta reports '+fmt(tLeads)
+    +' lead'+(tLeads===1?'':'s')+' at <b>'+money(tLeads?tSpend/tLeads:0,2)+'</b> each.');
+  if(gap>0){
+    notes.push('<span style="color:var(--down)">But only <b>'+fmt(ourPaid)+'</b> subscriber'
+      +(ourPaid===1?'':'s')+' carrying a paid tag actually reached the list, so '+fmt(gap)
+      +' of those leads are unaccounted for.</span> On what was captured the real cost is '
+      +(ourPaid?'<b>'+money(tSpend/ourPaid,2)+'</b> each':'undefined')
+      +'. Meta fires its Lead event on submit, before the signup is saved, so it counts intent; '
+      +'this counts arrival. Worth checking whether the form is failing, whether the Omnisend '
+      +'welcome popup is capturing them first (those arrive tagged <code>form_subscriber</code> '
+      +'with no campaign attached), or whether they were already subscribers, in which case '
+      +'Shopify does not re-tag them and the ad bought nothing new.');
+  }
+  h+='<div class="notes">'+notes.join(' ')+'</div>';
+  host.innerHTML=h;
+}
 
 /* ---------- QUIZ LEAD COHORTS ----------
    Written by collect.py from Shopify customer tags, aggregates only.
