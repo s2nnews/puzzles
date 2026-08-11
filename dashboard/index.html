@@ -158,19 +158,6 @@
   <div class="section-title">Marketing efficiency — what did it cost?</div>
   <div class="grid kpis-2" id="kpis-mktg"></div>
 
-  <!-- CAMPAIGNS -->
-  <div class="section-title">Campaigns — which ads are actually working</div>
-  <div class="card">
-    <h3>Per-campaign performance</h3>
-    <div class="hint">Every campaign that spent in the selected range, worst
-      ROAS last. <b>Revenue is each platform's own attribution</b>, so the two
-      are not measured the same way and neither is the same thing as a Shopify
-      order — read them for direction, not as a ledger. A campaign showing
-      spend and no revenue is either genuinely not converting or not being
-      credited; check it against total sales on the day before you judge it.</div>
-    <div id="campaigns"></div>
-  </div>
-
   <!-- ===================== PROFIT WATERFALL + CUSTOMER VALUE ===================== -->
   <div class="cols c-2" style="margin-top:14px">
     <div class="card">
@@ -192,6 +179,19 @@
       </div>
       <div class="notes">LTV is a <b>trailing-12-month</b> figure: $116,697 net revenue across 1,411 active customers = <b>$82.70</b> each, at 1.26 orders apiece. The dip in repeat rate (62% → 53%) is worth watching — it's partly the Omnisend migration settling and the ~4k unengaged prune, but if it keeps sliding it means new buyers aren't coming back. Your inherited email list is the cheapest way to pull them back for order #2.</div>
     </div>
+  </div>
+
+  <!-- CAMPAIGNS -->
+  <div class="section-title">Campaigns — which ads are actually working</div>
+  <div class="card">
+    <h3>Per-campaign performance</h3>
+    <div class="hint">Every campaign that spent in the selected range, worst
+      ROAS last. <b>Revenue is each platform's own attribution</b>, so the two
+      are not measured the same way and neither is the same thing as a Shopify
+      order — read them for direction, not as a ledger. A campaign showing
+      spend and no revenue is either genuinely not converting or not being
+      credited; check it against total sales on the day before you judge it.</div>
+    <div id="campaigns"></div>
   </div>
 
   <!-- ===================== ACQUISITION CAMPAIGNS ===================== -->
@@ -561,18 +561,37 @@ function buildModel(a,p){
     ],
     mktg:[
       {label:'Ad spend',val:money(adSpend,2),prev:p.googleSpend+p.metaSpend,cur:adSpend,pv:'Google $'+fmt(a.googleSpend,2)+' · Meta $'+fmt(a.metaSpend,2),accent:1,invert:1},
-      // MER divides ALL revenue by ad spend, so email and organic sales inflate
-      // it into a number that looks like an ad return and is not one. Shown
-      // next to what the platforms actually claim, the gap speaks for itself.
-      {label:'Blended ROAS (MER)',val:(adSpend?(a.total/adSpend):0).toFixed(1)+'×',prev:null,
-        pv:'ALL revenue ÷ ad spend · paid-attributed only '
-           +(adSpend?(paidRev/adSpend):0).toFixed(2)+'×',accent:1,
-        tip:'Not an ad return. It divides every dollar the business took, most of which comes '
-          +'from the email list and organic search, by ad spend alone. It rises when email has '
-          +'a good week and the ads do nothing. The second figure is the platforms\' own '
-          +'attributed revenue over the same spend, which is the closer read on the ads, and '
-          +'even that is generous because platform attribution counts view-throughs and '
-          +'overlaps between Google and Meta.'},
+      /* Total ROAS with EMAIL REMOVED from the numerator.
+
+         Plain MER divides every dollar the business took by ad spend, and the
+         email list is inherited: ~8k subscribers acquired years ago for
+         nothing. Their revenue is not caused by this month's advertising, so
+         leaving it in produces a number that rises when the newsletter has a
+         good week and the ads do nothing. Stripping it makes the metric answer
+         the question actually being asked, what did paid traffic return. The
+         denominator stays TOTAL ad spend, so it keeps working as channels
+         beyond Google and Meta are added. */
+      {label:'Total ROAS (ex-email)',
+        val:(ctx.emailRev==null||!adSpend)?'—'
+            :(Math.max(0,a.total-ctx.emailRev)/adSpend).toFixed(2)+'×',
+        prev:null,
+        pv:ctx.emailRev==null
+          ?'needs GA4 channel data across the whole range'
+          :'non-email revenue ÷ all ad spend · MER '+(adSpend?(a.total/adSpend):0).toFixed(1)
+           +'× · platform '+(adSpend?(paidRev/adSpend):0).toFixed(2)+'×',
+        accent:1,
+        tip:ctx.emailRev==null
+          ?'GA4 channel data starts 15 Jul, so email cannot be separated across this range. '
+           +'Shorten the range, or read the MER and platform figures with the usual caution.'
+          :('Total sales '+money(a.total,0)+' less '+money(ctx.emailRev,0)+' of email-attributed '
+            +'revenue, over '+money(adSpend,0)+' of ad spend across every platform. Email is '
+            +'removed because the list was inherited and its sales are not caused by current '
+            +'advertising; leaving it in is why MER reads '+(adSpend?(a.total/adSpend):0).toFixed(1)
+            +'×. Two caveats. GA4 is last-click and undercounts email, which often starts a '
+            +'journey it does not finish, so too little is subtracted and this reads slightly '
+            +'high. And once paid acquisition has put a real number of subscribers ON the list, '
+            +'some email revenue WILL be caused by the ads, and stripping all of it will start to '
+            +'under-credit them. Revisit when the quiz cohort is material.')},
       {label:'Cost per click',val:money(clicks?adSpend/clicks:0,2),prev:null,pv:fmt(clicks)+' paid clicks',accent:1},
       // Two ROAS figures side by side imply equal weight. They are almost
       // never equal, so the split has to travel with them: a poor return on a
@@ -745,7 +764,7 @@ function renderCampaigns(fromS,toS){
     +'</tbody></table>'
     +(leadSpend>0?'<div class="notes" style="font-size:11.5px">Excludes '+money(leadSpend,2)
       +' of lead-generation spend and its campaigns, which are not aimed at purchases. They are '
-      +'in <b>Acquisition campaigns</b> above, judged on cost per subscriber.</div>':'');
+      +'in <b>Acquisition campaigns</b> below, judged on cost per subscriber.</div>':'');
 }
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
