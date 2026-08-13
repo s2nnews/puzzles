@@ -133,15 +133,17 @@ ever drifts, the Orders-API maths is wrong.
 | `quiz-cohort.json` | Quiz leads by day and source, and what they went on to spend. |
 | `leadgen.json` | Built from `leadgen.csv`. Meta's own lead count and the GA4 quiz funnel. |
 | `search-console.json` | Organic clicks, impressions, CTR and position per day. |
+| `rank-tracking.json` | One row per tracked keyword per weekly reading. |
 | `porter_feed.csv` | Offline fallback if `PORTER_CSV` is unset. Not used in production. |
 | `campaigns.csv` | Offline fallback if `CAMPAIGNS_CSV` is unset. Not used in production. |
 | `search-console.csv` | Seed **and** current source for the organic chart. See the caveat below. |
+| `rank-tracking.csv` | The rank history. Agent-refreshed weekly. See the caveat below. |
 | `.env.example` | Template. Copy to `.env` (gitignored). |
 | `selftest.js` | Runs the page's functions against the committed feeds. `node dashboard/selftest.js`. |
 | `../.github/workflows/dashboard.yml` | The two-hourly refresh. |
 
 **Every file in that list that `collect.py` writes must also be named in the
-workflow's `git add`.** Seven are written; the line named three until 2026-08-13,
+workflow's `git add`.** Eight are written; the line named three until 2026-08-13,
 so `email-campaigns.json`, `quiz-cohort.json` and `leadgen.json` were rebuilt on
 the runner every two hours and discarded with the container. The published page
 served whatever a human last committed. The failure is silent by construction:
@@ -398,6 +400,53 @@ committed file keeps history beyond whatever trailing window the export carries.
 
 To refresh it by hand in the meantime, `get_search_console_performance` with
 `dimensions: ["date"]` returns exactly the five columns the CSV holds.
+
+## Rank tracking, and why the average is computed here rather than read
+
+`rank-tracking.json` holds **one row per keyword per weekly reading**. It never
+stores an average, and the page never displays the tool's own.
+
+**The reason, from the day this was built.** Ubersuggest reported average
+position improving from **12.36 to 9.00** between 2 and 9 August, a 3.4-place
+gain. It was not one. It dropped `wasgij` (position 35) out of the second
+reading and averaged 10 keywords against the first reading's 11. Like-for-like
+across the ten present in both it was **10.10 to 9.00**, and even that was
+almost entirely one keyword moving 27 to 14 while the rest drifted slightly
+worse. Strip that keyword too and it went backwards, 8.22 to 8.44.
+
+So `constantSetAvg()` compares only keywords carrying a position in **both**
+readings, reports how many were excluded, and names them. There is a selftest
+that fails if it ever compares unequal sets again. A keyword tracked but absent
+from the top 100 stores a blank position, counted in coverage and kept out of
+position maths, because scoring it 0 would read as better than first place.
+
+**The panel refuses to draw a trend under four readings** and says so. Two
+points is not a line, and week-to-week movement of a few places is SERP noise.
+
+**Agent-refreshed, weekly.** The Ubersuggest connector cannot run on the Action
+runner. The panel warns once the last reading passes ten days, which is past the
+tool's own weekly cadence. To refresh:
+
+```text
+project_position_info
+  project_id = <from Uber_Suggest list_projects>
+  startDate / endDate, locId 2036, language en, device desktop
+# append one row per keyword to rank-tracking.csv, dated the reading's date
+```
+
+**The tracked keyword list was rebuilt on 2026-08-13, before history started
+accumulating**, which is the only safe time to change it. Removed `strand
+puzzle` (the NYT Strands game, wrong intent), `custom puzzles` (off-strategy),
+`free jigsaw puzzles for adults` (free-seekers do not buy) and `jigsaw games for
+adults` (leans to play-online intent), none of which ranked. Added `ravensburger
+puzzles` (5,400/mo, difficulty 10, the biggest single prize on the site),
+`puzzle board` and `jigsaw puzzle board` (5,400 and 2,400/mo, both transactional,
+both spiking to 12,100 and 5,400 in December), `australian jigsaw puzzles`
+(1,600/mo, the differentiator), `2000 piece puzzle`, `3000 piece puzzle`,
+`gibsons puzzles` and `clementoni puzzles`. 19 of 25 slots used.
+
+**Changing that list again resets comparability.** Do it deliberately, note the
+date, and expect the constant-set average to shrink for a week or two.
 
 ## Still manual, but do not type it from Ads Manager
 

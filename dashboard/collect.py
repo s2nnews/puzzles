@@ -43,6 +43,7 @@ EMAIL_PATH = os.path.join(HERE, "email-campaigns.json")
 QUIZ_PATH = os.path.join(HERE, "quiz-cohort.json")
 LEADGEN_PATH = os.path.join(HERE, "leadgen.json")
 SEARCH_CONSOLE_PATH = os.path.join(HERE, "search-console.json")
+RANK_PATH = os.path.join(HERE, "rank-tracking.json")
 SYDNEY = ZoneInfo("Australia/Sydney")
 SHOPIFY_API_VERSION = "2025-07"
 # ShipStation stores whose shipments are Premium Puzzles' own cost. The same
@@ -1272,6 +1273,64 @@ def fetch_search_console(src):
     return rows
 
 
+RANK_COLUMNS = ["Date", "Keyword", "Position", "Volume", "URL"]
+
+
+def fetch_rank_tracking(src):
+    """Tracked keyword positions, one row per keyword per reading.
+
+    ONE ROW PER KEYWORD PER DATE, never a pre-computed average, and that shape
+    is the whole point. Ubersuggest's own average position read 12.36 -> 9.00
+    between 2 and 9 August, which looks like a 3.4-place gain and is not one.
+    It dropped `wasgij` (position 35) out of the second reading and averaged 10
+    keywords against the first reading's 11. On the ten keywords present in
+    both it was 10.1 -> 9.0, and even that was one keyword moving 27 -> 14
+    while the rest drifted slightly worse.
+
+    Storing the per-keyword rows means the page can compare a constant set and
+    is never at the mercy of what the tool did or did not refresh that week.
+
+    A blank Position means tracked but not in the top 100, which is a real
+    finding and not missing data. It is kept out of position averages and
+    counted in coverage.
+
+    **Weekly, and agent-refreshed.** Ubersuggest updates once a week and its
+    connector cannot run on the Action runner, so this file does not advance on
+    its own. The panel says how stale it is.
+    """
+    if src.startswith("http://") or src.startswith("https://"):
+        resp = http_retry(lambda: requests.get(src, timeout=60))
+        if resp.status_code != 200:
+            die("RANK_CSV HTTP %s: %s" % (resp.status_code, resp.text[:200]))
+        text = resp.text
+    else:
+        if not os.path.isabs(src):
+            src = os.path.join(HERE, src)
+        if not os.path.exists(src):
+            print("Rank tracking: %s not found, skipping" % os.path.basename(src))
+            return []
+        with open(src, encoding="utf-8-sig") as f:
+            text = f.read()
+
+    rows = []
+    for r in csv.DictReader(io.StringIO(text)):
+        day = parse_day((r.get("Date") or "").strip())
+        kw = (r.get("Keyword") or "").strip()
+        if not day or not kw:
+            continue
+        pos = to_num((r.get("Position") or "").strip())
+        rows.append({
+            "Date": day, "Keyword": kw,
+            # 0 is not a rank. Treat it as "not ranking" rather than letting it
+            # average in as the best possible position.
+            "Position": pos if isinstance(pos, (int, float)) and pos > 0 else "",
+            "Volume": to_num((r.get("Volume") or "").strip()),
+            "URL": (r.get("URL") or "").strip(),
+        })
+    rows.sort(key=lambda r: (r["Date"], r["Keyword"]))
+    return rows
+
+
 def write_rows(path, rows, key_fields, columns, label):
     """Write a feed file, keeping any older rows already published.
 
@@ -1476,6 +1535,14 @@ def main():
                fetch_search_console(os.environ.get("SEARCH_CONSOLE_CSV", "").strip()
                                     or "search-console.csv"),
                ("Date",), SEARCH_CONSOLE_COLUMNS, "Search Console")
+
+    # Keyed on (Date, Keyword) so each weekly reading accumulates rather than
+    # replacing the last. This file IS the rank history: Ubersuggest keeps only
+    # a rolling window, and a week not captured is gone permanently.
+    write_rows(RANK_PATH,
+               fetch_rank_tracking(os.environ.get("RANK_CSV", "").strip()
+                                   or "rank-tracking.csv"),
+               ("Date", "Keyword"), RANK_COLUMNS, "Rank tracking")
 
     rows = []
     for day in sorted(sales):

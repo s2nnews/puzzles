@@ -295,6 +295,19 @@
     <div id="gsc"></div>
   </div>
 
+  <div class="card">
+    <h3>Tracked keyword positions <span class="tag">weekly, banking history</span></h3>
+    <div class="hint">Where the site actually sits in Google for the terms we have chosen to compete on.
+      This is the leading indicator: positions move first, then impressions, then clicks, then orders.
+      <b>Read the per-keyword rows, not the average.</b> Ubersuggest's own headline said average position
+      improved 12.36 to 9.00 between 2 and 9 August, a 3.4-place gain. It is not one. It dropped
+      <code>wasgij</code> (position 35) out of the second reading and compared 10 keywords against 11.
+      The like-for-like figure is the one shown below, computed only across keywords present in both
+      readings. <b>Every week not captured is gone permanently</b>, because the tool keeps a rolling
+      window, which is why this is being banked now even though it cannot say anything yet.</div>
+    <div id="ranks"></div>
+  </div>
+
   <div class="foot-src" id="footnotes"></div>
 </div>
 
@@ -949,8 +962,9 @@ function initPicker(){
   const grab=u=>fetch(u,{cache:'no-store'}).then(r=>r.json()).catch(()=>null);
   Promise.all([grab('./data.json'), grab('./campaigns.json'), grab('./channels.json'),
                grab('./email-campaigns.json'), grab('./quiz-cohort.json'),
-               grab('./leadgen.json'), grab('./search-console.json')])
-   .then(([rows,camps,chans,mail,quiz,lg,gsc])=>{
+               grab('./leadgen.json'), grab('./search-console.json'),
+               grab('./rank-tracking.json')])
+   .then(([rows,camps,chans,mail,quiz,lg,gsc,ranks])=>{
     if(Array.isArray(rows) && rows.length) DAILY_DATA=rows;
     if(Array.isArray(camps)) CAMPAIGN_DATA=camps;
     if(Array.isArray(chans)) CHANNEL_DATA=chans;
@@ -958,10 +972,12 @@ function initPicker(){
     if(quiz && quiz.cohorts){ QUIZ_DATA=quiz; }
     if(Array.isArray(lg)) LEADGEN_DATA=lg;
     if(Array.isArray(gsc)) GSC_DATA=gsc;
+    if(Array.isArray(ranks)) RANK_DATA=ranks;
     if(!DAILY_DATA.length) live.innerHTML='<span class="dot"></span>feed offline';
     renderLeadgen();      // both need QUIZ_DATA and CAMPAIGN_DATA loaded first
     renderQuizCohort();
     renderSearchConsole();  // its own full history, so not tied to the picker
+    renderRanks();          // weekly readings, likewise its own series
     initPicker();
   });
 })();
@@ -1503,6 +1519,127 @@ function renderSearchConsole(){
       + 'rather than Google being slow. Latest day held is '+prettyD(last)+'.</span>');
   }
   host.innerHTML = h + '<div class="notes">'+notes.join(' ')+'</div>';
+}
+
+/* ---------- TRACKED KEYWORD POSITIONS ----------
+   One row per keyword per weekly reading, from rank-tracking.csv.
+
+   EVERY average here is computed over a CONSTANT KEYWORD SET, meaning only
+   keywords that carry a position in BOTH readings being compared. This is not
+   pedantry. The tool's own headline moved 12.36 -> 9.00 purely because it
+   dropped its worst keyword from the second reading, and anyone reading that
+   as progress would have concluded the SEO was working when it was not.
+
+   A keyword tracked but absent from the top 100 is a real finding, so it is
+   counted in coverage and excluded from position maths rather than dropped. */
+var RANK_DATA = [];
+function rankReadings(){
+  const byDate = {};
+  (RANK_DATA || []).forEach(r => {
+    if(!r || !r.Date || !r.Keyword) return;
+    (byDate[r.Date] = byDate[r.Date] || {})[r.Keyword] = r;
+  });
+  return Object.keys(byDate).sort().map(d => ({ date: d, kw: byDate[d] }));
+}
+/* Mean position across the keywords ranking in BOTH readings. Returns null
+   when the two share nothing, rather than a number built from one of them. */
+function constantSetAvg(a, b){
+  const shared = Object.keys(a.kw).filter(k =>
+    a.kw[k].Position !== '' && b.kw[k] && b.kw[k].Position !== '');
+  if(!shared.length) return null;
+  const mean = r => shared.reduce((s, k) => s + (+r.kw[k].Position), 0) / shared.length;
+  return { n: shared.length, from: mean(a), to: mean(b),
+           dropped: Object.keys(a.kw).filter(k =>
+             a.kw[k].Position !== '' && (!b.kw[k] || b.kw[k].Position === '')) };
+}
+function renderRanks(){
+  const host = document.getElementById('ranks'); if(!host) return;
+  const reads = rankReadings();
+  if(!reads.length){
+    host.innerHTML = '<div class="notes">No rank readings yet. The feed is '
+      + '<code>rank-tracking.csv</code>.</div>'; return;
+  }
+  const latest = reads[reads.length - 1], prev = reads.length > 1 ? reads[reads.length - 2] : null;
+  const cmp = prev ? constantSetAvg(prev, latest) : null;
+
+  const keys = Object.keys(latest.kw).sort((x, y) => {
+    const px = latest.kw[x].Position, py = latest.kw[y].Position;
+    if(px === '' && py === '') return 0;
+    if(px === '') return 1;            // not-ranking sinks to the bottom
+    if(py === '') return -1;
+    return px - py;
+  });
+  const rank = p => p === '' ? '<span style="color:var(--faint)">not in top 100</span>'
+                             : '<b>'+fmt(p)+'</b>';
+  const band = p => p === '' ? 'var(--faint)' : p <= 3 ? 'var(--up)'
+              : p <= 10 ? '#4f9cf9' : p <= 20 ? 'var(--warn)' : 'var(--down)';
+  let h = '<table><thead><tr><th>Keyword</th><th>AU volume</th><th>Position</th>'
+        + '<th>Change</th><th>Page</th></tr></thead><tbody>';
+  keys.forEach(k => {
+    const r = latest.kw[k], p = r.Position;
+    const was = prev && prev.kw[k] ? prev.kw[k].Position : null;
+    let mv = '<span style="color:var(--faint)">new</span>';
+    if(was !== null && was !== '' && p !== ''){
+      const d = was - p;   // positive means it climbed
+      mv = d === 0 ? '<span style="color:var(--muted)">—</span>'
+         : '<b style="color:'+(d > 0 ? 'var(--up)' : 'var(--down)')+'">'
+           + (d > 0 ? '▲ ' : '▼ ') + fmt(Math.abs(d)) + '</b>'
+           + ' <span class="src">from '+fmt(was)+'</span>';
+    } else if(was === '' && p !== ''){
+      mv = '<b style="color:var(--up)">▲ entered</b>';
+    } else if(was !== null && was !== '' && p === ''){
+      mv = '<b style="color:var(--down)">▼ dropped out</b>';
+    } else if(!prev || !prev.kw[k]){
+      mv = '<span style="color:var(--faint)">first reading</span>';
+    }
+    h += '<tr><td>'+esc(k)+'</td><td>'+(r.Volume === '' ? '—' : fmt(r.Volume))+'</td>'
+      +  '<td style="color:'+band(p)+'">'+rank(p)+'</td><td>'+mv+'</td>'
+      +  '<td class="src">'+esc(r.URL || '')+'</td></tr>';
+  });
+  h += '</tbody></table>';
+
+  const ranking = keys.filter(k => latest.kw[k].Position !== '');
+  const top10 = ranking.filter(k => latest.kw[k].Position <= 10).length;
+  const top3 = ranking.filter(k => latest.kw[k].Position <= 3).length;
+  const tile = (v, k) => '<div class="stat"><div class="v">'+v+'</div><div class="k">'+k+'</div></div>';
+  const head = '<div class="big2" style="margin:2px 0 10px">'
+    + tile(fmt(reads.length), 'Weekly readings banked')
+    + tile(fmt(top3)+' / '+fmt(keys.length), 'In the top 3')
+    + tile(fmt(top10)+' / '+fmt(keys.length), 'In the top 10')
+    + tile(cmp ? fmt(cmp.to, 1) : '—', cmp ? 'Avg position, '+cmp.n+' constant keywords'
+                                           : 'Avg position') + '</div>';
+
+  const notes = [];
+  if(cmp){
+    const d = cmp.from - cmp.to;
+    notes.push('<b>Like-for-like across the '+cmp.n+' keywords ranking in both readings:</b> '
+      + fmt(cmp.from, 2) + ' → <b style="color:'+(d > 0 ? 'var(--up)' : d < 0 ? 'var(--down)'
+        : 'var(--muted)')+'">'+fmt(cmp.to, 2)+'</b> '
+      + (Math.abs(d) < 0.05 ? 'which is unchanged.'
+         : d > 0 ? 'which is '+fmt(d, 2)+' places better.' : 'which is '+fmt(-d, 2)+' places worse.')
+      + (cmp.dropped.length
+          ? ' <span style="color:var(--warn)">'+fmt(cmp.dropped.length)+' keyword'
+            + (cmp.dropped.length === 1 ? ' was' : 's were') + ' excluded for having no position in '
+            + 'both readings (' + cmp.dropped.map(esc).join(', ') + '). Including '
+            + (cmp.dropped.length === 1 ? 'it' : 'them') + ' in one side only is exactly how a '
+            + 'flat week gets reported as a gain.</span>'
+          : ''));
+  }
+  if(reads.length < 4){
+    notes.push('<b style="color:var(--warn)">Too early to read as a trend.</b> '+fmt(reads.length)
+      + ' reading' + (reads.length === 1 ? '' : 's') + ' so far, refreshed weekly, so roughly six '
+      + 'more weeks before a line through these points means anything. Week-to-week movement of a '
+      + 'few places is normal SERP noise, not a result. <b>The point of showing it now is that the '
+      + 'history is being banked</b>, not that it is readable.');
+  }
+  const last = latest.date;
+  const behind = Math.round((Date.now() - new Date(last+'T00:00:00Z').getTime())/86400000);
+  if(behind > 10){
+    notes.push('<span style="color:var(--warn)"><b>Last reading is '+behind+' days old.</b> '
+      + 'Ubersuggest refreshes weekly, so past about ten days this has stopped being collected. '
+      + 'Refresh <code>rank-tracking.csv</code>.</span>');
+  }
+  host.innerHTML = head + h + '<div class="notes">'+notes.join(' ')+'</div>';
 }
 
 /* ---------- QUIZ LEAD COHORTS ----------

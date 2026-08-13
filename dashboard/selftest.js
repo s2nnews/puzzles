@@ -37,6 +37,7 @@ CAMPAIGN_DATA = read('campaigns.json');
 try { QUIZ_DATA = read('quiz-cohort.json'); } catch (e) {}
 try { LEADGEN_DATA = read('leadgen.json'); } catch (e) {}
 try { GSC_DATA = read('search-console.json'); } catch (e) {}
+try { RANK_DATA = read('rank-tracking.json'); } catch (e) {}
 try { EMAIL_DATA = read('email-campaigns.json'); } catch (e) {}
 
 const last = DAILY_DATA[DAILY_DATA.length - 1].Date;
@@ -83,8 +84,8 @@ check('buildModel without ctx', () => {
 // the enclosing scope rather than on global, so a global[] lookup reports every
 // one of them missing. That false alarm is itself worth the comment.
 const NAMES = ['renderModel','renderCampaigns','renderTraffic','renderEmail',
-  'renderQuizCohort','renderLeadgen','renderSearchConsole','paintSubStats',
-  'emailRevenueIn','costing','buildModel','aggregate'];
+  'renderQuizCohort','renderLeadgen','renderSearchConsole','renderRanks',
+  'paintSubStats','emailRevenueIn','costing','buildModel','aggregate'];
 // dropTotalDeltas is deliberately absent: it lives inside initPicker(), so it
 // is not global and a check for it would fail forever.
 check('every renderer is defined', () => {
@@ -167,6 +168,50 @@ check('search console feed is sane', () => {
   const dates = GSC_DATA.map(r => r.Date);
   if (new Set(dates).size !== dates.length) throw new Error('duplicate dates');
   return GSC_DATA.length + ' rows, ' + dates[0] + ' to ' + dates[dates.length - 1];
+});
+
+check('rank panel renders', () => {
+  let out = '';
+  const host = el();
+  Object.defineProperty(host, 'innerHTML', { get: () => out, set: v => { out = v; } });
+  const realGet = document.getElementById;
+  document.getElementById = id => (id === 'ranks' ? host : el());
+  try { renderRanks(); } finally { document.getElementById = realGet; }
+  if (!out) throw new Error('rendered nothing');
+  ['NaN', 'undefined', 'Infinity'].forEach(bad => {
+    if (out.includes(bad)) throw new Error('renders ' + bad);
+  });
+  return (out.match(/<tr>/g) || []).length + ' rows';
+});
+
+// THE regression guard for this panel. The tool's own average moved 12.36 to
+// 9.00 only because it dropped its worst keyword from the second reading. If
+// constantSetAvg ever compares unequal keyword sets again, this catches it.
+check('averages use a constant keyword set', () => {
+  const mk = (date, pairs) => ({ date, kw: Object.fromEntries(
+    Object.entries(pairs).map(([k, v]) => [k, { Position: v }])) });
+  const a = mk('2026-08-02', { good: 2, mid: 10, awful: 35 });
+  const b = mk('2026-08-09', { good: 2, mid: 10 });          // awful not re-read
+  const r = constantSetAvg(a, b);
+  if (r.n !== 2) throw new Error('compared ' + r.n + ' keywords, expected 2');
+  if (r.from !== 6 || r.to !== 6)
+    throw new Error('reported ' + r.from + ' -> ' + r.to + ', expected 6 -> 6 (unchanged)');
+  if (!r.dropped.includes('awful')) throw new Error('did not report the dropped keyword');
+  // The naive average would be (2+10+35)/3 = 15.67 -> (2+10)/2 = 6, a fake win.
+  if (constantSetAvg(a, a).from !== 47 / 3) throw new Error('self-compare should keep all three');
+  return 'constant set enforced';
+});
+
+// Not-ranking must never be scored as position 0, which would read as better
+// than first place and drag every average toward zero.
+check('not-ranking is excluded, not scored zero', () => {
+  if (!RANK_DATA || !RANK_DATA.length) return 'no feed';
+  RANK_DATA.forEach(r => {
+    if (r.Position !== '' && !(r.Position > 0))
+      throw new Error(r.Keyword + ' has position ' + JSON.stringify(r.Position));
+  });
+  const dates = [...new Set(RANK_DATA.map(r => r.Date))].sort();
+  return dates.length + ' readings, ' + dates[0] + ' to ' + dates[dates.length - 1];
 });
 
 console.log(failures ? '\nFAILED (' + failures + ')' : '\nAll passed');

@@ -81,7 +81,7 @@ jobs:
           git add dashboard/data.json dashboard/campaigns.json \
                   dashboard/channels.json dashboard/email-campaigns.json \
                   dashboard/quiz-cohort.json dashboard/leadgen.json \
-                  dashboard/search-console.json
+                  dashboard/search-console.json dashboard/rank-tracking.json
           if git diff --cached --quiet; then
             echo "No change in the dashboard feeds"
             exit 0
