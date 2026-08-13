@@ -279,13 +279,19 @@
   <div class="section-title">Organic search — the channel you do not pay for</div>
   <div class="card">
     <h3>Search Console clicks &amp; impressions <span class="tag">daily, all history</span></h3>
-    <div class="hint">The only unpaid-demand line on this page. Everything above is sales, email or ads, all of
-      which stop the moment you stop working them. <b>Impressions are how often Google showed the site,
-      clicks are how often someone chose it.</b> The two answer different questions: impressions rising
-      means more pages are being found at all, clicks rising without impressions means the pages already
-      being shown got more compelling. <b>This chart deliberately ignores the date picker above.</b> The
-      property holds nothing before 14 July 2026, so the full series is the whole record, and the point
-      of it is the shape since the SEO work started.</div>
+    <div class="hint">The only unpaid-demand line on this page. Everything above is sales, email or ads,
+      all of which stop the moment you stop working them.
+      <b>Clicks are the metric. Impressions are kept because they are the denominator, not because they
+      are an achievement.</b> On their own impressions are vanity: Google can show the site to thousands
+      of people at position 12 and none of it banks. What they buy you is the ability to tell two very
+      different problems apart. Clicks down while impressions hold means the listing is being seen and
+      not chosen, which is a title and CTR job. Clicks down with impressions is a ranking or demand job.
+      Without the denominator, both look identical and you cannot know which one you have.
+      That is not theory here: <b>the single biggest prize on the site is the Ravensburger collection
+      page at 3,691 impressions and 18 clicks</b>, a 0.49% CTR. That opportunity is invisible without
+      impressions, and it is worth more than any new article.
+      <b>This chart deliberately ignores the date picker above.</b> The property holds nothing before
+      14 July 2026, so the full series is the whole record.</div>
     <div id="gsc"></div>
   </div>
 
@@ -1376,10 +1382,21 @@ function renderSearchConsole(){
     svg += '<line x1="'+padL+'" y1="'+gy.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+gy.toFixed(1)
         +'" stroke="#1d2c3d"/>';
   }
-  svg += '<path d="'+path(imps, yI)+'" fill="none" stroke="#a06bff" stroke-width="1.2" opacity=".33"/>'
-      +  '<path d="'+path(clicks, yC)+'" fill="none" stroke="#4f9cf9" stroke-width="1.2" opacity=".38"/>'
-      +  '<path d="'+path(avgI, yI)+'" fill="none" stroke="#a06bff" stroke-width="2.6"/>'
-      +  '<path d="'+path(avgC, yC)+'" fill="none" stroke="#4f9cf9" stroke-width="2.6"/>';
+  /* CLICKS ARE THE SUBJECT, impressions are context, and the drawing says so.
+     Clicks get the filled area and the heavy line; impressions get one thin
+     smoothed line and no daily series of their own. Drawn at equal weight the
+     eye follows impressions, because it is the bigger number, and the chart
+     ends up leading with the metric that cannot be banked. */
+  const area = path(avgC.map(v => v == null ? null : v), yC);
+  const firstAvg = avgC.findIndex(v => v != null);
+  if(firstAvg > -1){
+    svg += '<path d="'+area+' L'+x(n-1).toFixed(1)+' '+(H-padB)+' L'+x(firstAvg).toFixed(1)
+        +  ' '+(H-padB)+' Z" fill="#4f9cf9" opacity=".10"/>';
+  }
+  svg += '<path d="'+path(avgI, yI)+'" fill="none" stroke="#a06bff" stroke-width="1.6" '
+      +  'opacity=".55" stroke-dasharray="5 3"/>'
+      +  '<path d="'+path(clicks, yC)+'" fill="none" stroke="#4f9cf9" stroke-width="1.1" opacity=".33"/>'
+      +  '<path d="'+path(avgC, yC)+'" fill="none" stroke="#4f9cf9" stroke-width="3"/>';
 
   // One hover target per day, carrying every figure for that date. Reading a
   // number off a chart by eye is how people misquote their own dashboard.
@@ -1426,32 +1443,51 @@ function renderSearchConsole(){
     + '<svg width="100%" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" '
     + 'style="max-height:270px">'+svg+'</svg>'
     + '<div class="hint" style="margin:6px 0 0">'
-    + '<i style="display:inline-block;width:11px;height:3px;background:#4f9cf9;vertical-align:3px"></i> '
-    + 'clicks (left axis) &nbsp; '
-    + '<i style="display:inline-block;width:11px;height:3px;background:#a06bff;vertical-align:3px"></i> '
-    + 'impressions (right axis). Bold lines are 7-day averages, faint lines are the actual days.</div>';
+    + '<i style="display:inline-block;width:14px;height:3px;background:#4f9cf9;vertical-align:3px"></i> '
+    + '<b>clicks</b>, 7-day average with the actual days behind it (left axis). &nbsp; '
+    + '<i style="display:inline-block;width:14px;height:0;border-top:2px dashed #a06bff;'
+    + 'vertical-align:4px"></i> '
+    + 'impressions, 7-day average only (right axis). '
+    + '<b>Clicks are the number that matters</b>; impressions are here to explain them, '
+    + 'not to be celebrated.</div>';
 
   /* The verdict, computed rather than asserted. This panel exists to answer
      one question and it should answer it even when the answer is "not yet". */
   const notes = [];
   if(n >= 14){
-    const w = 7;
-    const firstC = sum(clicks.slice(0, w)), lastC = sum(clicks.slice(-w));
-    const firstI = sum(imps.slice(0, w)),   lastI = sum(imps.slice(-w));
+    /* Whole weeks from the most recent day backwards, so the comparison is
+       never one full week against a stub. First-against-last alone hides the
+       shape: this series dipped and recovered, and a single delta reports
+       that as "no change". */
+    const weeks = [];
+    for(let end = n; end - 7 >= 0; end -= 7){
+      weeks.unshift({ c: sum(clicks.slice(end - 7, end)), i: sum(imps.slice(end - 7, end)),
+                      from: rows[end - 7].Date, to: rows[end - 1].Date });
+    }
     const ch = v => (v > 0 ? '+' : v < 0 ? '−' : '') + fmt(Math.abs(v) * 100, 0) + '%';
-    const dC = firstC ? (lastC - firstC) / firstC : 0;
-    const dI = firstI ? (lastI - firstI) / firstI : 0;
     const col = d => d > 0.05 ? 'var(--up)' : d < -0.05 ? 'var(--down)' : 'var(--warn)';
-    notes.push('<b>Latest 7 days against the first 7 on record:</b> clicks '
-      + '<b style="color:'+col(dC)+'">'+ch(dC)+'</b> ('+fmt(firstC)+' → '+fmt(lastC)+'), '
-      + 'impressions <b style="color:'+col(dI)+'">'+ch(dI)+'</b> ('+fmt(firstI)+' → '+fmt(lastI)+'). '
-      + (dC > 0.05
-          ? 'Clicks are up, which is the number that matters.'
-          : dC < -0.05
-            ? 'Clicks are down. Check whether a page lost position before assuming seasonality.'
-            : '<b>Clicks are flat.</b> That is the honest read, and it is what you would expect this '
-              + 'early: the internal-link fixes landed on 11 August and category pages take weeks to '
-              + 'be recrawled and re-ranked. Judge this line at the end of September, not now.'));
+    notes.push('<b>Clicks by whole week, oldest first:</b> '
+      + weeks.map(w => fmt(w.c)).join(' → ') + '. '
+      + '<span style="color:var(--faint)">(' + weeks.map(w => prettyD(w.from)).join(', ') + ')</span>');
+
+    const first = weeks[0], last = weeks[weeks.length - 1];
+    const prev = weeks.length > 1 ? weeks[weeks.length - 2] : null;
+    const dFirst = first.c ? (last.c - first.c) / first.c : 0;
+    notes.push('<b>Latest week against the first on record:</b> clicks '
+      + '<b style="color:'+col(dFirst)+'">'+ch(dFirst)+'</b> ('+fmt(first.c)+' → '+fmt(last.c)+')'
+      + (prev ? ', and against the week before it <b style="color:'
+          + col(prev.c ? (last.c-prev.c)/prev.c : 0)+'">'
+          + ch(prev.c ? (last.c - prev.c) / prev.c : 0) + '</b> ('+fmt(prev.c)+' → '+fmt(last.c)+')' : '')
+      + '. '
+      + (dFirst > 0.05
+          ? 'Genuinely ahead of where this record started.'
+          : dFirst < -0.05
+            ? 'Behind where this record started. Check whether a page lost position before assuming '
+              + 'seasonality.'
+            : '<b>Level with where this record started</b>, so the recent rise is a recovery rather '
+              + 'than new ground. That is the honest read and it is the expected shape this early: '
+              + 'the internal-link fixes landed on 11 August and category pages take weeks to be '
+              + 'recrawled and re-ranked. Judge this line at the end of September.'));
   }
   notes.push('<b>The record starts 14 July 2026</b> because that is when the Search Console property '
     + 'was created, so there is no earlier baseline to compare against and no year-on-year. '
