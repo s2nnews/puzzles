@@ -1745,14 +1745,14 @@
  {
   "Date": "2026-08-13",
   "Channel": "Cross-network",
-  "Sessions": 72,
+  "Sessions": 96,
   "Purchases": 1,
   "Revenue": 29.7
  },
  {
   "Date": "2026-08-13",
   "Channel": "Direct",
-  "Sessions": 72,
+  "Sessions": 81,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1766,14 +1766,14 @@
  {
   "Date": "2026-08-13",
   "Channel": "Email",
-  "Sessions": 44,
+  "Sessions": 53,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-13",
   "Channel": "Organic Search",
-  "Sessions": 21,
+  "Sessions": 22,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1787,7 +1787,7 @@
  {
   "Date": "2026-08-13",
   "Channel": "Paid Search",
-  "Sessions": 16,
+  "Sessions": 23,
   "Purchases": 1,
   "Revenue": 22.95
  },
@@ -1801,15 +1801,15 @@
  {
   "Date": "2026-08-13",
   "Channel": "Paid Social",
-  "Sessions": 55,
+  "Sessions": 66,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-13",
   "Channel": "Unassigned",
-  "Sessions": 200,
-  "Purchases": 1,
-  "Revenue": 30.95
+  "Sessions": 233,
+  "Purchases": 2,
+  "Revenue": 181.36
  }
 ]
