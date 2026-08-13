@@ -17,11 +17,11 @@
    "medianDaysToFirstOrder": 840
   },
   "meta-paid": {
-   "leads": 67,
+   "leads": 69,
    "buyers": 1,
    "orders": 1,
    "revenue": 74.75,
-   "revenuePerLead": 1.12,
+   "revenuePerLead": 1.08,
    "medianDaysToFirstOrder": 0
   },
   "untagged": {
@@ -117,7 +117,12 @@
    "Date": "2026-08-13",
    "Source": "organic",
    "Leads": 1
+  },
+  {
+   "Date": "2026-08-14",
+   "Source": "meta-paid",
+   "Leads": 2
   }
  ],
- "generatedAt": "2026-08-13T22:42:48+1000"
+ "generatedAt": "2026-08-14T08:40:43+1000"
 }
