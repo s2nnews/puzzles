@@ -423,9 +423,29 @@ position maths, because scoring it 0 would read as better than first place.
 **The panel refuses to draw a trend under four readings** and says so. Two
 points is not a line, and week-to-week movement of a few places is SERP noise.
 
-**Agent-refreshed, weekly.** The Ubersuggest connector cannot run on the Action
-runner. The panel warns once the last reading passes ten days, which is past the
-tool's own weekly cadence. To refresh:
+**Agent-refreshed, weekly, by a scheduled cloud routine.**
+`trig_013W6cKkjGUf8u8HYUes8CeR`, "Puzzles dashboard: weekly SEO feed refresh",
+Fridays 08:00 AEST (`0 22 * * 4` UTC). It refreshes all three connector-fed
+CSVs (this one, `search-console.csv`, `leadgen.csv`) and commits them. The
+GitHub Action then rebuilds the JSON within two hours, so the routine
+deliberately touches **only the CSVs** and never runs `collect.py`.
+
+> **BLOCKED as of 2026-08-13: the routine cannot push.** Its first test run
+> did everything correctly and then failed with `403 Resource not accessible by
+> integration` on `git push`, on the GitHub MCP `create_or_update_file` and on
+> `push_files`. Reads work. The Claude Code GitHub App installed for the cloud
+> environment has **Contents: read** on `s2nnews/puzzles` and needs
+> **Contents: write**. Fix at <https://github.com/settings/installations>.
+> Until then the routine will run weekly, do the work, and lose it. **Verify
+> with `RemoteTrigger list_runs` after the first Friday**, and note the run
+> does send a push notification when it fails, so it is loud rather than silent.
+
+That first run is also the proof the design works: all three connectors are
+available in a headless cloud session, and it correctly left rank tracking and
+search console alone (no new Ubersuggest reading until 16 August, and Search
+Console still inside its 2 to 3 day lag) while updating only leadgen.
+
+To refresh by hand instead:
 
 ```text
 project_position_info
