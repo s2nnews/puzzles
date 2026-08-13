@@ -53,6 +53,13 @@ jobs:
           PORTER_CSV: ${{ secrets.PORTER_CSV }}
           CAMPAIGNS_CSV: ${{ secrets.CAMPAIGNS_CSV }}
           CHANNELS_CSV: ${{ secrets.CHANNELS_CSV }}
+          # Google Search Console daily rows. UNSET until the GSC connector is
+          # authorised in Porter and its export is published, and until then
+          # the collector falls back to the committed search-console.csv, which
+          # does NOT advance on its own. The organic chart says on its face how
+          # many days behind it is, so this degrades loudly rather than
+          # silently going stale.
+          SEARCH_CONSOLE_CSV: ${{ secrets.SEARCH_CONSOLE_CSV }}
           DAYS: ${{ vars.DASHBOARD_DAYS }}
           OMNISEND_DAYS: ${{ vars.OMNISEND_DAYS }}
           # Optional. The "subscribed on email" segment used for the list-size
@@ -64,7 +71,7 @@ jobs:
 
       - name: Commit the feeds if they changed
         run: |
-          # EVERY artifact collect.py writes must be listed here. It writes six
+          # EVERY artifact collect.py writes must be listed here. It wrote six
           # and this line used to name three, so email-campaigns.json,
           # quiz-cohort.json and leadgen.json were rebuilt fresh on the runner
           # every two hours and then thrown away with the container. The
@@ -73,7 +80,8 @@ jobs:
           # collector was doing the work, the workflow was discarding it.
           git add dashboard/data.json dashboard/campaigns.json \
                   dashboard/channels.json dashboard/email-campaigns.json \
-                  dashboard/quiz-cohort.json dashboard/leadgen.json
+                  dashboard/quiz-cohort.json dashboard/leadgen.json \
+                  dashboard/search-console.json
           if git diff --cached --quiet; then
             echo "No change in the dashboard feeds"
             exit 0

@@ -36,6 +36,7 @@ CHANNEL_DATA = read('channels.json');
 CAMPAIGN_DATA = read('campaigns.json');
 try { QUIZ_DATA = read('quiz-cohort.json'); } catch (e) {}
 try { LEADGEN_DATA = read('leadgen.json'); } catch (e) {}
+try { GSC_DATA = read('search-console.json'); } catch (e) {}
 try { EMAIL_DATA = read('email-campaigns.json'); } catch (e) {}
 
 const last = DAILY_DATA[DAILY_DATA.length - 1].Date;
@@ -82,8 +83,8 @@ check('buildModel without ctx', () => {
 // the enclosing scope rather than on global, so a global[] lookup reports every
 // one of them missing. That false alarm is itself worth the comment.
 const NAMES = ['renderModel','renderCampaigns','renderTraffic','renderEmail',
-  'renderQuizCohort','renderLeadgen','paintSubStats','emailRevenueIn','costing',
-  'buildModel','aggregate'];
+  'renderQuizCohort','renderLeadgen','renderSearchConsole','paintSubStats',
+  'emailRevenueIn','costing','buildModel','aggregate'];
 // dropTotalDeltas is deliberately absent: it lives inside initPicker(), so it
 // is not global and a check for it would fail forever.
 check('every renderer is defined', () => {
@@ -122,6 +123,50 @@ check('paid subscribers are windowed', () => {
   if (cohort.leads !== undefined && all !== cohort.leads)
     throw new Error('daily rows sum to ' + all + ' but the cohort says ' + cohort.leads);
   return all + ' paid, all time';
+});
+
+// The organic chart draws two series on two axes off one feed. A NaN in a
+// path attribute renders as an invisible line, not an error, so assert the
+// SVG itself rather than trusting the call not to throw.
+check('organic search chart renders', () => {
+  let out = '';
+  const host = el();
+  Object.defineProperty(host, 'innerHTML', { get: () => out, set: v => { out = v; } });
+  const realGet = document.getElementById;
+  document.getElementById = id => (id === 'gsc' ? host : el());
+  try { renderSearchConsole(); } finally { document.getElementById = realGet; }
+  if (!out) throw new Error('rendered nothing');
+  if (!GSC_DATA || GSC_DATA.length < 2) return 'no feed, showed the empty state';
+  ['NaN', 'undefined', 'Infinity'].forEach(bad => {
+    if (out.includes(bad)) throw new Error('renders ' + bad);
+  });
+  const paths = (out.match(/<path /g) || []).length;
+  if (paths < 4) throw new Error('expected 4 series paths, got ' + paths);
+  return GSC_DATA.length + ' days, ' + paths + ' paths';
+});
+
+// A 7-day average must never plot a partial window: a 3-day mean drawn on the
+// same line as a 7-day one understates the start of every series.
+check('moving average has no half-windows', () => {
+  const avg = movingAvg([1, 2, 3, 4, 5, 6, 7, 8], 7);
+  if (avg.slice(0, 6).some(v => v !== null)) throw new Error('plotted a partial window');
+  if (Math.abs(avg[6] - 4) > 1e-9) throw new Error('wrong mean: ' + avg[6]);
+  if (Math.abs(avg[7] - 5) > 1e-9) throw new Error('wrong mean: ' + avg[7]);
+  return 'ok';
+});
+
+// CTR is a 0-1 fraction. If a percentage ever leaks into the feed the average
+// CTR tile silently reads 100x high, so guard the range here.
+check('search console feed is sane', () => {
+  if (!GSC_DATA || !GSC_DATA.length) return 'no feed';
+  GSC_DATA.forEach(r => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(r.Date)) throw new Error('bad date ' + r.Date);
+    if (r.CTR !== '' && r.CTR > 1) throw new Error('CTR ' + r.CTR + ' is not a fraction');
+    if (r.Clicks > r.Impressions) throw new Error(r.Date + ': more clicks than impressions');
+  });
+  const dates = GSC_DATA.map(r => r.Date);
+  if (new Set(dates).size !== dates.length) throw new Error('duplicate dates');
+  return GSC_DATA.length + ' rows, ' + dates[0] + ' to ' + dates[dates.length - 1];
 });
 
 console.log(failures ? '\nFAILED (' + failures + ')' : '\nAll passed');

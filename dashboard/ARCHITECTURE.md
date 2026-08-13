@@ -132,14 +132,16 @@ ever drifts, the Orders-API maths is wrong.
 | `email-campaigns.json` | Per-send email performance, Omnisend + seeded Klaviyo history. |
 | `quiz-cohort.json` | Quiz leads by day and source, and what they went on to spend. |
 | `leadgen.json` | Built from `leadgen.csv`. Meta's own lead count and the GA4 quiz funnel. |
+| `search-console.json` | Organic clicks, impressions, CTR and position per day. |
 | `porter_feed.csv` | Offline fallback if `PORTER_CSV` is unset. Not used in production. |
 | `campaigns.csv` | Offline fallback if `CAMPAIGNS_CSV` is unset. Not used in production. |
+| `search-console.csv` | Seed **and** current source for the organic chart. See the caveat below. |
 | `.env.example` | Template. Copy to `.env` (gitignored). |
 | `selftest.js` | Runs the page's functions against the committed feeds. `node dashboard/selftest.js`. |
 | `../.github/workflows/dashboard.yml` | The two-hourly refresh. |
 
 **Every file in that list that `collect.py` writes must also be named in the
-workflow's `git add`.** Six are written; the line named three until 2026-08-13,
+workflow's `git add`.** Seven are written; the line named three until 2026-08-13,
 so `email-campaigns.json`, `quiz-cohort.json` and `leadgen.json` were rebuilt on
 the runner every two hours and discarded with the container. The published page
 served whatever a human last committed. The failure is silent by construction:
@@ -363,6 +365,39 @@ Leads are counted on the `quiz-lead` tag. `puzzler-quiz` is the hidden field's
 DEFAULT, written only when the tag builder throws, so counting it counts the
 failures — which is exactly the mistake that once made this read 1 lead when
 there were 9.
+
+## Organic search, and the one feed that does not refresh itself
+
+`search-console.json` drives the organic chart at the bottom of the page. It is
+the only unpaid-demand series here, and it exists because the dashboard could
+otherwise say nothing at all about whether the SEO work is doing anything.
+
+**`SEARCH_CONSOLE_CSV` is not set, so `search-console.csv` is currently the
+source, not just a fallback, and it does not advance on its own.** It was seeded
+on 2026-08-13 with 14 July to 12 August pulled from Search Console through the
+OpenSEO connector, which cannot run on the Action runner.
+
+Given the whole point of this file's history is that a silently stale feed is
+worse than no feed, the chart **states how many days behind it is** whenever
+that exceeds four days, which is past Search Console's own 2 to 3 day lag. It
+cannot go quietly stale the way the quiz panel did.
+
+To finish it, in order:
+
+1. Authorise the **Google Search Console** connector in Porter (`list_connectors`
+   reports it available and `connected: false`, so this is an OAuth Michael has
+   to click).
+2. `blend_export.create` with dimensions `[date]` and the clicks, impressions,
+   CTR and position metrics, to a new worksheet tab.
+3. Publish that tab and add its CSV URL as the `SEARCH_CONSOLE_CSV` repo secret.
+
+No code change is needed at step 3. The parser already accepts either a
+published URL or the local file, reads Search Console's own header names, and
+takes CTR as a fraction or a percentage. `write_rows` merges on `Date`, so the
+committed file keeps history beyond whatever trailing window the export carries.
+
+To refresh it by hand in the meantime, `get_search_console_performance` with
+`dimensions: ["date"]` returns exactly the five columns the CSV holds.
 
 ## Still manual, but do not type it from Ads Manager
 

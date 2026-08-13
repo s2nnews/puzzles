@@ -42,6 +42,7 @@ CHANNELS_PATH = os.path.join(HERE, "channels.json")
 EMAIL_PATH = os.path.join(HERE, "email-campaigns.json")
 QUIZ_PATH = os.path.join(HERE, "quiz-cohort.json")
 LEADGEN_PATH = os.path.join(HERE, "leadgen.json")
+SEARCH_CONSOLE_PATH = os.path.join(HERE, "search-console.json")
 SYDNEY = ZoneInfo("Australia/Sydney")
 SHOPIFY_API_VERSION = "2025-07"
 # ShipStation stores whose shipments are Premium Puzzles' own cost. The same
@@ -1180,6 +1181,97 @@ def fetch_channels(src):
     return rows
 
 
+SEARCH_CONSOLE_COLUMNS = ["Date", "Clicks", "Impressions", "CTR", "Position"]
+
+
+def fetch_search_console(src):
+    """Organic clicks, impressions, CTR and average position per day.
+
+    The only unpaid-demand series on the dashboard. Everything else here is
+    sales, email or ads, so before this there was no way to tell whether the
+    SEO work was doing anything: `kb/seo/00-winning-strategy.md` claims the
+    site's problem is internal links, and this is the line that either
+    vindicates that or does not.
+
+    Reads a published CSV (SEARCH_CONSOLE_CSV) when one is configured and
+    otherwise falls back to the committed search-console.csv, exactly like the
+    Porter feeds. **The committed file is the long-term store**: the GSC
+    property only holds data from 2026-07-14 and the API keeps 16 months, so
+    merged history here outlives both.
+
+    Position is deliberately carried even though nothing plots it yet. It is
+    the one column that says whether rising impressions are real progress or
+    just Google showing the same pages to more people further down.
+    """
+    if src.startswith("http://") or src.startswith("https://"):
+        resp = http_retry(lambda: requests.get(src, timeout=60))
+        if resp.status_code != 200:
+            die("SEARCH_CONSOLE_CSV HTTP %s: %s" % (resp.status_code, resp.text[:200]))
+        text = resp.text
+    else:
+        if not os.path.isabs(src):
+            src = os.path.join(HERE, src)
+        if not os.path.exists(src):
+            print("Search Console: %s not found, skipping" % os.path.basename(src))
+            return []
+        with open(src, encoding="utf-8-sig") as f:
+            text = f.read()
+
+    reader = csv.reader(io.StringIO(text))
+    try:
+        header = next(reader)
+    except StopIteration:
+        return []
+    lower = [" ".join((h or "").strip().lower().split()) for h in header]
+
+    def find(*names):
+        for n in names:
+            for i, h in enumerate(lower):
+                if h == n or h.endswith(" " + n):
+                    return i
+        return None
+
+    at = {"Date": find("date"), "Clicks": find("clicks", "url clicks"),
+          "Impressions": find("impressions"), "CTR": find("ctr", "site ctr"),
+          "Position": find("position", "average position")}
+    if at["Date"] is None or at["Clicks"] is None:
+        print("Search Console: unrecognised headers %s" % header[:8])
+        return []
+
+    rows = []
+    for row in reader:
+        if len(row) <= at["Date"]:
+            continue
+        day = parse_day((row[at["Date"]] or "").strip())
+        if not day:
+            continue
+        rec = {"Date": day}
+        for col in ("Clicks", "Impressions", "Position"):
+            i = at[col]
+            rec[col] = to_num(row[i]) if i is not None and i < len(row) else ""
+        # CTR is parsed here rather than through to_num, which rounds to 2dp.
+        # That is right for money and destroys a 0-1 fraction: every CTR this
+        # site has ever recorded collapses to 0.01 or 0.02.
+        i = at["CTR"]
+        raw = row[i].strip() if i is not None and i < len(row) else ""
+        try:
+            # GSC exports it as a 0-1 fraction or as a percentage depending on
+            # where the export came from, and "2.2%" arrives with the sign.
+            ctr = float(raw.rstrip("%")) if raw != "" else ""
+            if ctr != "" and (ctr > 1 or raw.endswith("%")):
+                ctr = ctr / 100.0
+            rec["CTR"] = round(ctr, 5) if ctr != "" else ""
+        except ValueError:
+            rec["CTR"] = ""
+        # A day with no impressions at all is a gap in the export, not a day
+        # nobody saw the site. Writing 0 would draw a cliff that never happened.
+        if rec["Impressions"] in ("", 0) and rec["Clicks"] in ("", 0):
+            continue
+        rows.append(rec)
+    rows.sort(key=lambda r: r["Date"])
+    return rows
+
+
 def write_rows(path, rows, key_fields, columns, label):
     """Write a feed file, keeping any older rows already published.
 
@@ -1377,6 +1469,13 @@ def main():
                fetch_channels(os.environ.get("CHANNELS_CSV", "").strip()
                               or "channels.csv"),
                ("Date", "Channel"), CHANNEL_COLUMNS, "Channels")
+
+    # Merged on Date, so a published feed carrying only a trailing window still
+    # accumulates history in the committed file.
+    write_rows(SEARCH_CONSOLE_PATH,
+               fetch_search_console(os.environ.get("SEARCH_CONSOLE_CSV", "").strip()
+                                    or "search-console.csv"),
+               ("Date",), SEARCH_CONSOLE_COLUMNS, "Search Console")
 
     rows = []
     for day in sorted(sales):
