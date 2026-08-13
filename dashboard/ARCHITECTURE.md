@@ -364,13 +364,47 @@ DEFAULT, written only when the tag builder throws, so counting it counts the
 failures — which is exactly the mistake that once made this read 1 lead when
 there were 9.
 
-## Still manual
+## Still manual, but do not type it from Ads Manager
 
 `leadgen.csv`, and only four things in it: Meta's own lead count, link clicks,
 landing-page views, and the GA4 quiz funnel. `facebook_ads_lead` is not in the
-Porter blend and `update_blend` exposes accounts and data sources but not the
-metric list, so it cannot be added through the API. Refresh from Ads Manager
-or via the Porter action `facebook_ads.insights_get`.
+Porter blend's export, and `update_blend` exposes accounts and data sources but
+not the metric list, so it cannot be added to the existing export.
+
+**It is still a two-minute job through the Porter connector, and typing it out
+of Ads Manager by hand is what let it sit frozen for two days.** The recipe,
+which produces every column:
+
+```text
+# spend, impressions, reach, clicks, link_clicks, landing_page_views, leads
+execute_action facebook_ads.insights_get
+  account_id = <the Premium Puzzles Australia ref from list_accounts>
+  object_id  = act_1349938757036613
+  level      = campaign
+  fields     = campaign_name,spend,impressions,reach,clicks,inline_link_clicks,actions
+  time_range = {"since":"YYYY-MM-DD","until":"YYYY-MM-DD"}
+# read landing_page_view and lead out of the returned actions[] array
+
+# quiz_start, quiz_complete
+query_data
+  accounts   = [<the GA4 property ref>]
+  metrics    = [google_analytics_4_eventCount]
+  dimensions = [google_analytics_4_eventName, google_analytics_4_sessionCampaignName]
+  filters    = [{field: google_analytics_4_eventName, operator: contains, value: quiz}]
+# take the rows whose campaign is the UTM the ads carry, e.g. quiz-leadgen-2026-08
+```
+
+Match the `from` / `to` to the window the campaign feed covers, so the panel is
+comparing the same days on both sides, and set `as_at` to the day you pulled it.
+
+**Full automation is available and nobody has taken it.** `blend_export.create`
+accepts an explicit `metrics` array, unlike `update_blend`, and
+`facebook_ads_lead` is a valid blend metric. So a fourth export off the same
+blend, writing lead count and GA4 event counts to a fourth worksheet, would
+remove this file entirely. It needs one thing this repo cannot do for itself:
+the published CSV URL added as a `LEADGEN_CSV` secret. **This is a better path
+than the Meta system-user token that was previously proposed**, because it needs
+no new credential on either side.
 
 Everything else on that panel is live. **Spend, impressions and clicks come
 from `campaigns.json`, and the subscriber count from `quiz-cohort.json`**, so
