@@ -653,14 +653,74 @@
   "Date": "2026-08-11",
   "Platform": "Meta",
   "Campaign": "PP - Quiz Lead Gen - 2026-08",
-  "Spend": 22.17,
+  "Spend": 22.44,
   "Value": 0,
-  "Clicks": 181,
-  "Impressions": 1184,
+  "Clicks": 186,
+  "Impressions": 1197,
   "Conversions": 0
  },
  {
   "Date": "2026-08-11",
+  "Platform": "Meta",
+  "Campaign": "PP - Retargeting + Lookalike",
+  "Spend": 0,
+  "Value": 0,
+  "Clicks": 0,
+  "Impressions": 0,
+  "Conversions": 0
+ },
+ {
+  "Date": "2026-08-12",
+  "Platform": "Google",
+  "Campaign": "Search - Puzzles - Australia",
+  "Spend": 20.54,
+  "Value": 121.94,
+  "Clicks": 35,
+  "Impressions": 387,
+  "Conversions": 2
+ },
+ {
+  "Date": "2026-08-12",
+  "Platform": "Meta",
+  "Campaign": "PP - Quiz Lead Gen - 2026-08",
+  "Spend": 56.35,
+  "Value": 0,
+  "Clicks": 496,
+  "Impressions": 2997,
+  "Conversions": 0
+ },
+ {
+  "Date": "2026-08-12",
+  "Platform": "Meta",
+  "Campaign": "PP - Retargeting + Lookalike",
+  "Spend": 0,
+  "Value": 0,
+  "Clicks": 0,
+  "Impressions": 0,
+  "Conversions": 0
+ },
+ {
+  "Date": "2026-08-13",
+  "Platform": "Google",
+  "Campaign": "Search - Puzzles - Australia",
+  "Spend": 21.45,
+  "Value": 0,
+  "Clicks": 31,
+  "Impressions": 268,
+  "Conversions": 0
+ },
+ {
+  "Date": "2026-08-13",
+  "Platform": "Meta",
+  "Campaign": "PP - Quiz Lead Gen - 2026-08",
+  "Spend": 30.33,
+  "Value": 40.9,
+  "Clicks": 338,
+  "Impressions": 1880,
+  "Conversions": 1
+ },
+ {
+  "Date": "2026-08-13",
   "Platform": "Meta",
   "Campaign": "PP - Retargeting + Lookalike",
   "Spend": 0,
