@@ -839,9 +839,15 @@ function initPicker(){
   const LIVE=DAILY_DATA && DAILY_DATA.length>0;
 
   if(!LIVE){
-    // Static preview: keep the snapshot; the picker explains that live filtering
-    // activates once the web app injects the daily feed.
-    const MSG='Live range filtering activates when this page is served by the Apps Script web app (see “Make it live”, foot of page). Opened as a static file it shows the fixed 28 Jun – 27 Jul snapshot.';
+    /* data.json did not load. The page falls back to the baked-in snapshot,
+       and the picker has nothing to filter.
+
+       This branch used to blame the Apps Script web app and point at a "Make
+       it live" section explaining how to finish building the thing. Both are
+       long gone: the feeds are written by collect.py and committed by the
+       dashboard-data Action. If you are seeing this, the fetch failed, so
+       check that data.json is reachable next to this page. */
+    const MSG='Could not load <code>data.json</code>, so this is the baked-in snapshot and the range picker has nothing to filter. The feeds sit next to this page and are refreshed every two hours by the <b>dashboard-data</b> Action; check that one ran.';
     const flash=()=>{note.innerHTML=MSG;note.style.display='block';live.querySelector('.dot').style.background='var(--warn)';};
     chips.forEach(c=>c.addEventListener('click',()=>{chips.forEach(x=>x.classList.remove('active'));c.classList.add('active');
       if(c.dataset.r==='30'){note.style.display='none';live.querySelector('.dot').style.background='var(--faint)';}else flash();}));
