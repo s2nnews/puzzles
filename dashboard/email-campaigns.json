@@ -49,7 +49,7 @@
   "Campaign": "Warm-up Day 2 - Clementoni + Dinner Date restock",
   "Subject": "Nearly gone in 48 hours, plus a new arrival from Italy",
   "Sent": 1999,
-  "Open rate": 0.85143,
+  "Open rate": 0.85243,
   "Click rate": 0.04802,
   "Orders": 6,
   "Revenue": 367.19
@@ -60,7 +60,7 @@
   "Campaign": "Warm-up Day 3 - Clementoni + Dinner Date restock (v2)",
   "Subject": "Nearly gone in 48 hours, plus a new arrival from Italy",
   "Sent": 4763,
-  "Open rate": 0.64644,
+  "Open rate": 0.64686,
   "Click rate": 0.05753,
   "Orders": 4,
   "Revenue": 233.25
@@ -71,7 +71,7 @@
   "Campaign": "Warm-up Day 4 - Clementoni + Dinner Date restock (v2)",
   "Subject": "Nearly gone in 48 hours, plus a new arrival from Italy",
   "Sent": 4141,
-  "Open rate": 0.06955,
+  "Open rate": 0.07003,
   "Click rate": 0.01449,
   "Orders": 2,
   "Revenue": 134.78
@@ -82,7 +82,7 @@
   "Campaign": "Eurographics + Puzzle Journal (Jul 2026)",
   "Subject": "The quiet Canadian brand you keep buying",
   "Sent": 7962,
-  "Open rate": 0.6904,
+  "Open rate": 0.69141,
   "Click rate": 0.04798,
   "Orders": 8,
   "Revenue": 901.11
@@ -93,7 +93,7 @@
   "Campaign": "Heye + Dinner With restock (Jul 2026)",
   "Subject": "Meet Heye, the German brand that made puzzles funny",
   "Sent": 7954,
-  "Open rate": 0.69738,
+  "Open rate": 0.69927,
   "Click rate": 0.05205,
   "Orders": 9,
   "Revenue": 1043.87
@@ -104,8 +104,8 @@
   "Campaign": "New Arrivals - Cloudberries + Stephen Wilkes (Aug 2026)",
   "Subject": "Two new brands, and a lot of new puzzles",
   "Sent": 7946,
-  "Open rate": 0.72439,
-  "Click rate": 0.06431,
+  "Open rate": 0.72829,
+  "Click rate": 0.06456,
   "Orders": 11,
   "Revenue": 1034.02
  },
@@ -115,10 +115,10 @@
   "Campaign": "New Arrivals + First Accessories + Buying Habits (Aug 2026)",
   "Subject": "A first for us, and a lot of new Ravensburger",
   "Sent": 8004,
-  "Open rate": 0.39743,
-  "Click rate": 0.06072,
-  "Orders": 12,
-  "Revenue": 1332.3
+  "Open rate": 0.6934,
+  "Click rate": 0.08633,
+  "Orders": 21,
+  "Revenue": 2270.76
  },
  {
   "Date": "2026-08-11",

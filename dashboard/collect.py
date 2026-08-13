@@ -1348,7 +1348,19 @@ def main():
     # every quiz lead, and a lead's cohort changes the day they first buy.
     try:
         quiz = fetch_quiz_cohorts(store, token)
+        # generatedAt only moves when the numbers do. Stamping it every run
+        # would make this file differ on every one of the 12 daily refreshes
+        # and turn "commit the feeds if they changed" into "commit always",
+        # which is exactly the commit noise the workflow's cadence avoids.
         quiz["generatedAt"] = datetime.now(SYDNEY).strftime("%Y-%m-%dT%H:%M:%S%z")
+        try:
+            with open(QUIZ_PATH, encoding="utf-8") as f:
+                prev = json.load(f)
+            if {k: v for k, v in prev.items() if k != "generatedAt"} == \
+               {k: v for k, v in quiz.items() if k != "generatedAt"}:
+                quiz["generatedAt"] = prev.get("generatedAt", quiz["generatedAt"])
+        except (OSError, ValueError):
+            pass
         with open(QUIZ_PATH, "w", encoding="utf-8", newline="\n") as f:
             json.dump(quiz, f, indent=1)
             f.write("\n")

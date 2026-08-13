@@ -45,7 +45,7 @@ useful, but this file and `STATUS.md` are authoritative.
 | Porter export → `Sheet1` tab | Meta + GA4 + Google Ads daily rows | every 3h at :00 |
 | Porter export → `campaigns` tab | per-campaign rows, both platforms | every 3h at :10 |
 | Porter export → `channels` tab | GA4 sessions/revenue per channel group | every 3h at :20 |
-| GitHub Action `dashboard-data` | `data.json`, `campaigns.json` | every 2h at :25 |
+| GitHub Action `dashboard-data` | all six JSON feeds | every 2h at :25 |
 | `run_daily.py` (laptop) | Puzzle Index files only | at logon + 10:30 daily |
 
 **Why these intervals.** Shopify, Omnisend and ShipStation are read live on
@@ -128,10 +128,30 @@ ever drifts, the Orders-API maths is wrong.
 | `collect.py` | The collector. stdlib + requests only. |
 | `data.json` | One row per day, 26 fixed columns. **The long-term store.** |
 | `campaigns.json` | One row per day/platform/campaign. Also a long-term store. |
+| `channels.json` | GA4 channel groups per day. |
+| `email-campaigns.json` | Per-send email performance, Omnisend + seeded Klaviyo history. |
+| `quiz-cohort.json` | Quiz leads by day and source, and what they went on to spend. |
+| `leadgen.json` | Built from `leadgen.csv`. Meta's own lead count and the GA4 quiz funnel. |
 | `porter_feed.csv` | Offline fallback if `PORTER_CSV` is unset. Not used in production. |
 | `campaigns.csv` | Offline fallback if `CAMPAIGNS_CSV` is unset. Not used in production. |
 | `.env.example` | Template. Copy to `.env` (gitignored). |
-| `../.github/workflows/dashboard.yml` | The hourly refresh. |
+| `selftest.js` | Runs the page's functions against the committed feeds. `node dashboard/selftest.js`. |
+| `../.github/workflows/dashboard.yml` | The two-hourly refresh. |
+
+**Every file in that list that `collect.py` writes must also be named in the
+workflow's `git add`.** Six are written; the line named three until 2026-08-13,
+so `email-campaigns.json`, `quiz-cohort.json` and `leadgen.json` were rebuilt on
+the runner every two hours and discarded with the container. The published page
+served whatever a human last committed. The failure is silent by construction:
+the collector logs success, the workflow reports success, and only the file's
+git history shows it has not moved. **Adding a new output means editing two
+files, not one.**
+
+Anything that runs `collect.py` outside the Action must have the same
+credentials, or it will regress the files it cannot fetch. A local run without
+`PORTER_CSV` / `CAMPAIGNS_CSV` / `CHANNELS_CSV` silently falls back to the
+committed sample CSVs and overwrites live Porter rows with them. Check
+`git diff` before committing a locally-generated feed.
 
 ### Why the JSON files are the long-term store
 
@@ -346,7 +366,26 @@ there were 9.
 
 ## Still manual
 
-`leadgen.csv`, Meta's lead count and CPL. `facebook_ads_lead` is not in the
+`leadgen.csv`, and only four things in it: Meta's own lead count, link clicks,
+landing-page views, and the GA4 quiz funnel. `facebook_ads_lead` is not in the
 Porter blend and `update_blend` exposes accounts and data sources but not the
 metric list, so it cannot be added through the API. Refresh from Ads Manager
 or via the Porter action `facebook_ads.insights_get`.
+
+Everything else on that panel is live. **Spend, impressions and clicks come
+from `campaigns.json`, and the subscriber count from `quiz-cohort.json`**, so
+the CSV's own `spend` column is a fallback only.
+
+That mix is why the panel windows its own arithmetic. Cost per subscriber is
+computed over **the days the spend feed actually covers**, not all time, for
+two reasons: the cohort total carries paid leads from 2024 and 2025 that
+predate the campaign, and the live half runs ahead of the hand-typed half
+whenever the CSV is not refreshed. On 2026-08-13 the live subscriber count was
+two days ahead of a frozen Porter export, which would have divided 59
+subscribers by three days of spend and reported a cost per subscriber roughly
+four times better than reality. The panel now states the shared window and
+warns when the feeds are different ages.
+
+Refreshing `leadgen.csv` is a real task with a real deadline, not a nicety:
+the "gave an email" and quiz-funnel columns stop being comparable to the live
+subscriber column the moment the campaign moves on.

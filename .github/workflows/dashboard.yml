@@ -64,9 +64,18 @@ jobs:
 
       - name: Commit the feeds if they changed
         run: |
-          git add dashboard/data.json dashboard/campaigns.json dashboard/channels.json
+          # EVERY artifact collect.py writes must be listed here. It writes six
+          # and this line used to name three, so email-campaigns.json,
+          # quiz-cohort.json and leadgen.json were rebuilt fresh on the runner
+          # every two hours and then thrown away with the container. The
+          # published page kept serving whatever a human last committed, which
+          # is why the lead-gen and quiz panels read as hand-maintained: the
+          # collector was doing the work, the workflow was discarding it.
+          git add dashboard/data.json dashboard/campaigns.json \
+                  dashboard/channels.json dashboard/email-campaigns.json \
+                  dashboard/quiz-cohort.json dashboard/leadgen.json
           if git diff --cached --quiet; then
-            echo "No change in data.json"
+            echo "No change in the dashboard feeds"
             exit 0
           fi
           git config user.name "github-actions[bot]"

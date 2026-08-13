@@ -92,5 +92,37 @@ check('every renderer is defined', () => {
   return NAMES.length + ' checked';
 });
 
+// The acquisition panel actually RENDERED, not merely defined. It divides one
+// live feed by another, so a missing helper or a bad denominator shows up here
+// as NaN or undefined in the HTML rather than as a thrown error.
+check('acquisition panel renders', () => {
+  let out = '';
+  const host = el();
+  Object.defineProperty(host, 'innerHTML',
+    { get: () => out, set: v => { out = v; } });
+  const realGet = document.getElementById;
+  document.getElementById = id => (id === 'leadgen' ? host : el());
+  try { renderLeadgen(); } finally { document.getElementById = realGet; }
+  if (!out) throw new Error('rendered nothing');
+  ['NaN', 'undefined', 'Invalid Date', '$Infinity'].forEach(bad => {
+    if (out.includes(bad)) throw new Error('renders ' + bad);
+  });
+  const cells = (out.match(/<td\b/g) || []).length;
+  if (!cells) throw new Error('no table rows');
+  return cells + ' cells';
+});
+
+// Both halves of "true cost each" must be countable, or the panel is quoting a
+// number it cannot support.
+check('paid subscribers are windowed', () => {
+  if (typeof paidLeadsIn !== 'function') throw new Error('paidLeadsIn missing');
+  const all = paidLeadsIn('', '');
+  if (all === null) return 'no daily rows, falls back to cohort total';
+  const cohort = ((QUIZ_DATA && QUIZ_DATA.cohorts) || {})['meta-paid'] || {};
+  if (cohort.leads !== undefined && all !== cohort.leads)
+    throw new Error('daily rows sum to ' + all + ' but the cohort says ' + cohort.leads);
+  return all + ' paid, all time';
+});
+
 console.log(failures ? '\nFAILED (' + failures + ')' : '\nAll passed');
 process.exit(failures ? 1 : 0);
