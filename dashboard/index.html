@@ -1253,15 +1253,24 @@ function renderLeadgen(){
   }
   const TQS=LEADGEN_DATA.reduce((a,r)=>a+(+r.quiz_start||0),0);
   const TQC=LEADGEN_DATA.reduce((a,r)=>a+(+r.quiz_complete||0),0);
+  /* The funnel note is built ENTIRELY from the CSV snapshot. Printed plainly
+     next to a live subscriber count it reads as today's capture rate, which is
+     how a stale file turns into a false diagnosis. Scope it to its own period,
+     and when the live count has already overtaken it, say the leak has not
+     been re-measured rather than leaving a contradiction on the page. */
   if(TQS && TQC){
-    notes.push('<b>The quiz is not the problem.</b> '+fmt(TQC)+' of '+fmt(TQS)+' who started it '
-      +'finished ('+pct(TQC/TQS,0)+'). But only '+fmt(tLeads)+' handed over an email, '
-      +pct(tLeads/TQC,0)+' of finishers, so <b style="color:var(--down)">'+fmt(TQC-tLeads)
-      +' people completed the whole quiz and walked away at the email step</b>. That is where '
-      +'this campaign leaks, and it is a copy and offer problem on one screen, not a traffic '
-      +'or targeting one. Quiz events come from GA4 and tie to Meta\'s own lead count exactly.'
-      +(asAt?' Those three columns are a manual snapshot <b>as at '+prettyD(asAt)
-        +'</b>, so read them as that day, not as today.':''));
+    notes.push('<b>The quiz itself is not the problem.</b> In the'
+      +(asAt?' period to <b>'+prettyD(asAt)+'</b>':' snapshot period')+', '
+      +fmt(TQC)+' of '+fmt(TQS)+' who started it finished ('+pct(TQC/TQS,0)+'). But only '
+      +fmt(tLeads)+' handed over an email, '+pct(tLeads/TQC,0)+' of finishers, so '
+      +'<b style="color:var(--down)">'+fmt(TQC-tLeads)+' people completed the whole quiz and '
+      +'walked away at the email step</b>. That is a copy and offer problem on one screen, not '
+      +'a traffic or targeting one. Quiz events come from GA4 and tie to Meta\'s own lead count '
+      +'exactly.'
+      +(tOurs>tLeads?' <b>That capture rate is stale and the live count is better.</b> '
+        +fmt(tOurs)+' paid subscribers have since arrived against the '+fmt(tLeads)
+        +' this line is measuring, so refresh <code>leadgen.csv</code> before acting on the '
+        +'leak: it may already be smaller than it looks.':''));
   }
   if(staleSpend) notes.push('<span style="color:var(--warn)">Spend for at least one campaign '
     +'came from the CSV rather than the live feed, so it may be stale. Check the campaign name '
