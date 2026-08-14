@@ -1203,6 +1203,18 @@ def fetch_search_console(src):
     Position is deliberately carried even though nothing plots it yet. It is
     the one column that says whether rising impressions are real progress or
     just Google showing the same pages to more people further down.
+
+    **ONLY FINALISED DAYS BELONG IN THIS FILE.** Search Console serves the last
+    two or three days as provisional and revises them upward for days. Store a
+    provisional day and it freezes at whatever partial number happened to be
+    there when it was read, permanently understating that day.
+
+    This is not hypothetical. 2026-08-12 was stored at 32 clicks from a
+    provisional read on the 13th; the finalised figure is 48. 2026-08-13 read
+    11 clicks one morning and 13 clicks the next. The rule that prevents it:
+    query Search Console with `dataState: "final"`, which simply omits days
+    that are still moving, and let the merge in write_rows pick them up on a
+    later run. Never `dataState: "all"` into the long-term store.
     """
     if src.startswith("http://") or src.startswith("https://"):
         resp = http_retry(lambda: requests.get(src, timeout=60))

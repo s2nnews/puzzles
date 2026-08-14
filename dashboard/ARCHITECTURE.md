@@ -157,6 +157,12 @@ credentials, or it will regress the files it cannot fetch. A local run without
 committed sample CSVs and overwrites live Porter rows with them. Check
 `git diff` before committing a locally-generated feed.
 
+**Deleting a bad row means deleting it from BOTH the CSV and the JSON.** The
+merge below never drops a row it has already published, which is exactly right
+for a feed that only carries a trailing window and exactly wrong when you are
+correcting bad data: remove it from the CSV alone and the next run restores it
+from the JSON. Hit on 2026-08-14 removing a provisional Search Console day.
+
 ### Why the JSON files are the long-term store
 
 Porter's free tier keeps only a **rolling 30 days**. `merge_previous` therefore
@@ -400,6 +406,18 @@ committed file keeps history beyond whatever trailing window the export carries.
 
 To refresh it by hand in the meantime, `get_search_console_performance` with
 `dimensions: ["date"]` returns exactly the five columns the CSV holds.
+
+**Always pass `dataState: "final"`, never `"all"`.** Search Console serves its
+last two or three days as provisional and revises them upward for days
+afterwards. `"final"` simply omits those days, and the `write_rows` merge picks
+them up on a later run once they settle. `"all"` writes a partial number into a
+file that is the permanent history, and nothing ever corrects it.
+
+Caught on 2026-08-14, having already happened twice: 12 August was stored at 32
+clicks from a provisional read and finalises at **48**, and 13 August read 11
+clicks one morning and 13 the next. Both provisional rows were removed. The
+store now ends at the last finalised day, so it will normally sit about three
+days behind, which is why the panel's staleness warning is set at four.
 
 ## Rank tracking, and why the average is computed here rather than read
 

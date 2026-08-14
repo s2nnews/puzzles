@@ -4,16 +4,16 @@
   "platform": "Meta",
   "objective": "OUTCOME_LEADS",
   "from": "2026-08-09",
-  "to": "2026-08-13",
-  "spend": 158.26,
-  "impressions": 8624,
-  "reach": 6140,
-  "clicks": 1435,
-  "link_clicks": 504,
-  "landing_page_views": 477,
-  "quiz_start": 264,
-  "quiz_complete": 235,
-  "leads": 80,
-  "as_at": "2026-08-13"
+  "to": "2026-08-14",
+  "spend": 170.8,
+  "impressions": 9517,
+  "reach": 6573,
+  "clicks": 1557,
+  "link_clicks": 542,
+  "landing_page_views": 520,
+  "quiz_start": 367,
+  "quiz_complete": 324,
+  "leads": 89,
+  "as_at": "2026-08-14"
  }
 ]
