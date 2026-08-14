@@ -38,7 +38,7 @@
   "Campaign": "Warm-up Day 1 - Clementoni + Dinner Date restock",
   "Subject": "Nearly gone in 48 hours, plus a new arrival from Italy",
   "Sent": 999,
-  "Open rate": 0.84785,
+  "Open rate": 0.84885,
   "Click rate": 0.06406,
   "Orders": 1,
   "Revenue": 124.8
@@ -104,7 +104,7 @@
   "Campaign": "New Arrivals - Cloudberries + Stephen Wilkes (Aug 2026)",
   "Subject": "Two new brands, and a lot of new puzzles",
   "Sent": 7946,
-  "Open rate": 0.72892,
+  "Open rate": 0.72905,
   "Click rate": 0.06456,
   "Orders": 11,
   "Revenue": 1034.02
@@ -115,8 +115,8 @@
   "Campaign": "New Arrivals + First Accessories + Buying Habits (Aug 2026)",
   "Subject": "A first for us, and a lot of new Ravensburger",
   "Sent": 8004,
-  "Open rate": 0.70102,
-  "Click rate": 0.08721,
+  "Open rate": 0.70177,
+  "Click rate": 0.08758,
   "Orders": 22,
   "Revenue": 2421.17
  },
