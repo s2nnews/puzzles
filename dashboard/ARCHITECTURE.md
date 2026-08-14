@@ -448,15 +448,24 @@ CSVs (this one, `search-console.csv`, `leadgen.csv`) and commits them. The
 GitHub Action then rebuilds the JSON within two hours, so the routine
 deliberately touches **only the CSVs** and never runs `collect.py`.
 
-> **BLOCKED as of 2026-08-13: the routine cannot push.** Its first test run
-> did everything correctly and then failed with `403 Resource not accessible by
-> integration` on `git push`, on the GitHub MCP `create_or_update_file` and on
-> `push_files`. Reads work. The Claude Code GitHub App installed for the cloud
-> environment has **Contents: read** on `s2nnews/puzzles` and needs
-> **Contents: write**. Fix at <https://github.com/settings/installations>.
-> Until then the routine will run weekly, do the work, and lose it. **Verify
-> with `RemoteTrigger list_runs` after the first Friday**, and note the run
-> does send a push notification when it fails, so it is loud rather than silent.
+> **Was blocked, fixed 2026-08-14.** For its first two runs the routine did
+> the work correctly and then failed to push with `403 Resource not accessible
+> by integration`, on `git push` and on both GitHub MCP write paths. Reads
+> worked throughout.
+>
+> **The diagnosis that wasted a day was wrong.** It looked like the Claude
+> GitHub App needed `Contents: write`, and it does not: an installer cannot add
+> permissions an App has not requested, and per the
+> [docs](https://code.claude.com/docs/en/claude-code-on-the-web) that App is
+> only there for PR webhooks and "is not a session-level access control".
+> Cloud sessions get repository access from the connected GitHub account, by
+> either authorising the App during web onboarding **or** running **`/web-setup`**
+> in the terminal to sync the local `gh` token.
+>
+> **The fix was `/web-setup`, one command.** Verified by firing the routine
+> manually: it pushed `e2cf9b6` as author "Claude". If a future cloud session
+> or routine ever 403s on push, run `/web-setup` again before touching anything
+> on GitHub.
 
 That first run is also the proof the design works: all three connectors are
 available in a headless cloud session, and it correctly left rank tracking and
