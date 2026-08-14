@@ -441,9 +441,19 @@ position maths, because scoring it 0 would read as better than first place.
 **The panel refuses to draw a trend under four readings** and says so. Two
 points is not a line, and week-to-week movement of a few places is SERP noise.
 
-**Agent-refreshed, weekly, by a scheduled cloud routine.**
-`trig_013W6cKkjGUf8u8HYUes8CeR`, "Puzzles dashboard: weekly SEO feed refresh",
-Fridays 08:00 AEST (`0 22 * * 4` UTC). It refreshes all three connector-fed
+**Agent-refreshed, daily, by a scheduled cloud routine.**
+`trig_013W6cKkjGUf8u8HYUes8CeR`, "Puzzles dashboard: daily SEO feed refresh",
+08:00 AEST every day (`0 22 * * *` UTC).
+
+Daily rather than weekly even though **rank tracking** is the only one of the
+three that cannot go faster, because Ubersuggest itself only recalculates once
+a week. The other two move daily and weekly made them wrong in a specific way:
+Search Console finalises new days continuously, so a weekly grab left the chart
+missing days Google had already settled, and `leadgen.csv` carries the lead
+count while ad spend comes off the 2-hourly feed, so a weekly lead count kept
+the two halves of that panel at different ages and fired its own drift warning
+most of the week. On the six days Ubersuggest has nothing new the routine says
+so and leaves the file alone. It refreshes all three connector-fed
 CSVs (this one, `search-console.csv`, `leadgen.csv`) and commits them. The
 GitHub Action then rebuilds the JSON within two hours, so the routine
 deliberately touches **only the CSVs** and never runs `collect.py`.
