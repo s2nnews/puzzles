@@ -1822,14 +1822,14 @@
  {
   "Date": "2026-08-14",
   "Channel": "Direct",
-  "Sessions": 75,
+  "Sessions": 76,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-14",
   "Channel": "Email",
-  "Sessions": 30,
+  "Sessions": 31,
   "Purchases": 1,
   "Revenue": 61.98
  },
@@ -1864,7 +1864,7 @@
  {
   "Date": "2026-08-14",
   "Channel": "Paid Social",
-  "Sessions": 74,
+  "Sessions": 75,
   "Purchases": 0,
   "Revenue": 0
  },
