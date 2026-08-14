@@ -45,7 +45,8 @@ useful, but this file and `STATUS.md` are authoritative.
 | Porter export → `Sheet1` tab | Meta + GA4 + Google Ads daily rows | every 3h at :00 |
 | Porter export → `campaigns` tab | per-campaign rows, both platforms | every 3h at :10 |
 | Porter export → `channels` tab | GA4 sessions/revenue per channel group | every 3h at :20 |
-| GitHub Action `dashboard-data` | all six JSON feeds | every 2h at :25 |
+| GitHub Action `dashboard-data` | all eight JSON feeds | every 2h at :25 |
+| Cloud routine `daily SEO feed refresh` | the 3 connector-fed CSVs | daily, 22:00 (08:00 AEST) |
 | `run_daily.py` (laptop) | Puzzle Index files only | at logon + 10:30 daily |
 
 **Why these intervals.** Shopify, Omnisend and ShipStation are read live on
@@ -133,11 +134,11 @@ ever drifts, the Orders-API maths is wrong.
 | `quiz-cohort.json` | Quiz leads by day and source, and what they went on to spend. |
 | `leadgen.json` | Built from `leadgen.csv`. Meta's own lead count and the GA4 quiz funnel. |
 | `search-console.json` | Organic clicks, impressions, CTR and position per day. |
-| `rank-tracking.json` | One row per tracked keyword per weekly reading. |
+| `rank-tracking.json` | One row per tracked keyword per weekly reading. Read daily. |
 | `porter_feed.csv` | Offline fallback if `PORTER_CSV` is unset. Not used in production. |
 | `campaigns.csv` | Offline fallback if `CAMPAIGNS_CSV` is unset. Not used in production. |
 | `search-console.csv` | Seed **and** current source for the organic chart. See the caveat below. |
-| `rank-tracking.csv` | The rank history. Agent-refreshed weekly. See the caveat below. |
+| `rank-tracking.csv` | The rank history. Agent-refreshed daily, new readings weekly. |
 | `.env.example` | Template. Copy to `.env` (gitignored). |
 | `selftest.js` | Runs the page's functions against the committed feeds. `node dashboard/selftest.js`. |
 | `../.github/workflows/dashboard.yml` | The two-hourly refresh. |
