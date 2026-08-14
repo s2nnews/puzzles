@@ -1815,42 +1815,42 @@
  {
   "Date": "2026-08-14",
   "Channel": "Cross-network",
-  "Sessions": 13,
-  "Purchases": 0,
-  "Revenue": 0
- },
- {
-  "Date": "2026-08-14",
-  "Channel": "Direct",
-  "Sessions": 39,
-  "Purchases": 0,
-  "Revenue": 0
- },
- {
-  "Date": "2026-08-14",
-  "Channel": "Email",
-  "Sessions": 24,
-  "Purchases": 1,
-  "Revenue": 61.98
- },
- {
-  "Date": "2026-08-14",
-  "Channel": "Organic Search",
   "Sessions": 19,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-14",
+  "Channel": "Direct",
+  "Sessions": 54,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-14",
+  "Channel": "Email",
+  "Sessions": 28,
+  "Purchases": 1,
+  "Revenue": 61.98
+ },
+ {
+  "Date": "2026-08-14",
+  "Channel": "Organic Search",
+  "Sessions": 24,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-14",
   "Channel": "Organic Social",
-  "Sessions": 2,
+  "Sessions": 4,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-14",
   "Channel": "Paid Search",
-  "Sessions": 13,
+  "Sessions": 16,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1864,14 +1864,14 @@
  {
   "Date": "2026-08-14",
   "Channel": "Paid Social",
-  "Sessions": 15,
+  "Sessions": 25,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-14",
   "Channel": "Unassigned",
-  "Sessions": 89,
+  "Sessions": 119,
   "Purchases": 1,
   "Revenue": 54.99
  }
