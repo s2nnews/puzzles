@@ -1752,7 +1752,7 @@
  {
   "Date": "2026-08-13",
   "Channel": "Direct",
-  "Sessions": 89,
+  "Sessions": 102,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1766,28 +1766,28 @@
  {
   "Date": "2026-08-13",
   "Channel": "Email",
-  "Sessions": 59,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 71,
+  "Purchases": 1,
+  "Revenue": 150.41
  },
  {
   "Date": "2026-08-13",
   "Channel": "Organic Search",
-  "Sessions": 26,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 50,
+  "Purchases": 2,
+  "Revenue": 60.65
  },
  {
   "Date": "2026-08-13",
   "Channel": "Organic Social",
-  "Sessions": 2,
+  "Sessions": 3,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-13",
   "Channel": "Paid Search",
-  "Sessions": 32,
+  "Sessions": 41,
   "Purchases": 1,
   "Revenue": 22.95
  },
@@ -1801,15 +1801,71 @@
  {
   "Date": "2026-08-13",
   "Channel": "Paid Social",
-  "Sessions": 82,
+  "Sessions": 162,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-13",
   "Channel": "Unassigned",
-  "Sessions": 252,
-  "Purchases": 2,
-  "Revenue": 181.36
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-14",
+  "Channel": "Cross-network",
+  "Sessions": 9,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-14",
+  "Channel": "Direct",
+  "Sessions": 19,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-14",
+  "Channel": "Email",
+  "Sessions": 7,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-14",
+  "Channel": "Organic Search",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-14",
+  "Channel": "Paid Search",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-14",
+  "Channel": "Paid Shopping",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-14",
+  "Channel": "Paid Social",
+  "Sessions": 3,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-14",
+  "Channel": "Unassigned",
+  "Sessions": 39,
+  "Purchases": 0,
+  "Revenue": 0
  }
 ]
