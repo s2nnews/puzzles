@@ -1885,21 +1885,21 @@
  {
   "Date": "2026-08-15",
   "Channel": "Cross-network",
-  "Sessions": 24,
+  "Sessions": 25,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-15",
   "Channel": "Direct",
-  "Sessions": 75,
+  "Sessions": 76,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-15",
   "Channel": "Email",
-  "Sessions": 32,
+  "Sessions": 33,
   "Purchases": 1,
   "Revenue": 112.93
  },
@@ -1920,14 +1920,14 @@
  {
   "Date": "2026-08-15",
   "Channel": "Paid Social",
-  "Sessions": 78,
+  "Sessions": 79,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-15",
   "Channel": "Unassigned",
-  "Sessions": 165,
+  "Sessions": 166,
   "Purchases": 1,
   "Revenue": 34.99
  }
