@@ -71,7 +71,7 @@
   "Campaign": "Warm-up Day 4 - Clementoni + Dinner Date restock (v2)",
   "Subject": "Nearly gone in 48 hours, plus a new arrival from Italy",
   "Sent": 4141,
-  "Open rate": 0.07076,
+  "Open rate": 0.071,
   "Click rate": 0.01449,
   "Orders": 2,
   "Revenue": 134.78
@@ -93,7 +93,7 @@
   "Campaign": "Heye + Dinner With restock (Jul 2026)",
   "Subject": "Meet Heye, the German brand that made puzzles funny",
   "Sent": 7954,
-  "Open rate": 0.70028,
+  "Open rate": 0.7004,
   "Click rate": 0.05218,
   "Orders": 9,
   "Revenue": 1043.87
@@ -104,7 +104,7 @@
   "Campaign": "New Arrivals - Cloudberries + Stephen Wilkes (Aug 2026)",
   "Subject": "Two new brands, and a lot of new puzzles",
   "Sent": 7946,
-  "Open rate": 0.72993,
+  "Open rate": 0.73018,
   "Click rate": 0.06456,
   "Orders": 11,
   "Revenue": 1034.02
@@ -115,8 +115,8 @@
   "Campaign": "New Arrivals + First Accessories + Buying Habits (Aug 2026)",
   "Subject": "A first for us, and a lot of new Ravensburger",
   "Sent": 8004,
-  "Open rate": 0.71152,
-  "Click rate": 0.08858,
+  "Open rate": 0.71189,
+  "Click rate": 0.08871,
   "Orders": 25,
   "Revenue": 2685.92
  },
