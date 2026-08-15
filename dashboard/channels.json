@@ -1815,28 +1815,35 @@
  {
   "Date": "2026-08-14",
   "Channel": "Cross-network",
-  "Sessions": 30,
+  "Sessions": 2,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-14",
   "Channel": "Direct",
-  "Sessions": 76,
+  "Sessions": 91,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-14",
   "Channel": "Email",
-  "Sessions": 31,
-  "Purchases": 1,
-  "Revenue": 61.98
+  "Sessions": 34,
+  "Purchases": 2,
+  "Revenue": 116.97
  },
  {
   "Date": "2026-08-14",
   "Channel": "Organic Search",
-  "Sessions": 35,
+  "Sessions": 51,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-14",
+  "Channel": "Organic Shopping",
+  "Sessions": 1,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1850,9 +1857,9 @@
  {
   "Date": "2026-08-14",
   "Channel": "Paid Search",
-  "Sessions": 24,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 42,
+  "Purchases": 1,
+  "Revenue": 34.99
  },
  {
   "Date": "2026-08-14",
@@ -1864,15 +1871,64 @@
  {
   "Date": "2026-08-14",
   "Channel": "Paid Social",
-  "Sessions": 75,
+  "Sessions": 95,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-14",
   "Channel": "Unassigned",
-  "Sessions": 188,
-  "Purchases": 2,
-  "Revenue": 89.98
+  "Sessions": 6,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-15",
+  "Channel": "Cross-network",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-15",
+  "Channel": "Direct",
+  "Sessions": 16,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-15",
+  "Channel": "Email",
+  "Sessions": 6,
+  "Purchases": 1,
+  "Revenue": 112.93
+ },
+ {
+  "Date": "2026-08-15",
+  "Channel": "Organic Search",
+  "Sessions": 7,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-15",
+  "Channel": "Paid Search",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-15",
+  "Channel": "Paid Social",
+  "Sessions": 10,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-15",
+  "Channel": "Unassigned",
+  "Sessions": 37,
+  "Purchases": 0,
+  "Revenue": 0
  }
 ]
