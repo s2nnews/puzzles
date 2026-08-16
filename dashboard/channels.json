@@ -1948,14 +1948,14 @@
  {
   "Date": "2026-08-16",
   "Channel": "Cross-network",
-  "Sessions": 23,
+  "Sessions": 26,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-16",
   "Channel": "Direct",
-  "Sessions": 70,
+  "Sessions": 71,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -1997,7 +1997,7 @@
  {
   "Date": "2026-08-16",
   "Channel": "Paid Social",
-  "Sessions": 140,
+  "Sessions": 142,
   "Purchases": 0,
   "Revenue": 0
  },
