@@ -215,5 +215,19 @@
   "Impressions": 2064,
   "Position": 9.93,
   "CTR": 0.02035
+ },
+ {
+  "Date": "2026-08-14",
+  "Clicks": 64,
+  "Impressions": 2281,
+  "Position": 9.23,
+  "CTR": 0.02806
+ },
+ {
+  "Date": "2026-08-15",
+  "Clicks": 44,
+  "Impressions": 2385,
+  "Position": 10.51,
+  "CTR": 0.01845
  }
 ]
