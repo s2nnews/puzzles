@@ -2025,7 +2025,7 @@
  {
   "Date": "2026-08-17",
   "Channel": "Direct",
-  "Sessions": 66,
+  "Sessions": 68,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -2053,14 +2053,14 @@
  {
   "Date": "2026-08-17",
   "Channel": "Paid Social",
-  "Sessions": 59,
+  "Sessions": 63,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-17",
   "Channel": "Unassigned",
-  "Sessions": 139,
+  "Sessions": 140,
   "Purchases": 3,
   "Revenue": 419.88
  }
