@@ -2018,28 +2018,28 @@
  {
   "Date": "2026-08-17",
   "Channel": "Cross-network",
-  "Sessions": 6,
+  "Sessions": 10,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-17",
   "Channel": "Direct",
-  "Sessions": 27,
+  "Sessions": 32,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-17",
   "Channel": "Email",
-  "Sessions": 4,
+  "Sessions": 8,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-17",
   "Channel": "Organic Search",
-  "Sessions": 7,
+  "Sessions": 15,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -2053,14 +2053,14 @@
  {
   "Date": "2026-08-17",
   "Channel": "Paid Social",
-  "Sessions": 22,
+  "Sessions": 31,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-17",
   "Channel": "Unassigned",
-  "Sessions": 48,
+  "Sessions": 67,
   "Purchases": 1,
   "Revenue": 130.48
  }
