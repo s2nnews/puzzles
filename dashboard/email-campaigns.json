@@ -115,8 +115,8 @@
   "Campaign": "New Arrivals + First Accessories + Buying Habits (Aug 2026)",
   "Subject": "A first for us, and a lot of new Ravensburger",
   "Sent": 8004,
-  "Open rate": 0.72076,
-  "Click rate": 0.08971,
+  "Open rate": 0.72114,
+  "Click rate": 0.08983,
   "Orders": 26,
   "Revenue": 2885.87
  },
@@ -130,5 +130,16 @@
   "Click rate": 0.0,
   "Orders": 0,
   "Revenue": 0
+ },
+ {
+  "Date": "2026-08-18",
+  "Platform": "Omnisend",
+  "Campaign": "QPuzzles Australian launch + Ravensburger + Christmas (Aug 2026)",
+  "Subject": "Australian made, and the shelf is finally full again",
+  "Sent": 7812,
+  "Open rate": 0.27471,
+  "Click rate": 0.02202,
+  "Orders": 4,
+  "Revenue": 330.1
  }
 ]

@@ -19,9 +19,9 @@
   "meta-organic": {
    "leads": 1,
    "buyers": 1,
-   "orders": 1,
-   "revenue": 95.64,
-   "revenuePerLead": 95.64,
+   "orders": 2,
+   "revenue": 250.02,
+   "revenuePerLead": 250.02,
    "medianDaysToFirstOrder": 840
   },
   "untagged": {
@@ -159,5 +159,5 @@
    "Leads": 1
   }
  ],
- "generatedAt": "2026-08-18T10:41:51+1000"
+ "generatedAt": "2026-08-18T14:39:24+1000"
 }
