@@ -2081,21 +2081,21 @@
  {
   "Date": "2026-08-18",
   "Channel": "Cross-network",
-  "Sessions": 23,
+  "Sessions": 24,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-18",
   "Channel": "Direct",
-  "Sessions": 67,
+  "Sessions": 71,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-18",
   "Channel": "Email",
-  "Sessions": 320,
+  "Sessions": 330,
   "Purchases": 4,
   "Revenue": 180.86
  },
@@ -2123,14 +2123,14 @@
  {
   "Date": "2026-08-18",
   "Channel": "Paid Social",
-  "Sessions": 98,
+  "Sessions": 101,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-18",
   "Channel": "Unassigned",
-  "Sessions": 415,
+  "Sessions": 416,
   "Purchases": 4,
   "Revenue": 338.34
  }
