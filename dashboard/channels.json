@@ -2009,59 +2009,115 @@
   "Revenue": 0
  },
  {
-  "Date": "2026-08-16",
-  "Channel": "Unassigned",
-  "Sessions": 0,
-  "Purchases": 0,
-  "Revenue": 191
- },
- {
   "Date": "2026-08-17",
   "Channel": "Cross-network",
-  "Sessions": 16,
+  "Sessions": 2,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-17",
   "Channel": "Direct",
-  "Sessions": 68,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 73,
+  "Purchases": 2,
+  "Revenue": 417.36
  },
  {
   "Date": "2026-08-17",
   "Channel": "Email",
-  "Sessions": 19,
+  "Sessions": 20,
+  "Purchases": 2,
+  "Revenue": 202.47
+ },
+ {
+  "Date": "2026-08-17",
+  "Channel": "Organic Search",
+  "Sessions": 41,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-17",
-  "Channel": "Organic Search",
-  "Sessions": 30,
+  "Channel": "Organic Social",
+  "Sessions": 3,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-17",
   "Channel": "Paid Search",
-  "Sessions": 18,
+  "Sessions": 34,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-17",
+  "Channel": "Paid Shopping",
+  "Sessions": 1,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-17",
   "Channel": "Paid Social",
-  "Sessions": 63,
+  "Sessions": 79,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-17",
   "Channel": "Unassigned",
-  "Sessions": 140,
-  "Purchases": 3,
-  "Revenue": 419.88
+  "Sessions": 3,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-18",
+  "Channel": "Cross-network",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-18",
+  "Channel": "Direct",
+  "Sessions": 15,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-18",
+  "Channel": "Email",
+  "Sessions": 7,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-18",
+  "Channel": "Organic Search",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-18",
+  "Channel": "Paid Search",
+  "Sessions": 2,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-18",
+  "Channel": "Paid Social",
+  "Sessions": 11,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-18",
+  "Channel": "Unassigned",
+  "Sessions": 35,
+  "Purchases": 0,
+  "Revenue": 0
  }
 ]
