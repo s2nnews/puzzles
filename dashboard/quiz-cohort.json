@@ -9,11 +9,11 @@
    "medianDaysToFirstOrder": 0
   },
   "organic": {
-   "leads": 6,
+   "leads": 7,
    "buyers": 1,
    "orders": 1,
    "revenue": 35.9,
-   "revenuePerLead": 5.98,
+   "revenuePerLead": 5.13,
    "medianDaysToFirstOrder": 956
   },
   "meta-organic": {
@@ -160,9 +160,14 @@
   },
   {
    "Date": "2026-08-18",
+   "Source": "organic",
+   "Leads": 1
+  },
+  {
+   "Date": "2026-08-18",
    "Source": "untagged",
    "Leads": 1
   }
  ],
- "generatedAt": "2026-08-18T18:39:58+1000"
+ "generatedAt": "2026-08-18T20:38:18+1000"
 }
