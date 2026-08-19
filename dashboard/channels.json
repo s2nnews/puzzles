@@ -2133,5 +2133,54 @@
   "Sessions": 416,
   "Purchases": 4,
   "Revenue": 338.34
+ },
+ {
+  "Date": "2026-08-19",
+  "Channel": "Cross-network",
+  "Sessions": 5,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-19",
+  "Channel": "Direct",
+  "Sessions": 33,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-19",
+  "Channel": "Email",
+  "Sessions": 31,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-19",
+  "Channel": "Organic Search",
+  "Sessions": 1,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-19",
+  "Channel": "Paid Search",
+  "Sessions": 6,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-19",
+  "Channel": "Paid Social",
+  "Sessions": 13,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-19",
+  "Channel": "Unassigned",
+  "Sessions": 59,
+  "Purchases": 1,
+  "Revenue": 49.45
  }
 ]
