@@ -2165,14 +2165,14 @@
  {
   "Date": "2026-08-19",
   "Channel": "Email",
-  "Sessions": 92,
+  "Sessions": 94,
   "Purchases": 1,
   "Revenue": 124.97
  },
  {
   "Date": "2026-08-19",
   "Channel": "Organic Search",
-  "Sessions": 16,
+  "Sessions": 17,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -2186,21 +2186,21 @@
  {
   "Date": "2026-08-19",
   "Channel": "Paid Search",
-  "Sessions": 32,
+  "Sessions": 37,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-19",
   "Channel": "Paid Social",
-  "Sessions": 46,
+  "Sessions": 49,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-19",
   "Channel": "Unassigned",
-  "Sessions": 270,
+  "Sessions": 271,
   "Purchases": 1,
   "Revenue": 49.45
  }
