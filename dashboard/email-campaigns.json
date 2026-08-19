@@ -123,7 +123,7 @@
   "Campaign": "New Arrivals - Cloudberries + Stephen Wilkes (Aug 2026)",
   "Subject": "Two new brands, and a lot of new puzzles",
   "Sent": 7946,
-  "Open rate": 0.73345,
+  "Open rate": 0.73358,
   "Click rate": 0.06469,
   "Orders": 11,
   "Revenue": 1034.02,
@@ -136,7 +136,7 @@
   "Campaign": "New Arrivals + First Accessories + Buying Habits (Aug 2026)",
   "Subject": "A first for us, and a lot of new Ravensburger",
   "Sent": 8004,
-  "Open rate": 0.72364,
+  "Open rate": 0.72414,
   "Click rate": 0.09008,
   "Orders": 26,
   "Revenue": 2885.87,
@@ -162,10 +162,10 @@
   "Campaign": "QPuzzles Australian launch + Ravensburger + Christmas (Aug 2026)",
   "Subject": "Australian made, and the shelf is finally full again",
   "Sent": 7812,
-  "Open rate": 0.69009,
-  "Click rate": 0.05376,
-  "Orders": 13,
-  "Revenue": 1158.49,
+  "Open rate": 0.69432,
+  "Click rate": 0.05402,
+  "Orders": 14,
+  "Revenue": 1267.84,
   "Unsubs": 52
  }
 ]
