@@ -883,20 +883,20 @@
   "Date": "2026-08-19",
   "Platform": "Google",
   "Campaign": "Search - Puzzles - Australia",
-  "Spend": 44.85,
+  "Spend": 45.55,
   "Value": 0,
-  "Clicks": 51,
-  "Impressions": 485,
+  "Clicks": 52,
+  "Impressions": 511,
   "Conversions": 0
  },
  {
   "Date": "2026-08-19",
   "Platform": "Meta",
   "Campaign": "PP - Quiz Lead Gen - 2026-08",
-  "Spend": 35.12,
+  "Spend": 40.11,
   "Value": 0,
-  "Clicks": 266,
-  "Impressions": 2519,
+  "Clicks": 301,
+  "Impressions": 2905,
   "Conversions": 0
  }
 ]
