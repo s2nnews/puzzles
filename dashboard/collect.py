@@ -589,8 +589,8 @@ def fetch_omnisend_list_size(api_key, segment_id=""):
     return int(count) if count is not None else None
 
 
-EMAIL_COLUMNS = ["Date", "Platform", "Campaign", "Subject", "Sent",
-                 "Open rate", "Click rate", "Orders", "Revenue"]
+EMAIL_COLUMNS = ["Date", "ID", "Platform", "Campaign", "Subject", "Sent",
+                 "Open rate", "Click rate", "Orders", "Revenue", "Unsubs"]
 
 LEADGEN_COLUMNS = ["campaign", "platform", "objective", "from", "to", "spend",
                    "impressions", "reach", "clicks", "link_clicks",
@@ -753,43 +753,111 @@ def fetch_quiz_cohorts(store, token):
     }
 
 
+# The analytics report is dimensioned by campaign ID and nothing else, so a
+# campaign deleted from Omnisend keeps reporting numbers but loses its name
+# and subject: /api/campaigns drops it, and the report carries no name field
+# (marketingActivityCurrentName is NOT a dimension this endpoint has, it has
+# exactly six and name is not one of them). Names and subjects are therefore
+# carried forward in email-campaigns.json itself, which covers anything
+# deleted from now on. This map only seeds campaigns already deleted before
+# their ID was ever written to that file, and is what lets the feed be
+# rebuilt from scratch without losing them.
+OMNISEND_DELETED_CAMPAIGNS = {
+    # Deleted 2026-08-18 when a duplicate draft was cleaned up and took the
+    # sent record with it. Analytics still reports it, and still updates it.
+    "6a83cee2274fb891227a8210": {
+        "name": "QPuzzles Australian launch + Ravensburger + Christmas (Aug 2026)",
+        "subject": "Australian made, and the shelf is finally full again",
+    },
+    "6a7a7f2a98ac11a8901aff3e": {
+        "name": "Welcome catch-up - Aug 2026 flow gap",
+        "subject": "Welcome, and here is your 10%",
+    },
+}
+
+# `custom` + `day` granularity is a hard 400 beyond 60 days. 58 leaves room
+# for the part-day on `to` without the span ever reaching the cap.
+OMNISEND_SEND_DATE_DAYS = 58
+
+
+def previous_email_meta():
+    """Last known name/subject/date per campaign ID from the feed file.
+
+    This is what makes deletion survivable. A campaign only has to be alive
+    once for its identity to be recorded here permanently.
+    """
+    out = {}
+    if not os.path.exists(EMAIL_PATH):
+        return out
+    try:
+        with open(EMAIL_PATH, encoding="utf-8") as f:
+            for r in json.load(f):
+                if r.get("ID"):
+                    out[r["ID"]] = {"name": r.get("Campaign") or "",
+                                    "subject": r.get("Subject") or "",
+                                    "date": r.get("Date") or ""}
+    except (ValueError, KeyError, TypeError):
+        pass
+    return out
+
+
 def fetch_omnisend_email_campaigns(api_key):
-    """Per-campaign email performance, joined from two endpoints.
+    """Per-campaign email performance, from the Analytics API.
 
-    The analytics report carries the numbers but only a campaign ID and name;
-    /api/campaigns carries the send date and subject line. Two calls, joined
-    on the ID.
+    The Campaigns API is a MUTABLE LIST: delete a campaign and it is gone
+    from /api/campaigns and 404s on /api/campaigns/{id}. The analytics report
+    is an append-only event store that keeps reporting it and keeps updating
+    it. So ANALYTICS IS THE ROW LIST, and /api/campaigns only decorates it
+    with the subject line, which analytics does not carry. A campaign missing
+    from /api/campaigns still renders. This is not hypothetical: two of the
+    ten sends in the report are already missing from /api/campaigns, and one
+    of them froze this table at a two-hour-old snapshot on 2026-08-18.
 
-    The report is queried WITHOUT a timestamp dimension on purpose. Adding one
-    buckets opens by the day they happened while `sent` lands only on the send
-    day, so openRate per bucket becomes opens-that-day over sent-that-day —
-    Warm-up Day 1 read 51.1% that way against a true 84.8%. Rates are only
-    meaningful over the campaign as a whole.
+    Two analytics queries, ONE http request (the endpoint takes 1 to 4
+    queries, and the rate limit is 10/min and 55/day, far stricter than the
+    general API).
+
+    `totals` has NO timestamp dimension, because the unique counts are only
+    deduplicated across the whole window when it is absent. Add a day
+    dimension and every day gets its own unique count, so summing them counts
+    the same person once per day they came back: the 11 Aug send reads 7,016
+    opens (87.7%) summed that way, and 4,761 (59.5%) taking the send-day
+    bucket alone, against a true 5,786 (72.3%) which is what Omnisend's own
+    campaign list shows.
+
+    `senddates` exists only to place each campaign on the timeline without
+    asking the Campaigns API for a date. It is dimensioned by day but asks
+    for `sent` alone, which is the one metric that really does land entirely
+    on the send day, so the day where sent > 0 IS the send date.
+
+    Rates are computed here from the unique counts rather than read from the
+    API's openRate/clickRate, so there is one definition of the denominator
+    on this page and it is visible in this file.
 
     Returns rows shaped like EMAIL_COLUMNS. Failures return [] rather than
     dying: a stale email table is better than no dashboard.
     """
-    body = omnisend_get(
-        api_key, "/api/campaigns?status=sent&channel=email&limit=100")
-    meta = {}
-    for c in body.get("campaigns") or []:
-        sent_at = c.get("startedAt") or c.get("endedAt") or c.get("createdAt")
-        meta[c.get("id")] = {
-            "date": sydney_day(sent_at) if sent_at else "",
-            "subject": ((c.get("content") or {}).get("email") or {}).get("subject", ""),
-            "name": c.get("name") or "",
-        }
-
-    query = {"queries": [{
-        "alias": "campaign-performance",
-        "metrics": [{"name": n} for n in (
-            "sent", "openRate", "clickRate", "attributedOrders",
-            "attributedRevenue")],
-        "dimensions": [{"name": "marketingActivityID"}],
-        "dateRange": {"interval": "last90Days"},
-        "filters": [{"name": "marketingActivityType",
-                     "operator": "in", "values": ["Campaign"]}],
-    }]}
+    now = datetime.now(SYDNEY)
+    frm = (now - timedelta(days=OMNISEND_SEND_DATE_DAYS)).replace(
+        hour=0, minute=0, second=0, microsecond=0)
+    query = {"queries": [
+        {"alias": "totals",
+         "metrics": [{"name": n} for n in (
+             "sent", "openedUnique", "clickedUnique", "attributedOrders",
+             "attributedRevenue", "unsubscribedUnique")],
+         "dimensions": [{"name": "marketingActivityID"}],
+         "dateRange": {"interval": "last90Days"},
+         "filters": [{"name": "marketingActivityType",
+                      "operator": "in", "values": ["Campaign"]}]},
+        {"alias": "senddates",
+         "metrics": [{"name": "sent"}],
+         "dimensions": [{"name": "timestamp", "granularity": "day"},
+                        {"name": "marketingActivityID"}],
+         "dateRange": {"interval": "custom",
+                       "from": frm.isoformat(), "to": now.isoformat()},
+         "filters": [{"name": "marketingActivityType",
+                      "operator": "in", "values": ["Campaign"]}]},
+    ]}
     resp = http_retry(lambda: requests.post(
         "https://api.omnisend.com/api/analytics/reports",
         json=query,
@@ -799,31 +867,74 @@ def fetch_omnisend_email_campaigns(api_key):
         print("Omnisend campaigns: analytics HTTP %s, keeping previous rows"
               % resp.status_code)
         return []
+    blocks = {b.get("alias"): b for b in resp.json().get("reports", [])}
 
-    rows = []
-    for block in resp.json().get("reports", []):
-        for r in block.get("rows", []):
-            if not (r.get("sent") or 0):
-                continue
-            m = meta.get(r.get("marketingActivityID"), {})
-            date = m.get("date")
-            if not date:
-                # No send date means it cannot be placed on the timeline, and
-                # a campaign row with no date would sort to the top forever.
-                continue
-            rows.append({
-                "Date": date,
-                "Platform": "Omnisend",
-                "Campaign": r.get("marketingActivityCurrentName") or m.get("name") or "?",
-                "Subject": m.get("subject", ""),
-                "Sent": to_num(r.get("sent")),
-                # NOT to_num(): it rounds to 2dp, which turns an 84.78% open
-                # rate into 85% and a 4.65% click rate into 5%.
-                "Open rate": round(float(r.get("openRate") or 0), 5),
-                "Click rate": round(float(r.get("clickRate") or 0), 5),
-                "Orders": to_num(r.get("attributedOrders")),
-                "Revenue": to_num(round(float(r.get("attributedRevenue") or 0), 2)),
-            })
+    send_date = {}
+    for r in (blocks.get("senddates") or {}).get("rows", []):
+        if r.get("sent"):
+            send_date[r.get("marketingActivityID")] = (r.get("timestamp") or "")[:10]
+
+    # Decoration only. A failure here costs subject lines, never rows.
+    meta = {}
+    try:
+        body = omnisend_get(
+            api_key, "/api/campaigns?status=sent&channel=email&limit=250")
+        for c in body.get("campaigns") or []:
+            started = c.get("startedAt") or c.get("endedAt") or c.get("createdAt")
+            meta[c.get("id")] = {
+                "name": c.get("name") or "",
+                "subject": ((c.get("content") or {}).get("email") or {}).get("subject", ""),
+                "date": sydney_day(started) if started else "",
+            }
+    except SystemExit:
+        print("Omnisend campaigns: /api/campaigns failed, rows keep their "
+              "carried-forward names and subjects")
+
+    prev = previous_email_meta()
+    rows, undated, deleted = [], 0, []
+    for r in (blocks.get("totals") or {}).get("rows", []):
+        sent = int(r.get("sent") or 0)
+        if not sent:
+            continue
+        cid = r.get("marketingActivityID") or ""
+        # Left join, most authoritative source first. Anything analytics
+        # knows about but /api/campaigns does not has been deleted.
+        live = meta.get(cid, {})
+        was = prev.get(cid, {})
+        seed = OMNISEND_DELETED_CAMPAIGNS.get(cid, {})
+        if cid not in meta:
+            deleted.append(cid)
+        date = send_date.get(cid) or live.get("date") or was.get("date") or ""
+        if not date:
+            # Cannot be placed on the timeline, and a dated table sorts an
+            # undated row to one end of it forever.
+            undated += 1
+            continue
+        opened = int(r.get("openedUnique") or 0)
+        clicked = int(r.get("clickedUnique") or 0)
+        rows.append({
+            "Date": date,
+            "ID": cid,
+            "Platform": "Omnisend",
+            "Campaign": (live.get("name") or was.get("name") or seed.get("name")
+                         or ("Campaign " + cid[:8])),
+            "Subject": live.get("subject") or was.get("subject") or seed.get("subject") or "",
+            "Sent": sent,
+            # NOT to_num(): it rounds to 2dp, which turns an 84.78% open rate
+            # into 85% and a 4.65% click rate into 5%.
+            "Open rate": round(opened / sent, 5),
+            "Click rate": round(clicked / sent, 5),
+            "Orders": to_num(r.get("attributedOrders")),
+            "Revenue": to_num(round(float(r.get("attributedRevenue") or 0), 2)),
+            "Unsubs": to_num(r.get("unsubscribedUnique")),
+        })
+    if deleted:
+        print("Omnisend campaigns: %d deleted from Omnisend, still reported by "
+              "analytics and still updating (%s)"
+              % (len(deleted), ", ".join(deleted)))
+    if undated:
+        print("Omnisend campaigns: %d row(s) skipped, no send date from any source"
+              % undated)
     return rows
 
 
@@ -1343,11 +1454,16 @@ def fetch_rank_tracking(src):
     return rows
 
 
-def write_rows(path, rows, key_fields, columns, label):
+def write_rows(path, rows, key_fields, columns, label, sort_fields=None):
     """Write a feed file, keeping any older rows already published.
 
     Porter only retains ~30 days, so the committed file is the long-term
-    store — same reasoning as merge_previous."""
+    store — same reasoning as merge_previous.
+
+    `key_fields` is the identity used to decide whether an incoming row
+    replaces a kept one, and defaults to being the sort order too. Pass
+    `sort_fields` when identity is not what you want to read the file in:
+    the email feed is keyed on an opaque campaign ID but reads by date."""
     if not rows:
         return
     seen = {tuple(r[k] for k in key_fields) for r in rows}
@@ -1360,7 +1476,7 @@ def write_rows(path, rows, key_fields, columns, label):
                         rows.append({c: old.get(c, "") for c in columns})
         except (ValueError, KeyError, TypeError):
             pass
-    rows.sort(key=lambda r: tuple(str(r[k]) for k in key_fields))
+    rows.sort(key=lambda r: tuple(str(r.get(k, "")) for k in (sort_fields or key_fields)))
     with open(path, "w", encoding="utf-8", newline="\n") as f:
         json.dump(rows, f, indent=1)
         f.write("\n")
@@ -1495,10 +1611,15 @@ def main():
     write_campaigns(fetch_campaigns(
         os.environ.get("CAMPAIGNS_CSV", "").strip() or "campaigns.csv"))
     if omni_key:
-        # Keyed on (Date, Campaign) and merged, so the pre-migration Klaviyo
-        # sends seeded into this file survive: Omnisend cannot know about them.
+        # Keyed on the campaign ID and merged, so the pre-migration Klaviyo
+        # sends seeded into this file survive (they carry synthetic
+        # klaviyo-<date> IDs; Omnisend cannot know about them). Keying on
+        # (Date, Campaign) as this once did meant renaming a campaign in
+        # Omnisend, or the send date moving by a day, silently produced a
+        # second row rather than updating the first.
         write_rows(EMAIL_PATH, fetch_omnisend_email_campaigns(omni_key),
-                   ("Date", "Campaign"), EMAIL_COLUMNS, "Email campaigns")
+                   ("ID",), EMAIL_COLUMNS, "Email campaigns",
+                   sort_fields=("Date", "Campaign"))
 
     leadgen = fetch_leadgen(os.environ.get("LEADGEN_CSV", "").strip() or "leadgen.csv")
     if leadgen:

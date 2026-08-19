@@ -271,8 +271,9 @@
   <div class="section-title">Email — opens are the leading indicator</div>
   <div class="card">
     <h3>Campaign performance — full history <span class="tag">live from Omnisend</span></h3>
-    <div class="hint">Every send, pulled from Omnisend on each refresh, so a new campaign appears on its own and the numbers keep updating as opens and clicks land. <b style="color:#a06bff">Klaviyo</b> through early July is seeded history, frozen at migration; <b style="color:#2dd4bf">Omnisend</b> from mid-July onward is live. Bars show open rate, and this table is <i>not</i> limited by the date picker above. Klaviyo revenue is placed-order attribution and Omnisend uses its own model, so cross-platform totals are directional rather than one methodology.</div>
+    <div class="hint">Every send, pulled from Omnisend on each refresh, so a new campaign appears on its own and the numbers keep updating as opens and clicks land. <b style="color:#a06bff">Klaviyo</b> through early July is seeded history, frozen at migration; <b style="color:#2dd4bf">Omnisend</b> from mid-July onward is live. Bars show open rate, and this table is <i>not</i> limited by the date picker above. Klaviyo revenue is placed-order attribution and Omnisend uses its own model, so cross-platform totals are directional rather than one methodology. Rows come from Omnisend's <b>analytics</b> report, not its campaign list, so a campaign <b>deleted</b> in Omnisend keeps its row and keeps updating; the campaign list is only asked for subject lines. Open and click rates are computed here as unique openers ÷ sent, which is what the Omnisend UI shows.</div>
     <table id="email-campaigns"></table>
+    <div id="email-unsubs" class="notes"></div>
   </div>
 
   <!-- ===================== ORGANIC SEARCH ===================== -->
@@ -1708,13 +1709,23 @@ function renderQuizCohort(){
 }
 
 /* ---------- EMAIL CAMPAIGNS ----------
-   Rendered from email-campaigns.json, written by collect.py from Omnisend.
-   This table used to be a hardcoded array, which meant every new send was
-   invisible until someone remembered to retype it, and the numbers froze at
-   whatever they were the day they were pasted. Open and click rates keep
-   climbing for days after a send, so a frozen table is not just incomplete,
-   it understates. The three Klaviyo sends predate the migration and are
-   seeded in the JSON, because no Omnisend endpoint can return them. */
+   Rendered from email-campaigns.json, written by collect.py from Omnisend's
+   ANALYTICS api. This table used to be a hardcoded array, which meant every
+   new send was invisible until someone remembered to retype it, and the
+   numbers froze at whatever they were the day they were pasted. Open and
+   click rates keep climbing for days after a send, so a frozen table is not
+   just incomplete, it understates.
+
+   It then froze a second time for a subtler reason: the rows were listed
+   from /api/campaigns, which is a mutable list. A campaign deleted in
+   Omnisend on 18 Aug 2026 disappeared from that list, so the collector
+   stopped refreshing it while the merge kept the last snapshot it had, taken
+   2 hours after the send: 27.5% open and $330 against a real 68% and $988.
+   Analytics is an append-only store that keeps reporting deleted
+   campaigns, so it is the row list now and /api/campaigns only supplies
+   subject lines. Two of the ten Omnisend sends here are already deleted.
+   The three Klaviyo sends predate the migration and are seeded in the JSON,
+   because no Omnisend endpoint can return them. */
 var EMAIL_DATA = [];
 function renderEmail(){
   const host=document.getElementById('email-campaigns');
@@ -1726,7 +1737,8 @@ function renderEmail(){
   // A near-zero open rate means the send broke, not that the list went cold.
   const LOW=0.20;
   let h=`<tr><th>Campaign</th><th>Platform</th><th>Sent</th><th>Open rate</th>`
-       +`<th>Click rate</th><th>Orders</th><th>Attributed rev</th><th>Rev / email</th></tr>`;
+       +`<th>Click rate</th><th>Orders</th><th>Attributed rev</th><th>Rev / email</th>`
+       +`<th>Unsub</th></tr>`;
   rows.forEach(c=>{
     const sent=+c.Sent||0, open=+c['Open rate']||0, rev=+c.Revenue||0;
     const low=open<LOW, top=c===best;
@@ -1738,18 +1750,60 @@ function renderEmail(){
       <td><span class="orbar" style="width:${Math.round(open*120)}px;background:${low?'#ff6b6b':'#34d39a'}"></span><b style="color:${low?'#ff6b6b':'#e8eef5'}">${pct(open,1)}</b></td>
       <td>${pct(+c['Click rate']||0,1)}</td><td>${fmt(+c.Orders||0)}</td>
       <td class="${top?'best':''}"><b>${money(rev,0)}</b></td>
-      <td>${money(sent?rev/sent:0,2)}</td></tr>`;
+      <td>${money(sent?rev/sent:0,2)}</td>
+      <td>${c.Unsubs===''||c.Unsubs==null?'<span class="src">—</span>'
+        :`${fmt(+c.Unsubs||0)} <span class="src">${pct(sent?(+c.Unsubs||0)/sent:0,2)}</span>`}</td></tr>`;
   });
   const sum=a=>({s:a.reduce((x,y)=>x+(+y.Sent||0),0),r:a.reduce((x,y)=>x+(+y.Revenue||0),0),
-                 o:a.reduce((x,y)=>x+(+y.Orders||0),0),n:a.length});
-  const totRow=(lbl,x)=>`<tr style="border-top:1px solid #26374b;color:var(--muted)"><td><b>${lbl} (${x.n})</b></td><td></td><td>${fmt(x.s)}</td><td></td><td></td><td><b>${fmt(x.o)}</b></td><td><b>${money(x.r,0)}</b></td><td></td></tr>`;
+                 o:a.reduce((x,y)=>x+(+y.Orders||0),0),
+                 u:a.reduce((x,y)=>x+(y.Unsubs===''||y.Unsubs==null?0:+y.Unsubs||0),0),
+                 hasU:a.some(y=>y.Unsubs!==''&&y.Unsubs!=null),n:a.length});
+  const unsubCell=x=>x.hasU?`<b>${fmt(x.u)}</b>`:'<span class="src">—</span>';
+  const totRow=(lbl,x)=>`<tr style="border-top:1px solid #26374b;color:var(--muted)"><td><b>${lbl} (${x.n})</b></td><td></td><td>${fmt(x.s)}</td><td></td><td></td><td><b>${fmt(x.o)}</b></td><td><b>${money(x.r,0)}</b></td><td></td><td>${unsubCell(x)}</td></tr>`;
   ['Klaviyo','Omnisend'].forEach(pf=>{
     const g=rows.filter(r=>r.Platform===pf);
     if(g.length) h+=totRow(pf+' subtotal',sum(g));
   });
   const T=sum(rows);
-  h+=`<tr style="border-top:2px solid #26374b"><td><b>All email (${T.n} sends)</b></td><td></td><td><b>${fmt(T.s)}</b></td><td></td><td></td><td><b>${fmt(T.o)}</b></td><td><b style="color:var(--up)">${money(T.r,0)}</b></td><td></td></tr>`;
+  h+=`<tr style="border-top:2px solid #26374b"><td><b>All email (${T.n} sends)</b></td><td></td><td><b>${fmt(T.s)}</b></td><td></td><td></td><td><b>${fmt(T.o)}</b></td><td><b style="color:var(--up)">${money(T.r,0)}</b></td><td></td><td>${unsubCell(T)}</td></tr>`;
   host.innerHTML=h;
+  paintUnsubNote(rows);
+}
+
+/* Cumulative unsubscribes. The table shows them per send; the number that
+   sets a budget is what they add up to. Annualising the observed per-send
+   rate against the live list size turns "39 people" into the case for
+   spending on list growth, which is the only form the argument wins in. */
+function paintUnsubNote(rows){
+  const host=document.getElementById('email-unsubs');
+  if(!host) return;
+  const cut=new Date(); cut.setDate(cut.getDate()-90);
+  const win=rows.filter(r=>r.Unsubs!==''&&r.Unsubs!=null&&parseD(r.Date)>=cut);
+  if(!win.length){ host.innerHTML=''; return; }
+  const u=win.reduce((a,b)=>a+(+b.Unsubs||0),0);
+  // Full-list sends only. A 3-recipient catch-up would drag the rate around.
+  const full=win.filter(r=>(+r.Sent||0)>=1000);
+  const rate=full.reduce((a,b)=>a+(+b.Sent||0),0)
+    ? full.reduce((a,b)=>a+(+b.Unsubs||0),0)/full.reduce((a,b)=>a+(+b.Sent||0),0) : 0;
+  // DAILY_DATA is populated before renderEmail runs in the boot chain. Read it
+  // lexically, NOT as window.DAILY_DATA: it is a page-scope `var`, which is a
+  // window property in the browser but not under the selftest's eval(), so the
+  // window form reads undefined there and the figure silently falls back to
+  // average send size instead of the real list. Fall back only if the column
+  // is genuinely unfilled.
+  let list=0;
+  for(const r of (DAILY_DATA||[])){
+    const v=+r['Subscriber list size']; if(v) list=v;
+  }
+  const avgSend=full.length?full.reduce((a,b)=>a+(+b.Sent||0),0)/full.length:0;
+  const perYear=Math.round(rate*(list||avgSend)*52);
+  host.innerHTML='<b>'+fmt(u)+' unsubscribes</b> across '+win.length+' send'
+    +(win.length===1?'':'s')+' in the last 90 days, averaging <b>'+pct(rate,2)
+    +'</b> of the list per send. On a weekly cadence that is roughly <b>'
+    +fmt(perYear)+' contacts a year</b>'+(list?' off a mailable list of '+fmt(list):'')
+    +'. It is the running cost of sending, it does not appear in any revenue '
+    +'line, and it is the strongest argument on this page for spending on list '
+    +'growth: replacing it is the floor, not the target.';
 }
 
 /* ---------- FOOTNOTES ---------- */

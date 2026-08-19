@@ -1,6 +1,7 @@
 [
  {
   "Date": "2026-06-17",
+  "ID": "klaviyo-2026-06-17",
   "Platform": "Klaviyo",
   "Campaign": "Newsletter June - New Owner Intro",
   "Subject": "",
@@ -8,10 +9,12 @@
   "Open rate": 0.5471,
   "Click rate": 0.0572,
   "Orders": 14,
-  "Revenue": 1280.75
+  "Revenue": 1280.75,
+  "Unsubs": ""
  },
  {
   "Date": "2026-06-29",
+  "ID": "klaviyo-2026-06-29",
   "Platform": "Klaviyo",
   "Campaign": "Newsletter June - 2nd letter",
   "Subject": "",
@@ -19,10 +22,12 @@
   "Open rate": 0.56,
   "Click rate": 0.0376,
   "Orders": 15,
-  "Revenue": 1277.8
+  "Revenue": 1277.8,
+  "Unsubs": ""
  },
  {
   "Date": "2026-07-07",
+  "ID": "klaviyo-2026-07-07",
   "Platform": "Klaviyo",
   "Campaign": "Newsletter July - Thames & Hudson launch",
   "Subject": "",
@@ -30,10 +35,12 @@
   "Open rate": 0.5114,
   "Click rate": 0.0355,
   "Orders": 15,
-  "Revenue": 1671.05
+  "Revenue": 1671.05,
+  "Unsubs": ""
  },
  {
   "Date": "2026-07-13",
+  "ID": "6a5491a4734a8e6dca32892b",
   "Platform": "Omnisend",
   "Campaign": "Warm-up Day 1 - Clementoni + Dinner Date restock",
   "Subject": "Nearly gone in 48 hours, plus a new arrival from Italy",
@@ -41,10 +48,12 @@
   "Open rate": 0.84985,
   "Click rate": 0.06507,
   "Orders": 1,
-  "Revenue": 124.8
+  "Revenue": 124.8,
+  "Unsubs": 3
  },
  {
   "Date": "2026-07-14",
+  "ID": "6a5499009b5c1a0ab1bae19b",
   "Platform": "Omnisend",
   "Campaign": "Warm-up Day 2 - Clementoni + Dinner Date restock",
   "Subject": "Nearly gone in 48 hours, plus a new arrival from Italy",
@@ -52,10 +61,12 @@
   "Open rate": 0.85243,
   "Click rate": 0.04802,
   "Orders": 6,
-  "Revenue": 367.19
+  "Revenue": 367.19,
+  "Unsubs": 7
  },
  {
   "Date": "2026-07-15",
+  "ID": "6a56e637d3188f832bdae1a4",
   "Platform": "Omnisend",
   "Campaign": "Warm-up Day 3 - Clementoni + Dinner Date restock (v2)",
   "Subject": "Nearly gone in 48 hours, plus a new arrival from Italy",
@@ -63,10 +74,12 @@
   "Open rate": 0.6477,
   "Click rate": 0.05753,
   "Orders": 4,
-  "Revenue": 233.25
+  "Revenue": 233.25,
+  "Unsubs": 23
  },
  {
   "Date": "2026-07-16",
+  "ID": "6a56e639d3188f832bdae1a5",
   "Platform": "Omnisend",
   "Campaign": "Warm-up Day 4 - Clementoni + Dinner Date restock (v2)",
   "Subject": "Nearly gone in 48 hours, plus a new arrival from Italy",
@@ -74,10 +87,12 @@
   "Open rate": 0.07124,
   "Click rate": 0.01449,
   "Orders": 2,
-  "Revenue": 134.78
+  "Revenue": 134.78,
+  "Unsubs": 19
  },
  {
   "Date": "2026-07-21",
+  "ID": "6a5f08b6f7a85ae8022757f0",
   "Platform": "Omnisend",
   "Campaign": "Eurographics + Puzzle Journal (Jul 2026)",
   "Subject": "The quiet Canadian brand you keep buying",
@@ -85,10 +100,12 @@
   "Open rate": 0.69329,
   "Click rate": 0.04798,
   "Orders": 8,
-  "Revenue": 901.11
+  "Revenue": 901.11,
+  "Unsubs": 42
  },
  {
   "Date": "2026-07-28",
+  "ID": "6a680db064c63678baec81d0",
   "Platform": "Omnisend",
   "Campaign": "Heye + Dinner With restock (Jul 2026)",
   "Subject": "Meet Heye, the German brand that made puzzles funny",
@@ -96,10 +113,12 @@
   "Open rate": 0.70179,
   "Click rate": 0.05218,
   "Orders": 9,
-  "Revenue": 1043.87
+  "Revenue": 1043.87,
+  "Unsubs": 39
  },
  {
   "Date": "2026-08-04",
+  "ID": "6a7141ba5170d8c6165fe7ec",
   "Platform": "Omnisend",
   "Campaign": "New Arrivals - Cloudberries + Stephen Wilkes (Aug 2026)",
   "Subject": "Two new brands, and a lot of new puzzles",
@@ -107,10 +126,12 @@
   "Open rate": 0.73332,
   "Click rate": 0.06469,
   "Orders": 11,
-  "Revenue": 1034.02
+  "Revenue": 1034.02,
+  "Unsubs": 41
  },
  {
   "Date": "2026-08-11",
+  "ID": "6a7a7f5098ac11a8901aff43",
   "Platform": "Omnisend",
   "Campaign": "New Arrivals + First Accessories + Buying Habits (Aug 2026)",
   "Subject": "A first for us, and a lot of new Ravensburger",
@@ -118,10 +139,12 @@
   "Open rate": 0.72289,
   "Click rate": 0.09008,
   "Orders": 26,
-  "Revenue": 2885.87
+  "Revenue": 2885.87,
+  "Unsubs": 45
  },
  {
   "Date": "2026-08-11",
+  "ID": "6a7a7f2a98ac11a8901aff3e",
   "Platform": "Omnisend",
   "Campaign": "Welcome catch-up - Aug 2026 flow gap",
   "Subject": "Welcome, and here is your 10%",
@@ -129,17 +152,20 @@
   "Open rate": 0.33333,
   "Click rate": 0.0,
   "Orders": 0,
-  "Revenue": 0
+  "Revenue": 0,
+  "Unsubs": 0
  },
  {
   "Date": "2026-08-18",
+  "ID": "6a83cee2274fb891227a8210",
   "Platform": "Omnisend",
   "Campaign": "QPuzzles Australian launch + Ravensburger + Christmas (Aug 2026)",
   "Subject": "Australian made, and the shelf is finally full again",
   "Sent": 7812,
-  "Open rate": 0.27471,
-  "Click rate": 0.02202,
-  "Orders": 4,
-  "Revenue": 330.1
+  "Open rate": 0.68011,
+  "Click rate": 0.05287,
+  "Orders": 12,
+  "Revenue": 988.53,
+  "Unsubs": 51
  }
 ]

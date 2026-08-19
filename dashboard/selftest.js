@@ -214,5 +214,67 @@ check('not-ranking is excluded, not scored zero', () => {
   return dates.length + ' readings, ' + dates[0] + ' to ' + dates[dates.length - 1];
 });
 
+// The email table renders, and every column lines up. The unsub column was
+// added to a table whose subtotal rows spell their cells out one by one, so a
+// header and a body that disagree is a live risk here, not a theoretical one.
+check('email campaign table renders', () => {
+  let out = '';
+  const host = el();
+  Object.defineProperty(host, 'innerHTML', { get: () => out, set: v => { out = v; } });
+  const realGet = document.getElementById;
+  document.getElementById = id => (id === 'email-campaigns' ? host : el());
+  try { renderEmail(); } finally { document.getElementById = realGet; }
+  if (!out) throw new Error('rendered nothing');
+  ['NaN', 'undefined', 'Invalid Date', '$Infinity'].forEach(bad => {
+    if (out.includes(bad)) throw new Error('renders ' + bad);
+  });
+  const cols = (out.match(/<th\b/g) || []).length;
+  const trs = out.split('<tr').slice(2);   // slice(0) is pre-table, (1) is the header
+  trs.forEach((tr, i) => {
+    const n = (tr.match(/<td\b/g) || []).length;
+    if (n !== cols) throw new Error('row ' + (i + 1) + ' has ' + n + ' cells, header has ' + cols);
+  });
+  return trs.length + ' rows x ' + cols + ' cols';
+});
+
+// THE REGRESSION THIS FILE EXISTS FOR, second instance. On 2026-08-18 a
+// campaign was deleted from Omnisend, vanished from /api/campaigns, and its
+// row stopped refreshing while the merge kept serving the snapshot taken two
+// hours after the send: 27.5% open and $330 against a real 68% and $988. It
+// looked live and was not. Rows are keyed on campaign ID now and sourced from
+// the analytics report, which retains deleted campaigns — so a duplicate ID,
+// or a row with no ID at all, means the merge key has been weakened and the
+// same freeze is available again.
+check('every campaign row has a unique ID', () => {
+  if (!EMAIL_DATA || !EMAIL_DATA.length) throw new Error('no feed');
+  const missing = EMAIL_DATA.filter(r => !r.ID);
+  if (missing.length)
+    throw new Error(missing.length + ' row(s) with no ID, e.g. ' + missing[0].Campaign);
+  const ids = EMAIL_DATA.map(r => r.ID);
+  const dupes = ids.filter((v, i) => ids.indexOf(v) !== i);
+  if (dupes.length) throw new Error('duplicate ID: ' + dupes[0]);
+  return ids.length + ' distinct';
+});
+
+// Open rate is unique openers over sent, which is what the Omnisend UI shows.
+// Reading the API's own openRate while bucketing by day returned roughly a
+// third of the truth, and summing per-day unique counts returns more than the
+// list: the 11 Aug send reads 87.7% that way against a true 72.3%. Anything
+// over 100% means someone has gone back to summing buckets.
+check('email rates are plausible fractions', () => {
+  let worst = 0;
+  EMAIL_DATA.forEach(r => {
+    ['Open rate', 'Click rate'].forEach(k => {
+      const v = +r[k];
+      if (!(v >= 0 && v <= 1))
+        throw new Error(r.Campaign + ' has ' + k + ' = ' + r[k] + ' (want a 0-1 fraction)');
+    });
+    if ((+r['Click rate'] || 0) > (+r['Open rate'] || 0) + 1e-9)
+      throw new Error(r.Campaign + ' clicks more than it opens');
+    worst = Math.max(worst, +r['Open rate'] || 0);
+  });
+  return EMAIL_DATA.length + ' sends, top open rate ' + (worst * 100).toFixed(1) + '%';
+});
+
 console.log(failures ? '\nFAILED (' + failures + ')' : '\nAll passed');
 process.exit(failures ? 1 : 0);
