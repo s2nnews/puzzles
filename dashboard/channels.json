@@ -2212,13 +2212,6 @@
   "Revenue": 0
  },
  {
-  "Date": "2026-08-19",
-  "Channel": "Unassigned",
-  "Sessions": 49.45,
-  "Purchases": 271,
-  "Revenue": 1
- },
- {
   "Date": "2026-08-20",
   "Channel": "AI Assistant",
   "Sessions": 1,
@@ -2228,50 +2221,57 @@
  {
   "Date": "2026-08-20",
   "Channel": "Cross-network",
-  "Sessions": 11,
+  "Sessions": 19,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-20",
   "Channel": "Direct",
-  "Sessions": 26,
+  "Sessions": 35,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-20",
   "Channel": "Email",
-  "Sessions": 12,
+  "Sessions": 25,
   "Purchases": 1,
   "Revenue": 32.99
  },
  {
   "Date": "2026-08-20",
   "Channel": "Organic Search",
-  "Sessions": 5,
+  "Sessions": 10,
+  "Purchases": 0,
+  "Revenue": 0
+ },
+ {
+  "Date": "2026-08-20",
+  "Channel": "Organic Social",
+  "Sessions": 1,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-20",
   "Channel": "Paid Search",
-  "Sessions": 18,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 31,
+  "Purchases": 1,
+  "Revenue": 119.97
  },
  {
   "Date": "2026-08-20",
   "Channel": "Paid Social",
-  "Sessions": 11,
+  "Sessions": 23,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-20",
   "Channel": "Unassigned",
-  "Sessions": 69,
-  "Purchases": 0,
-  "Revenue": 0
+  "Sessions": 109,
+  "Purchases": 2,
+  "Revenue": 97.94
  }
 ]
