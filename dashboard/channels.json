@@ -2228,21 +2228,21 @@
  {
   "Date": "2026-08-20",
   "Channel": "Direct",
-  "Sessions": 55,
+  "Sessions": 61,
   "Purchases": 1,
   "Revenue": 71.18
  },
  {
   "Date": "2026-08-20",
   "Channel": "Email",
-  "Sessions": 34,
+  "Sessions": 36,
   "Purchases": 1,
   "Revenue": 32.99
  },
  {
   "Date": "2026-08-20",
   "Channel": "Organic Search",
-  "Sessions": 21,
+  "Sessions": 25,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -2256,14 +2256,14 @@
  {
   "Date": "2026-08-20",
   "Channel": "Paid Search",
-  "Sessions": 55,
+  "Sessions": 57,
   "Purchases": 1,
   "Revenue": 119.97
  },
  {
   "Date": "2026-08-20",
   "Channel": "Paid Social",
-  "Sessions": 45,
+  "Sessions": 52,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -2277,7 +2277,7 @@
  {
   "Date": "2026-08-20",
   "Channel": "Unassigned",
-  "Sessions": 162,
+  "Sessions": 173,
   "Purchases": 2,
   "Revenue": 97.94
  }
