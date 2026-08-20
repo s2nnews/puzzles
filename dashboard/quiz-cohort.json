@@ -1,11 +1,11 @@
 {
  "cohorts": {
   "meta-paid": {
-   "leads": 148,
+   "leads": 150,
    "buyers": 3,
    "orders": 3,
    "revenue": 349.96,
-   "revenuePerLead": 2.36,
+   "revenuePerLead": 2.33,
    "medianDaysToFirstOrder": 0
   },
   "organic": {
@@ -192,7 +192,12 @@
    "Date": "2026-08-20",
    "Source": "meta-paid",
    "Leads": 10
+  },
+  {
+   "Date": "2026-08-21",
+   "Source": "meta-paid",
+   "Leads": 2
   }
  ],
- "generatedAt": "2026-08-20T22:41:18+1000"
+ "generatedAt": "2026-08-21T08:37:40+1000"
 }
