@@ -2221,7 +2221,7 @@
  {
   "Date": "2026-08-20",
   "Channel": "Cross-network",
-  "Sessions": 32,
+  "Sessions": 35,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -2263,7 +2263,7 @@
  {
   "Date": "2026-08-20",
   "Channel": "Paid Social",
-  "Sessions": 52,
+  "Sessions": 54,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -2277,7 +2277,7 @@
  {
   "Date": "2026-08-20",
   "Channel": "Unassigned",
-  "Sessions": 173,
+  "Sessions": 174,
   "Purchases": 2,
   "Revenue": 97.94
  }
