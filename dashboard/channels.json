@@ -2284,28 +2284,28 @@
  {
   "Date": "2026-08-20",
   "Channel": "Unassigned",
-  "Sessions": 2,
+  "Sessions": 97.94,
   "Purchases": 174,
-  "Revenue": 97.94
+  "Revenue": 2
  },
  {
   "Date": "2026-08-21",
   "Channel": "AI Assistant",
-  "Sessions": 2,
+  "Sessions": 3,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-21",
   "Channel": "Cross-network",
-  "Sessions": 20,
+  "Sessions": 21,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-21",
   "Channel": "Direct",
-  "Sessions": 74,
+  "Sessions": 77,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -2319,7 +2319,7 @@
  {
   "Date": "2026-08-21",
   "Channel": "Organic Search",
-  "Sessions": 31,
+  "Sessions": 32,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -2340,7 +2340,7 @@
  {
   "Date": "2026-08-21",
   "Channel": "Paid Social",
-  "Sessions": 81,
+  "Sessions": 89,
   "Purchases": 0,
   "Revenue": 0
  },
