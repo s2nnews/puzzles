@@ -2284,9 +2284,9 @@
  {
   "Date": "2026-08-20",
   "Channel": "Unassigned",
-  "Sessions": 174,
-  "Purchases": 97.94,
-  "Revenue": 2
+  "Sessions": 2,
+  "Purchases": 174,
+  "Revenue": 97.94
  },
  {
   "Date": "2026-08-21",
@@ -2305,28 +2305,28 @@
  {
   "Date": "2026-08-21",
   "Channel": "Direct",
-  "Sessions": 70,
+  "Sessions": 74,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-21",
   "Channel": "Email",
-  "Sessions": 19,
+  "Sessions": 21,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-21",
   "Channel": "Organic Search",
-  "Sessions": 27,
+  "Sessions": 31,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-21",
   "Channel": "Paid Search",
-  "Sessions": 68,
+  "Sessions": 71,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -2340,14 +2340,14 @@
  {
   "Date": "2026-08-21",
   "Channel": "Paid Social",
-  "Sessions": 73,
+  "Sessions": 81,
   "Purchases": 0,
   "Revenue": 0
  },
  {
   "Date": "2026-08-21",
   "Channel": "Unassigned",
-  "Sessions": 176,
+  "Sessions": 190,
   "Purchases": 0,
   "Revenue": 0
  }
