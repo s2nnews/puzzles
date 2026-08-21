@@ -211,38 +211,38 @@
  },
  {
   "Date": "2026-08-13",
-  "Clicks": 42,
-  "Impressions": 2064,
-  "Position": 9.93,
-  "CTR": 0.02035
+  "Clicks": 44,
+  "Impressions": 2070,
+  "Position": 9.88,
+  "CTR": 0.02126
  },
  {
   "Date": "2026-08-14",
-  "Clicks": 64,
-  "Impressions": 2281,
-  "Position": 9.23,
-  "CTR": 0.02806
+  "Clicks": 65,
+  "Impressions": 2292,
+  "Position": 9.12,
+  "CTR": 0.02836
  },
  {
   "Date": "2026-08-15",
-  "Clicks": 44,
-  "Impressions": 2385,
-  "Position": 10.51,
-  "CTR": 0.01845
+  "Clicks": 45,
+  "Impressions": 2404,
+  "Position": 10.38,
+  "CTR": 0.01872
  },
  {
   "Date": "2026-08-16",
   "Clicks": 53,
-  "Impressions": 2458,
-  "Position": 9.35,
-  "CTR": 0.02156
+  "Impressions": 2471,
+  "Position": 9.24,
+  "CTR": 0.02145
  },
  {
   "Date": "2026-08-17",
-  "Clicks": 44,
-  "Impressions": 2689,
-  "Position": 9.83,
-  "CTR": 0.01636
+  "Clicks": 46,
+  "Impressions": 2700,
+  "Position": 9.74,
+  "CTR": 0.01704
  },
  {
   "Date": "2026-08-18",
@@ -250,5 +250,12 @@
   "Impressions": 2408,
   "Position": 10.21,
   "CTR": 0.01827
+ },
+ {
+  "Date": "2026-08-19",
+  "Clicks": 30,
+  "Impressions": 2214,
+  "Position": 9.25,
+  "CTR": 0.01355
  }
 ]
