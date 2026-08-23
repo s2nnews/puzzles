@@ -120,6 +120,36 @@
 </style>
 </head>
 <body>
+
+<!-- Passphrase gate. Covers the page until dashboard/feeds.enc decrypts.
+     Not a login: there is no account and nothing is checked against a stored
+     value. What you type is run through PBKDF2 and used as the AES-GCM key,
+     so a wrong passphrase fails to decrypt rather than being "rejected". -->
+<div id="pp-gate" style="display:none;position:fixed;inset:0;z-index:9999;
+     background:linear-gradient(180deg,#0d141d,#0f1720);align-items:center;justify-content:center">
+  <div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;
+              padding:26px 28px;width:min(420px,92vw);box-shadow:0 18px 60px rgba(0,0,0,.5)">
+    <div style="font-size:17px;font-weight:600;margin-bottom:6px">Premium Puzzles</div>
+    <div style="color:var(--muted);font-size:13px;margin-bottom:18px">
+      Marketing dashboard. Enter the passphrase to decrypt.
+    </div>
+    <input id="pp-gate-pw" type="password" autocomplete="current-password"
+           placeholder="Passphrase"
+           style="width:100%;box-sizing:border-box;background:var(--panel2);color:var(--ink);
+                  border:1px solid var(--line);border-radius:9px;padding:11px 12px;
+                  font-size:14px;font-family:inherit;outline:none">
+    <button id="pp-gate-go"
+            style="width:100%;margin-top:11px;background:var(--accent);color:#06121f;
+                   border:0;border-radius:9px;padding:11px 12px;font-size:14px;
+                   font-weight:600;font-family:inherit;cursor:pointer">Unlock</button>
+    <div id="pp-gate-err" style="min-height:17px;margin-top:11px;font-size:12px;
+                                 color:var(--warn)"></div>
+    <div style="color:var(--faint);font-size:11px;margin-top:4px;line-height:1.5">
+      Held for this browser tab only. Close the tab and it is gone.
+    </div>
+  </div>
+</div>
+
 <div class="wrap">
   <header>
     <div>
@@ -954,17 +984,78 @@ function initPicker(){
   preset(30);
 }
 
-/* ---------- BOOT: load the feeds written by collect.py ----------
-   campaigns.json is optional — a missing or broken file leaves the campaign
-   table empty rather than taking the whole dashboard down with it. */
+/* ---------- BOOT: unlock, then load the feeds written by collect.py ----------
+   This repo is PUBLIC, so the feeds are committed encrypted (dashboard/encrypt.py)
+   and decrypted here in the browser. The passphrase is never committed, never
+   sent anywhere, and never stored beyond this tab's session.
+
+   A password CHECK in JavaScript would be worthless: data.json was readable at
+   three URLs (Pages, raw.githubusercontent, jsDelivr) that no page-level login
+   can guard. The protection has to be in the bytes, which is why this decrypts
+   rather than compares.
+
+   Every feed but data.json is optional — a missing or broken one leaves its
+   panel empty rather than taking the whole dashboard down. */
+async function unlockFeeds(){
+  const blob=await fetch('./feeds.enc',{cache:'no-store'}).then(r=>{
+    if(!r.ok) throw new Error('feeds.enc missing ('+r.status+')');
+    return r.json();
+  });
+  const b=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+  const salt=b(blob.salt), iv=b(blob.iv), ct=b(blob.ct);
+  const gate=document.getElementById('pp-gate');
+  const err=document.getElementById('pp-gate-err');
+  const input=document.getElementById('pp-gate-pw');
+
+  async function tryPass(pass){
+    const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(pass),
+                  'PBKDF2',false,['deriveKey']);
+    const key=await crypto.subtle.deriveKey(
+      {name:'PBKDF2',salt,iterations:blob.iter,hash:'SHA-256'},
+      base,{name:'AES-GCM',length:256},false,['decrypt']);
+    // GCM authenticates, so a wrong passphrase throws here rather than
+    // returning plausible garbage. That is what makes this a real gate.
+    const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,ct);
+    return JSON.parse(new TextDecoder().decode(pt));
+  }
+
+  const saved=sessionStorage.getItem('pp-dash-pw');
+  if(saved){
+    try{ return await tryPass(saved); }
+    catch(e){ sessionStorage.removeItem('pp-dash-pw'); }
+  }
+
+  gate.style.display='flex';
+  input.focus();
+  return new Promise(resolve=>{
+    const submit=async()=>{
+      const pass=input.value;
+      if(!pass) return;
+      err.textContent='decrypting…'; err.style.color='var(--faint)';
+      try{
+        const feeds=await tryPass(pass);
+        try{ sessionStorage.setItem('pp-dash-pw',pass); }catch(e){}
+        gate.style.display='none';
+        resolve(feeds);
+      }catch(e){
+        err.textContent='Wrong passphrase.'; err.style.color='var(--warn)';
+        input.value=''; input.focus();
+      }
+    };
+    document.getElementById('pp-gate-go').addEventListener('click',submit);
+    input.addEventListener('keydown',e=>{ if(e.key==='Enter') submit(); });
+  });
+}
+
 (function(){
   const live=document.getElementById('dr-live');
   live.innerHTML='<span class="dot" style="background:var(--warn)"></span>loading…';
-  const grab=u=>fetch(u,{cache:'no-store'}).then(r=>r.json()).catch(()=>null);
-  Promise.all([grab('./data.json'), grab('./campaigns.json'), grab('./channels.json'),
-               grab('./email-campaigns.json'), grab('./quiz-cohort.json'),
-               grab('./leadgen.json'), grab('./search-console.json'),
-               grab('./rank-tracking.json')])
+  unlockFeeds().then(feeds=>{
+  const grab=n=>{ const v=feeds[n]; return v===undefined?null:v; };
+  return Promise.resolve([grab('data.json'), grab('campaigns.json'), grab('channels.json'),
+               grab('email-campaigns.json'), grab('quiz-cohort.json'),
+               grab('leadgen.json'), grab('search-console.json'),
+               grab('rank-tracking.json')])
    .then(([rows,camps,chans,mail,quiz,lg,gsc,ranks])=>{
     if(Array.isArray(rows) && rows.length) DAILY_DATA=rows;
     if(Array.isArray(camps)) CAMPAIGN_DATA=camps;
@@ -980,6 +1071,14 @@ function initPicker(){
     renderSearchConsole();  // its own full history, so not tied to the picker
     renderRanks();          // weekly readings, likewise its own series
     initPicker();
+  });
+  }).catch(e=>{
+    // Reaching here means the blob itself is unreachable or malformed, not a
+    // wrong passphrase (that is caught and re-prompted inside unlockFeeds).
+    live.innerHTML='<span class="dot"></span>feed locked';
+    const err=document.getElementById('pp-gate-err');
+    if(err){ err.textContent=String(e.message||e); err.style.color='var(--warn)'; }
+    console.error('dashboard boot failed:',e);
   });
 })();
 

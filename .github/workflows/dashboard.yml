@@ -69,19 +69,24 @@ jobs:
           OMNISEND_SEGMENT_ID: ${{ vars.OMNISEND_SEGMENT_ID }}
         run: python dashboard/collect.py
 
+      # This repo is PUBLIC. The feeds hold daily Shopify trading, so what gets
+      # committed is one encrypted blob, never the plaintext. See
+      # dashboard/encrypt.py for why a login on the page would not have worked.
+      - name: Encrypt the feeds
+        env:
+          DASHBOARD_PASSPHRASE: ${{ secrets.DASHBOARD_PASSPHRASE }}
+        run: python dashboard/encrypt.py
+
       - name: Commit the feeds if they changed
         run: |
-          # EVERY artifact collect.py writes must be listed here. It wrote six
-          # and this line used to name three, so email-campaigns.json,
-          # quiz-cohort.json and leadgen.json were rebuilt fresh on the runner
-          # every two hours and then thrown away with the container. The
-          # published page kept serving whatever a human last committed, which
-          # is why the lead-gen and quiz panels read as hand-maintained: the
-          # collector was doing the work, the workflow was discarding it.
-          git add dashboard/data.json dashboard/campaigns.json \
-                  dashboard/channels.json dashboard/email-campaigns.json \
-                  dashboard/quiz-cohort.json dashboard/leadgen.json \
-                  dashboard/search-console.json dashboard/rank-tracking.json
+          # ONE file, and it is the encrypted bundle of all eight feeds. The
+          # plaintext collect.py writes is gitignored and stays on the runner.
+          # Adding any of it here would republish the sales figures in the clear
+          # and undo the encryption entirely, so do not "helpfully" put them back.
+          #
+          # encrypt.py exits non-zero on a malformed feed or an unset passphrase,
+          # so a bad build fails before this line rather than after it.
+          git add dashboard/feeds.enc
           if git diff --cached --quiet; then
             echo "No change in the dashboard feeds"
             exit 0

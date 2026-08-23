@@ -18,3 +18,23 @@ dashboard/.env*
 .~lock.*
 ~$*
 desktop.ini
+
+# The dashboard feeds hold daily Shopify trading, and this repo is PUBLIC.
+# Only the encrypted bundle dashboard/feeds.enc is committed; collect.py's
+# plaintext output stays local. See dashboard/encrypt.py.
+dashboard/data.json
+dashboard/campaigns.json
+dashboard/channels.json
+dashboard/email-campaigns.json
+dashboard/quiz-cohort.json
+dashboard/leadgen.json
+dashboard/search-console.json
+dashboard/rank-tracking.json
+
+# The six dashboard/*.csv files are deliberately NOT ignored. They are INPUTS,
+# not outputs: collect.py falls back to each one when its *_CSV repo secret is
+# unset, and the runner checks out a clean tree, so removing them would silently
+# break the collector. They do still carry ad spend and channel revenue, which
+# is a smaller residual exposure. The fix is to set the CAMPAIGNS_CSV,
+# CHANNELS_CSV, PORTER_CSV, LEADGEN_CSV, SEARCH_CONSOLE_CSV and RANK_TRACKING_CSV
+# secrets to their published URLs, then delete the committed fallbacks.

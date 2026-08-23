@@ -103,7 +103,9 @@ def sync() -> None:
     watching. Offline is fine — the build still runs, the push just waits."""
     print("\n=== sync ===", flush=True)
     try:
-        subprocess.run(["git", "checkout", "--", "dashboard/data.json"],
+        # dashboard/data.json is gitignored now (the Action commits only the
+        # encrypted dashboard/feeds.enc), so there is nothing to check out.
+        subprocess.run(["git", "checkout", "--", "dashboard/feeds.enc"],
                        cwd=ROOT, check=False)
         subprocess.run(["git", "pull", "--rebase", "--autostash"],
                        cwd=ROOT, check=True)
