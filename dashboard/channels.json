@@ -2417,7 +2417,7 @@
  {
   "Date": "2026-08-23",
   "Channel": "Direct",
-  "Sessions": 54,
+  "Sessions": 56,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -2445,7 +2445,7 @@
  {
   "Date": "2026-08-23",
   "Channel": "Paid Search",
-  "Sessions": 41,
+  "Sessions": 42,
   "Purchases": 0,
   "Revenue": 0
  },
@@ -2459,7 +2459,7 @@
  {
   "Date": "2026-08-23",
   "Channel": "Paid Social",
-  "Sessions": 75,
+  "Sessions": 76,
   "Purchases": 0,
   "Revenue": 0
  },
