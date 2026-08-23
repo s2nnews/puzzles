@@ -641,16 +641,6 @@
  },
  {
   "Date": "2026-08-11",
-  "Platform": "Google",
-  "Campaign": "Shopping - Puzzles - Australia",
-  "Spend": 0,
-  "Value": 0,
-  "Clicks": 12.91,
-  "Impressions": 0,
-  "Conversions": 0
- },
- {
-  "Date": "2026-08-11",
   "Platform": "Meta",
   "Campaign": "Local 6km - Eastern Suburbs - Free Local Delivery",
   "Spend": 0,
@@ -683,11 +673,11 @@
   "Date": "2026-08-11",
   "Platform": "Meta",
   "Campaign": "Shopping - Puzzles - Australia",
-  "Spend": 2464,
+  "Spend": 34,
   "Value": 0,
   "Clicks": 0,
-  "Impressions": 12.91,
-  "Conversions": 34
+  "Impressions": 0,
+  "Conversions": 0
  },
  {
   "Date": "2026-08-12",
@@ -993,20 +983,20 @@
   "Date": "2026-08-23",
   "Platform": "Google",
   "Campaign": "Search - Puzzles - Australia",
-  "Spend": 31.83,
-  "Value": 94.49,
-  "Clicks": 76,
-  "Impressions": 1001,
-  "Conversions": 1
+  "Spend": 44.27,
+  "Value": 134.48,
+  "Clicks": 106,
+  "Impressions": 1332,
+  "Conversions": 2
  },
  {
   "Date": "2026-08-23",
   "Platform": "Meta",
   "Campaign": "PP - Quiz Lead Gen - 2026-08",
-  "Spend": 21.36,
+  "Spend": 30.53,
   "Value": 0,
-  "Clicks": 156,
-  "Impressions": 1572,
+  "Clicks": 226,
+  "Impressions": 2451,
   "Conversions": 0
  }
 ]
