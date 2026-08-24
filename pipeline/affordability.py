@@ -1,4 +1,4 @@
-"""The 1000-Piece Index — a constant-basket real-price series for puzzles.
+"""The Ravensburger 1000 Index — a constant-basket real-price series for puzzles.
 
 The rest of the Index measures *demand*. This measures *price*: hold the product
 completely still for a decade, then ask whether it actually got dearer.
@@ -30,10 +30,19 @@ wage series: **did the puzzle rise faster or slower than prices in general?**
 
 CONSTRUCTION
 ------------
-Prices: Ravensburger 1000-piece titles listed continuously by a major Australian
-retailer since 2017, read from archived product pages via the Internet Archive,
-one snapshot per year. This repo is public, so the retailer is not named in it;
-set PUZZLE_PRICE_SOURCE_HOST to re-scrape.
+Prices: the RRP of Ravensburger 1000-piece titles listed continuously since 2017,
+read from archived Australian retail pages via the Internet Archive, one snapshot
+per year.
+
+The RRP is Ravensburger's own national figure, not a number the stockist sets,
+which is why reading it from a single archive is not the weakness it looks like.
+The data shows it directly: unrelated titles step to identical new prices in the
+same year (three moved 49.95 -> 52.95 together, then 52.95 -> 54.99 together),
+which is a brand-wide revision rather than one shop repricing. The discounted
+series IS the shop's own decision, and is reported separately for that reason.
+
+This repo is public, so the stockist is not named in it; set
+PUZZLE_PRICE_SOURCE_HOST to re-scrape.
 
 Index: a matched-model chain index, the construction the ABS uses for the CPI.
 For each consecutive pair of years, take every title priced in BOTH years,
@@ -379,7 +388,7 @@ def main() -> int:
     h = data["headline"]
     print(f"\nThe 1000-Piece Index, base {data['base_year']} = 100 "
           f"({data['basket_size']} titles)")
-    print(f"  puzzle list price   {h['nominal_change_pct']:+.1f}%")
+    print(f"  RRP                 {h['nominal_change_pct']:+.1f}%")
     print(f"  CPI                 {h['cpi_change_pct']:+.1f}%")
     print(f"  REAL CHANGE         {h['real_change_pct']:+.1f}%")
     print(f"  wages (WPI)         {h['wpi_change_pct']:+.1f}%  -> vs wages "
