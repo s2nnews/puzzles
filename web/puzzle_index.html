@@ -2019,7 +2019,7 @@ const AFFORD = {
   }
  ]
 };
-const BUILT_AT = "2026-08-24 08:37 UTC";
+const BUILT_AT = "2026-08-24 08:55 UTC";
 const RAW_URL = "https://raw.githubusercontent.com/s2nnews/puzzles/main/data/processed/index.json";
 
 const BRAND_COLORS = {
@@ -2378,7 +2378,7 @@ function renderAfford(A){
     "<b>$"+rows[0].nominal_price.toFixed(2)+" in "+A.base_year+" is $"+
     h.price_then_in_today_dollars.toFixed(2)+" in today's money. The same puzzle "+
     "today lists at $"+h.price_now.toFixed(2)+".</b><br>"+
-    "Puzzle list prices rose "+h.nominal_change_pct.toFixed(1)+"% over the period while "+
+    "Puzzle RRPs rose "+h.nominal_change_pct.toFixed(1)+"% over the period while "+
     "prices in general rose "+h.cpi_change_pct.toFixed(1)+"%. So in real terms a "+
     A.pieces+"-piece puzzle is <b style=\"color:"+col+"\">"+
     Math.abs(h.real_change_pct).toFixed(1)+"% "+(cheaper?"cheaper":"dearer")+
@@ -2388,7 +2388,7 @@ function renderAfford(A){
   const cards=[
     ["Real price change", (h.real_change_pct>0?"+":"")+h.real_change_pct.toFixed(1)+"%",
       "after stripping out inflation"],
-    ["Sticker price change", "+"+h.nominal_change_pct.toFixed(1)+"%",
+    ["RRP change", "+"+h.nominal_change_pct.toFixed(1)+"%",
       "CPI over the same span: +"+h.cpi_change_pct.toFixed(1)+"%"],
     ["Price per piece", h.cents_per_piece.toFixed(2)+"c",
       "from "+rows[0].cents_per_piece.toFixed(2)+"c in "+A.base_year],
