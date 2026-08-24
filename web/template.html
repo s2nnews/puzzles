@@ -44,7 +44,13 @@
   .chart-head .hint{color:var(--muted);font-size:11.5px}
   .panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;
     box-shadow:0 1px 2px rgba(22,41,74,.04)}
-  svg{display:block;width:100%;height:auto}
+  /* stroke:none is load-bearing. The dashboard is injected into the live
+     storefront DOM, and the theme sets a stroke on <svg>. stroke INHERITS in
+     SVG, so without this every child that does not set its own picks up navy:
+     the area fills get outlined along the plot floor and both edges, and the
+     text labels render smudged. Everything that wants a stroke sets one
+     explicitly, and that beats the inherited value. Do not remove. */
+  svg{display:block;width:100%;height:auto;stroke:none !important}
   .axis text{fill:var(--muted);font-size:11px}
   .axis line,.axis path{stroke:var(--line)}
   .quad{fill:var(--muted);font-size:10.5px;opacity:.6;letter-spacing:.1em;text-transform:uppercase}
@@ -72,13 +78,6 @@
   .afford .lead b{color:var(--ink);font-size:16px}
   .afford .panel{padding:10px 12px 6px}
   .gridline{stroke:var(--line);stroke-width:1}
-  /* The loader injects into the live storefront DOM rather than an iframe, so the
-     Shopify THEME stylesheet cascades onto these nodes as well as the scoped one.
-     The theme strokes every SVG rect in navy, which drew a vertical line at each
-     year across both plots and outlined the legend swatches. It looked correct
-     locally and wrong only in production. Blanket it: nothing in this section
-     gets a stroke unless we ask for one. */
-  .afford svg rect{stroke:none !important}
   .afford rect.pp-af-hit{fill:transparent}
   .ser-end{font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;fill:var(--ink)}
   .ser-key{font-size:11.5px;fill:var(--muted)}
@@ -421,6 +420,7 @@ function affordLine(svgId, rows, opts){
   opts.series.forEach((s,si)=>{
     if(s.fill){
       svg.append("path").attr("fill",s.color).attr("fill-opacity",.10)
+         .attr("stroke","none")
          .attr("d", d3.area().x(r=>x(r.year)).y0(M.t+ih).y1(r=>y(r[s.key]))(rows));
     }
     svg.append("path").datum(rows).attr("fill","none").attr("stroke",s.color)
