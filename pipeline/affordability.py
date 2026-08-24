@@ -386,7 +386,7 @@ def main() -> int:
     OUT.write_text(json.dumps(data, indent=1), encoding="utf-8")
 
     h = data["headline"]
-    print(f"\nThe 1000-Piece Index, base {data['base_year']} = 100 "
+    print(f"\nThe Ravensburger 1000 Index, base {data['base_year']} = 100 "
           f"({data['basket_size']} titles)")
     print(f"  RRP                 {h['nominal_change_pct']:+.1f}%")
     print(f"  CPI                 {h['cpi_change_pct']:+.1f}%")
