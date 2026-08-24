@@ -1,0 +1,116 @@
+{
+ "as_of": "2026-08-24",
+ "base_year": 2017,
+ "pieces": 1000,
+ "basket_size": 20,
+ "headline": {
+  "minutes_now": 113.1,
+  "minutes_base": 131.1,
+  "affordability_change_pct": -13.7,
+  "price_change_pct": 24.7,
+  "wage_change_pct": 44.6,
+  "cents_per_piece": 4.98
+ },
+ "series": [
+  {
+   "year": 2017,
+   "price_index": 100.0,
+   "street_index": 100.0,
+   "wage_index": 100.0,
+   "list_price": 39.95,
+   "cents_per_piece": 4.0,
+   "minutes_of_work": 131.1,
+   "matched_titles": null
+  },
+  {
+   "year": 2018,
+   "price_index": 103.4,
+   "street_index": 107.1,
+   "wage_index": 103.5,
+   "list_price": 41.31,
+   "cents_per_piece": 4.13,
+   "minutes_of_work": 130.9,
+   "matched_titles": 4
+  },
+  {
+   "year": 2019,
+   "price_index": 108.7,
+   "street_index": 116.7,
+   "wage_index": 106.6,
+   "list_price": 43.43,
+   "cents_per_piece": 4.34,
+   "minutes_of_work": 133.7,
+   "matched_titles": 4
+  },
+  {
+   "year": 2020,
+   "price_index": 108.7,
+   "street_index": 117.9,
+   "wage_index": 108.5,
+   "list_price": 43.43,
+   "cents_per_piece": 4.34,
+   "minutes_of_work": 131.3,
+   "matched_titles": 11
+  },
+  {
+   "year": 2021,
+   "price_index": 112.0,
+   "street_index": 119.9,
+   "wage_index": 111.2,
+   "list_price": 44.74,
+   "cents_per_piece": 4.47,
+   "minutes_of_work": 132.1,
+   "matched_titles": 12
+  },
+  {
+   "year": 2022,
+   "price_index": 117.8,
+   "street_index": 125.2,
+   "wage_index": 116.9,
+   "list_price": 47.06,
+   "cents_per_piece": 4.71,
+   "minutes_of_work": 132.1,
+   "matched_titles": 11
+  },
+  {
+   "year": 2023,
+   "price_index": 121.4,
+   "street_index": 133.9,
+   "wage_index": 127.0,
+   "list_price": 48.5,
+   "cents_per_piece": 4.85,
+   "minutes_of_work": 125.3,
+   "matched_titles": 4
+  },
+  {
+   "year": 2024,
+   "price_index": 123.7,
+   "street_index": 140.5,
+   "wage_index": 131.8,
+   "list_price": 49.42,
+   "cents_per_piece": 4.94,
+   "minutes_of_work": 123.0,
+   "matched_titles": 5
+  },
+  {
+   "year": 2025,
+   "price_index": 124.9,
+   "street_index": 138.7,
+   "wage_index": 136.4,
+   "list_price": 49.9,
+   "cents_per_piece": 4.99,
+   "minutes_of_work": 120.0,
+   "matched_titles": 10
+  },
+  {
+   "year": 2026,
+   "price_index": 124.7,
+   "street_index": 145.2,
+   "wage_index": 144.6,
+   "list_price": 49.82,
+   "cents_per_piece": 4.98,
+   "minutes_of_work": 113.1,
+   "matched_titles": 6
+  }
+ ]
+}

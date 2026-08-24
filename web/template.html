@@ -9,6 +9,10 @@
   :root{
     --bg:#ffffff; --panel:#f7f4ee; --line:#e4e0d6; --ink:#16294a;
     --muted:#6b7685; --up:#2f9e6f; --down:#cf5c48; --accent:#b8915f; --navy:#16294a;
+    /* Chart-grade steps for the 1000-Piece Index. The house gold sits at 2.8:1
+       on white, too weak for a 2px line, so the bronze is a deepened step of it.
+       Both clear the categorical palette checks (CVD dE 19, contrast >3:1). */
+    --afford-a:#2D6699; --afford-b:#A35E0A;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
@@ -58,6 +62,17 @@
   footer{color:var(--muted);font-size:11px;margin-top:26px;line-height:1.6}
   .spark{height:38px}
   a{color:var(--accent)}
+  .afford-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:860px){.afford-grid{grid-template-columns:1fr}}
+  .afford .lead{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:15px 18px;margin:12px 0 0;font-size:14px;line-height:1.65;color:var(--muted)}
+  .afford .lead b{color:var(--ink);font-size:16px}
+  .afford .panel{padding:10px 12px 6px}
+  .gridline{stroke:var(--line);stroke-width:1}
+  .ser-end{font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;fill:var(--ink)}
+  .ser-key{font-size:11.5px;fill:var(--muted)}
+  .ptitle{font-size:12.5px;font-weight:600;fill:var(--ink);
+    font-family:Georgia,"Times New Roman",serif}
 </style>
 </head>
 <body>
@@ -109,12 +124,27 @@
     <div class="tag" id="global-note" style="margin:10px 4px 0"></div>
   </div>
 
+  <div id="afford-sec" class="afford" style="display:none">
+    <div class="chart-head" style="margin-top:34px">
+      <h2>The 1000-Piece Index</h2>
+      <span class="hint">annual &middot; constant basket &middot; what a puzzle costs in work, not dollars</span>
+    </div>
+    <div class="lead" id="afford-lead"></div>
+    <div class="cards" id="afford-cards"></div>
+    <div class="afford-grid">
+      <div class="panel"><svg id="affordIndex" viewBox="0 0 580 340"></svg></div>
+      <div class="panel"><svg id="affordWork" viewBox="0 0 580 340"></svg></div>
+    </div>
+    <div class="tag" id="afford-note" style="margin:12px 4px 0;line-height:1.6"></div>
+  </div>
+
   <footer id="foot"></footer>
 </div>
 <div class="tip" id="tip"></div>
 
 <script>
 const DATA = __INDEX_DATA__;
+const AFFORD = __AFFORD_DATA__;
 const BUILT_AT = "__BUILT_AT__";
 const RAW_URL = "https://raw.githubusercontent.com/s2nnews/puzzles/main/data/processed/index.json";
 
@@ -348,7 +378,136 @@ function drawBubble(titles){
     .on("mouseleave",()=>tip.style("opacity",0));
 }
 
+// ---------------------------------------------------------------------------
+// The 1000-Piece Index. An annual price series baked in at build time rather
+// than pulled from the daily pipeline, so it renders once and never refreshes.
+// ---------------------------------------------------------------------------
+function affordLine(svgId, rows, opts){
+  const svg = d3.select("#"+svgId), W=580, H=340,
+        M={t:38,r:opts.right||62,b:34,l:46};
+  svg.selectAll("*").remove();
+  const iw=W-M.l-M.r, ih=H-M.t-M.b;
+  const x = d3.scaleLinear().domain(d3.extent(rows,r=>r.year)).range([M.l,M.l+iw]);
+  const y = d3.scaleLinear().domain(opts.domain).range([M.t+ih,M.t]);
+
+  svg.append("text").attr("class","ptitle").attr("x",M.l-8).attr("y",16).text(opts.title);
+
+  y.ticks(opts.ticks||5).forEach(t=>{
+    svg.append("line").attr("class","gridline")
+       .attr("x1",M.l).attr("x2",M.l+iw).attr("y1",y(t)).attr("y2",y(t));
+    svg.append("text").attr("x",M.l-9).attr("y",y(t)+4).attr("text-anchor","end")
+       .attr("fill","var(--muted)").attr("font-size",10.5).text(opts.fmtY(t));
+  });
+  rows.forEach((r,i)=>{
+    if(i%2 && i!==rows.length-1) return;
+    svg.append("text").attr("x",x(r.year)).attr("y",H-13).attr("text-anchor","middle")
+       .attr("fill","var(--muted)").attr("font-size",10.5).text(r.year);
+  });
+
+  const line = k => d3.line().x(r=>x(r.year)).y(r=>y(r[k]));
+  const last = rows[rows.length-1];
+
+  opts.series.forEach((s,si)=>{
+    if(s.fill){
+      svg.append("path").attr("fill",s.color).attr("fill-opacity",.10)
+         .attr("d", d3.area().x(r=>x(r.year)).y0(M.t+ih).y1(r=>y(r[s.key]))(rows));
+    }
+    svg.append("path").datum(rows).attr("fill","none").attr("stroke",s.color)
+       .attr("stroke-width",2).attr("stroke-linejoin","round").attr("d",line(s.key));
+    svg.append("circle").attr("cx",x(last.year)).attr("cy",y(last[s.key])).attr("r",4.5)
+       .attr("fill",s.color).attr("stroke","#fff").attr("stroke-width",1.5);
+    svg.append("text").attr("class","ser-end")
+       .attr("x",x(last.year)+9).attr("y",y(last[s.key])+4).text(s.endLabel(last[s.key]));
+    if(opts.series.length>1){
+      svg.append("rect").attr("x",M.l+2).attr("y",M.t+2+si*16).attr("width",14)
+         .attr("height",2.5).attr("rx",1).attr("fill",s.color);
+      svg.append("text").attr("class","ser-key")
+         .attr("x",M.l+22).attr("y",M.t+8+si*16).text(s.name);
+    }
+  });
+
+  const tip = d3.select("#tip");
+  const bw = iw/(rows.length-1);
+  svg.selectAll(".hit").data(rows).join("rect")
+     .attr("class","hit")
+     .attr("x",r=>x(r.year)-bw/2).attr("y",M.t).attr("width",bw).attr("height",ih)
+     .attr("fill","transparent")
+     .on("mousemove",(e,r)=>{
+       tip.style("opacity",1)
+          .style("left",(e.clientX+16)+"px").style("top",(e.clientY+16)+"px")
+          .html("<b>"+r.year+"</b>"+opts.series.map(s=>
+            "<div class=\"row\">"+s.name+" <span>"+s.tip(r[s.key])+"</span></div>").join("")+
+            "<div class=\"row\">Matched titles <span>"+(r.matched_titles==null?"base":r.matched_titles)+"</span></div>");
+     })
+     .on("mouseleave",()=>tip.style("opacity",0));
+}
+
+function affordCharts(rows, base){
+  const lo = Math.floor(d3.min(rows,r=>Math.min(r.price_index,r.wage_index))/10)*10-5;
+  const hi = Math.ceil(d3.max(rows,r=>Math.max(r.price_index,r.wage_index))/10)*10+5;
+  affordLine("affordIndex", rows, {
+    title:"Price against wages ("+base+" = 100)",
+    domain:[lo,hi], ticks:5, right:66, fmtY:t=>t,
+    series:[
+      {key:"wage_index", color:"var(--afford-b)", name:"Minimum wage",
+       endLabel:v=>v.toFixed(1), tip:v=>v.toFixed(1)},
+      {key:"price_index", color:"var(--afford-a)", name:"Puzzle list price",
+       endLabel:v=>v.toFixed(1), tip:v=>v.toFixed(1)}
+    ]
+  });
+  const mlo = Math.floor(d3.min(rows,r=>r.minutes_of_work)/10)*10-5;
+  const mhi = Math.ceil(d3.max(rows,r=>r.minutes_of_work)/10)*10+5;
+  affordLine("affordWork", rows, {
+    title:"Minutes of work to buy one",
+    domain:[mlo,mhi], ticks:4, right:72, fmtY:t=>t+"m",
+    series:[
+      {key:"minutes_of_work", color:"var(--afford-a)", fill:true, name:"Work-time",
+       endLabel:v=>Math.round(v)+" min", tip:v=>Math.round(v)+" min"}
+    ]
+  });
+}
+
+function renderAfford(A){
+  if(!A || !A.series || A.series.length<2) return;
+  document.getElementById("afford-sec").style.display = "";
+  const h = A.headline, rows = A.series, last = rows[rows.length-1];
+  const hrs = m => Math.floor(m/60)+"h "+Math.round(m%60)+"m";
+  const better = h.affordability_change_pct < 0;
+
+  document.getElementById("afford-lead").innerHTML =
+    "<b>A "+A.pieces+"-piece puzzle took "+hrs(h.minutes_base)+" of work to buy in "+
+    A.base_year+". Today it takes "+hrs(h.minutes_now)+".</b><br>"+
+    "List prices rose "+h.price_change_pct.toFixed(1)+"% over the period. The national "+
+    "minimum wage rose "+h.wage_change_pct.toFixed(1)+"%. Measured in work rather than "+
+    "dollars, the puzzle got <b style=\"color:"+(better?"var(--up)":"var(--down)")+"\">"+
+    Math.abs(h.affordability_change_pct).toFixed(1)+"% "+(better?"cheaper":"dearer")+"</b>.";
+
+  const cards = [
+    ["Work-time to buy one", hrs(h.minutes_now),
+      (better?"down ":"up ")+Math.abs(Math.round(h.minutes_base-h.minutes_now))+" min since "+A.base_year],
+    ["Price per piece", h.cents_per_piece.toFixed(2)+"c",
+      "from "+rows[0].cents_per_piece.toFixed(2)+"c in "+A.base_year],
+    ["Price index", last.price_index.toFixed(1),
+      "wage index "+last.wage_index.toFixed(1)+" over the same span"],
+    ["Constant basket", A.basket_size+" titles",
+      "listed continuously since "+A.base_year]
+  ];
+  document.getElementById("afford-cards").innerHTML = cards.map(c=>
+    "<div class=\"card\"><div class=\"k\">"+c[0]+"</div><div class=\"v\">"+c[1]+"</div>"+
+    "<div class=\"n\">"+c[2]+"</div></div>").join("");
+
+  affordCharts(rows, A.base_year);
+
+  document.getElementById("afford-note").innerHTML =
+    "Constant-basket chain index, "+A.base_year+" = 100, built the way the CPI is built: "+
+    "only titles priced in both of a pair of years contribute, and each contributes a change "+
+    "measured against itself, so titles joining or leaving the range never move the level. "+
+    "List prices, not discounted prices. Wage series is the national minimum wage, hourly, "+
+    "effective 1 July. Prices derived from public archived retail listings.";
+}
+
 render(DATA);
+renderAfford(AFFORD);
 // Auto-freshen from the live repo when served online (no-op offline).
 // Only override the embedded data when the live repo is strictly NEWER,
 // so a same-day remote copy never clobbers freshly-built local data.

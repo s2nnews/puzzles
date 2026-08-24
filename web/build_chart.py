@@ -17,6 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 INDEX = ROOT / "data" / "processed" / "index.json"
+AFFORD = ROOT / "data" / "processed" / "affordability.json"
 LOGO = ROOT / "web" / "assets" / "premium-puzzles-logo.png"
 
 # (template, output): the full dashboard and the basic brand-only version
@@ -42,6 +43,9 @@ def main() -> int:
         print(f"{INDEX} missing — run pipeline/aggregate.py first", file=sys.stderr)
         return 1
     data = INDEX.read_text(encoding="utf-8")
+    # The 1000-Piece Index is an annual series, not part of the daily pipeline,
+    # so it is baked in at build time. Absent file = section hides itself.
+    afford = AFFORD.read_text(encoding="utf-8") if AFFORD.exists() else "null"
     built_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     logo = logo_data_uri()
     as_of = json.loads(data)["as_of"]
@@ -51,6 +55,7 @@ def main() -> int:
             continue
         html = (template.read_text(encoding="utf-8")
                 .replace("__INDEX_DATA__", data)
+                .replace("__AFFORD_DATA__", afford)
                 .replace("__BUILT_AT__", built_at)
                 .replace("__LOGO_DATA__", logo))
         out.write_text(html, encoding="utf-8")
