@@ -72,10 +72,14 @@
   .afford .lead b{color:var(--ink);font-size:16px}
   .afford .panel{padding:10px 12px 6px}
   .gridline{stroke:var(--line);stroke-width:1}
-  /* The loader injects into the live storefront DOM, so theme CSS cascades onto
-     these nodes too. Phantom vertical gridlines came from a theme rule striking
-     the hover rects. Never let the theme stroke anything in this section. */
-  .afford rect.pp-af-hit{stroke:none;fill:transparent}
+  /* The loader injects into the live storefront DOM rather than an iframe, so the
+     Shopify THEME stylesheet cascades onto these nodes as well as the scoped one.
+     The theme strokes every SVG rect in navy, which drew a vertical line at each
+     year across both plots and outlined the legend swatches. It looked correct
+     locally and wrong only in production. Blanket it: nothing in this section
+     gets a stroke unless we ask for one. */
+  .afford svg rect{stroke:none !important}
+  .afford rect.pp-af-hit{fill:transparent}
   .ser-end{font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;fill:var(--ink)}
   .ser-key{font-size:11.5px;fill:var(--muted)}
   .ptitle{font-size:12.5px;font-weight:600;fill:var(--ink);
@@ -1947,7 +1951,7 @@ const AFFORD = {
   }
  ]
 };
-const BUILT_AT = "2026-08-24 02:41 UTC";
+const BUILT_AT = "2026-08-24 02:53 UTC";
 const RAW_URL = "https://raw.githubusercontent.com/s2nnews/puzzles/main/data/processed/index.json";
 
 const BRAND_COLORS = {
