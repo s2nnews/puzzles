@@ -12,7 +12,7 @@
     /* Chart-grade steps for the 1000-Piece Index. The house gold sits at 2.8:1
        on white, too weak for a 2px line, so the bronze is a deepened step of it.
        Both clear the categorical palette checks (CVD dE 19, contrast >3:1). */
-    --afford-a:#2D6699; --afford-b:#A35E0A;
+    --afford-a:#2D6699; --afford-b:#A35E0A; --afford-c:#6b7685;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
@@ -77,6 +77,22 @@
     padding:15px 18px;margin:12px 0 0;font-size:14px;line-height:1.65;color:var(--muted)}
   .afford .lead b{color:var(--ink);font-size:16px}
   .afford .panel{padding:10px 12px 6px}
+  .afford-sens{margin-top:14px;border:1px solid var(--line);border-radius:10px;
+    background:var(--panel);overflow:hidden}
+  .afford-sens table{border-collapse:collapse;width:100%;font-size:12.5px}
+  .afford-sens th,.afford-sens td{padding:9px 14px;text-align:right;
+    border-bottom:1px solid var(--line)}
+  .afford-sens th:first-child,.afford-sens td:first-child{text-align:left}
+  .afford-sens thead th{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);font-weight:600}
+  .afford-sens tbody tr:last-child td{border-bottom:none}
+  .afford-sens td.n{font-variant-numeric:tabular-nums}
+  .afford-sens .why,.afford-sens th:last-child{text-align:left}
+  .afford-sens .why{color:var(--muted);font-size:11.5px}
+  .afford-sens tr.rejected td{color:var(--muted)}
+  .afford-sens caption{caption-side:top;text-align:left;padding:12px 14px 4px;
+    font-size:12px;color:var(--muted);line-height:1.55}
+  .afford-sens caption b{color:var(--ink)}
   .gridline{stroke:var(--line);stroke-width:1}
   .afford rect.pp-af-hit{fill:transparent}
   .ser-end{font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;fill:var(--ink)}
@@ -137,14 +153,15 @@
   <div id="afford-sec" class="afford" style="display:none">
     <div class="chart-head" style="margin-top:34px">
       <h2>The 1000-Piece Index</h2>
-      <span class="hint">annual &middot; constant basket &middot; what a puzzle costs in work, not dollars</span>
+      <span class="hint">annual &middot; constant basket &middot; did a puzzle actually get dearer?</span>
     </div>
     <div class="lead" id="afford-lead"></div>
     <div class="cards" id="afford-cards"></div>
     <div class="afford-grid">
       <div class="panel"><svg id="affordIndex" viewBox="0 0 580 340"></svg></div>
-      <div class="panel"><svg id="affordWork" viewBox="0 0 580 340"></svg></div>
+      <div class="panel"><svg id="affordReal" viewBox="0 0 580 340"></svg></div>
     </div>
+    <div class="afford-sens" id="afford-sens"></div>
     <div class="tag" id="afford-note" style="margin:12px 4px 0;line-height:1.6"></div>
   </div>
 
@@ -389,18 +406,25 @@ function drawBubble(titles){
 }
 
 // ---------------------------------------------------------------------------
-// The 1000-Piece Index. An annual price series baked in at build time rather
-// than pulled from the daily pipeline, so it renders once and never refreshes.
+// The 1000-Piece Index. An annual price series baked in at build time.
+//
+// The headline is a REAL price change, deflated by CPI. It deliberately needs no
+// wage series: the first version of this divided by the minimum wage, which is
+// the most flattering denominator available, and overstated the result by about
+// 2.3x. The sensitivity table below publishes what every denominator gives,
+// including the rejected one, because hiding that is how it went wrong.
 // ---------------------------------------------------------------------------
 function affordLine(svgId, rows, opts){
   const svg = d3.select("#"+svgId), W=580, H=340,
-        M={t:38,r:opts.right||62,b:34,l:46};
+        M={t:opts.top||44, r:opts.right||64, b:34, l:opts.left||48};
   svg.selectAll("*").remove();
   const iw=W-M.l-M.r, ih=H-M.t-M.b;
   const x = d3.scaleLinear().domain(d3.extent(rows,r=>r.year)).range([M.l,M.l+iw]);
   const y = d3.scaleLinear().domain(opts.domain).range([M.t+ih,M.t]);
 
   svg.append("text").attr("class","ptitle").attr("x",M.l-8).attr("y",16).text(opts.title);
+  if(opts.sub) svg.append("text").attr("x",M.l-8).attr("y",31)
+     .attr("fill","var(--muted)").attr("font-size",11).text(opts.sub);
 
   y.ticks(opts.ticks||5).forEach(t=>{
     svg.append("line").attr("class","gridline")
@@ -417,25 +441,37 @@ function affordLine(svgId, rows, opts){
   const line = k => d3.line().x(r=>x(r.year)).y(r=>y(r[k]));
   const last = rows[rows.length-1];
 
-  opts.series.forEach((s,si)=>{
+  opts.series.forEach(s=>{
     if(s.fill){
-      svg.append("path").attr("fill",s.color).attr("fill-opacity",.10)
-         .attr("stroke","none")
+      svg.append("path").attr("fill",s.color).attr("fill-opacity",.10).attr("stroke","none")
          .attr("d", d3.area().x(r=>x(r.year)).y0(M.t+ih).y1(r=>y(r[s.key]))(rows));
     }
-    svg.append("path").datum(rows).attr("fill","none").attr("stroke",s.color)
-       .attr("stroke-width",2).attr("stroke-linejoin","round").attr("d",line(s.key));
-    svg.append("circle").attr("cx",x(last.year)).attr("cy",y(last[s.key])).attr("r",4.5)
+    const path = svg.append("path").datum(rows).attr("fill","none")
+       .attr("stroke",s.color).attr("stroke-width",s.w||2)
+       .attr("stroke-linejoin","round").attr("d",line(s.key));
+    if(s.dash) path.attr("stroke-dasharray",s.dash);
+    svg.append("circle").attr("cx",x(last.year)).attr("cy",y(last[s.key])).attr("r",4)
        .attr("fill",s.color).attr("stroke","#fff").attr("stroke-width",1.5);
     svg.append("text").attr("class","ser-end")
-       .attr("x",x(last.year)+9).attr("y",y(last[s.key])+4).text(s.endLabel(last[s.key]));
-    if(opts.series.length>1){
-      svg.append("rect").attr("x",M.l+2).attr("y",M.t+2+si*16).attr("width",14)
-         .attr("height",2.5).attr("rx",1).attr("fill",s.color);
-      svg.append("text").attr("class","ser-key")
-         .attr("x",M.l+22).attr("y",M.t+8+si*16).text(s.name);
-    }
+       .attr("x",x(last.year)+9).attr("y",y(last[s.key])+4)
+       .attr("fill",s.subdued?"var(--muted)":"var(--ink)")
+       .text(s.endLabel(last[s.key]));
   });
+
+  // legend, drawn above the plot so it never sits on the data
+  if(opts.series.length>1){
+    let lx=M.l;
+    opts.series.forEach(s=>{
+      const g=svg.append("g");
+      const ln=g.append("line").attr("x1",lx).attr("x2",lx+16)
+         .attr("y1",M.t-11).attr("y2",M.t-11)
+         .attr("stroke",s.color).attr("stroke-width",s.w||2);
+      if(s.dash) ln.attr("stroke-dasharray",s.dash);
+      const t=g.append("text").attr("class","ser-key").attr("x",lx+21).attr("y",M.t-7)
+         .text(s.name);
+      lx += 21 + s.name.length*5.8 + 18;
+    });
+  }
 
   const tip = d3.select("#tip");
   const bw = iw/(rows.length-1);
@@ -453,27 +489,33 @@ function affordLine(svgId, rows, opts){
      .on("mouseleave",()=>tip.style("opacity",0));
 }
 
-function affordCharts(rows, base){
-  const lo = Math.floor(d3.min(rows,r=>Math.min(r.price_index,r.wage_index))/10)*10-5;
-  const hi = Math.ceil(d3.max(rows,r=>Math.max(r.price_index,r.wage_index))/10)*10+5;
+function affordCharts(A){
+  const rows=A.series, base=A.base_year;
+  const vals=rows.flatMap(r=>[r.price_index,r.cpi_index,r.wpi_index]);
+  const lo=Math.floor(d3.min(vals)/10)*10-2, hi=Math.ceil(d3.max(vals)/10)*10+4;
   affordLine("affordIndex", rows, {
-    title:"Price against wages ("+base+" = 100)",
-    domain:[lo,hi], ticks:5, right:66, fmtY:t=>t,
+    title:"Puzzle prices against prices in general",
+    sub:base+" = 100 \u00b7 the two benchmarks are dashed",
+    domain:[lo,hi], ticks:5, right:56, top:48, fmtY:t=>t,
     series:[
-      {key:"wage_index", color:"var(--afford-b)", name:"Minimum wage",
-       endLabel:v=>v.toFixed(1), tip:v=>v.toFixed(1)},
-      {key:"price_index", color:"var(--afford-a)", name:"Puzzle list price",
-       endLabel:v=>v.toFixed(1), tip:v=>v.toFixed(1)}
+      {key:"cpi_index", color:"var(--afford-b)", name:"CPI", dash:"6 3", subdued:true,
+       endLabel:v=>v.toFixed(0), tip:v=>v.toFixed(1)},
+      {key:"wpi_index", color:"var(--afford-c)", name:"Wages (WPI)", dash:"2 3", subdued:true,
+       endLabel:v=>v.toFixed(0), tip:v=>v.toFixed(1)},
+      {key:"price_index", color:"var(--afford-a)", name:"Puzzle list price", w:2.5,
+       endLabel:v=>v.toFixed(0), tip:v=>v.toFixed(1)}
     ]
   });
-  const mlo = Math.floor(d3.min(rows,r=>r.minutes_of_work)/10)*10-5;
-  const mhi = Math.ceil(d3.max(rows,r=>r.minutes_of_work)/10)*10+5;
-  affordLine("affordWork", rows, {
-    title:"Minutes of work to buy one",
-    domain:[mlo,mhi], ticks:4, right:72, fmtY:t=>t+"m",
+
+  const rp=rows.map(r=>r.real_price);
+  const rlo=Math.floor(d3.min(rp)/2)*2-2, rhi=Math.ceil(d3.max(rp)/2)*2+1;
+  affordLine("affordReal", rows, {
+    title:"What a puzzle costs, in today's dollars",
+    sub:"the same puzzle, inflation stripped out",
+    domain:[rlo,rhi], ticks:4, right:74, top:48, fmtY:t=>"$"+t,
     series:[
-      {key:"minutes_of_work", color:"var(--afford-a)", fill:true, name:"Work-time",
-       endLabel:v=>Math.round(v)+" min", tip:v=>Math.round(v)+" min"}
+      {key:"real_price", color:"var(--afford-a)", fill:true, name:"Real price", w:2.5,
+       endLabel:v=>"$"+v.toFixed(2), tip:v=>"$"+v.toFixed(2)}
     ]
   });
 }
@@ -481,25 +523,28 @@ function affordCharts(rows, base){
 function renderAfford(A){
   if(!A || !A.series || A.series.length<2) return;
   document.getElementById("afford-sec").style.display = "";
-  const h = A.headline, rows = A.series, last = rows[rows.length-1];
-  const hrs = m => Math.floor(m/60)+"h "+Math.round(m%60)+"m";
-  const better = h.affordability_change_pct < 0;
+  const h=A.headline, rows=A.series, last=rows[rows.length-1];
+  const cheaper = h.real_change_pct < 0;
+  const col = cheaper ? "var(--up)" : "var(--down)";
 
   document.getElementById("afford-lead").innerHTML =
-    "<b>A "+A.pieces+"-piece puzzle took "+hrs(h.minutes_base)+" of work to buy in "+
-    A.base_year+". Today it takes "+hrs(h.minutes_now)+".</b><br>"+
-    "List prices rose "+h.price_change_pct.toFixed(1)+"% over the period. The national "+
-    "minimum wage rose "+h.wage_change_pct.toFixed(1)+"%. Measured in work rather than "+
-    "dollars, the puzzle got <b style=\"color:"+(better?"var(--up)":"var(--down)")+"\">"+
-    Math.abs(h.affordability_change_pct).toFixed(1)+"% "+(better?"cheaper":"dearer")+"</b>.";
+    "<b>$"+rows[0].nominal_price.toFixed(2)+" in "+A.base_year+" is $"+
+    h.price_then_in_today_dollars.toFixed(2)+" in today's money. The same puzzle "+
+    "today lists at $"+h.price_now.toFixed(2)+".</b><br>"+
+    "Puzzle list prices rose "+h.nominal_change_pct.toFixed(1)+"% over the period while "+
+    "prices in general rose "+h.cpi_change_pct.toFixed(1)+"%. So in real terms a "+
+    A.pieces+"-piece puzzle is <b style=\"color:"+col+"\">"+
+    Math.abs(h.real_change_pct).toFixed(1)+"% "+(cheaper?"cheaper":"dearer")+
+    "</b> than it was. Against wages it is close to flat, at "+
+    h.vs_wages_pct.toFixed(1)+"%.";
 
-  const cards = [
-    ["Work-time to buy one", hrs(h.minutes_now),
-      (better?"down ":"up ")+Math.abs(Math.round(h.minutes_base-h.minutes_now))+" min since "+A.base_year],
+  const cards=[
+    ["Real price change", (h.real_change_pct>0?"+":"")+h.real_change_pct.toFixed(1)+"%",
+      "after stripping out inflation"],
+    ["Sticker price change", "+"+h.nominal_change_pct.toFixed(1)+"%",
+      "CPI over the same span: +"+h.cpi_change_pct.toFixed(1)+"%"],
     ["Price per piece", h.cents_per_piece.toFixed(2)+"c",
       "from "+rows[0].cents_per_piece.toFixed(2)+"c in "+A.base_year],
-    ["Price index", last.price_index.toFixed(1),
-      "wage index "+last.wage_index.toFixed(1)+" over the same span"],
     ["Constant basket", A.basket_size+" titles",
       "listed continuously since "+A.base_year]
   ];
@@ -507,14 +552,32 @@ function renderAfford(A){
     "<div class=\"card\"><div class=\"k\">"+c[0]+"</div><div class=\"v\">"+c[1]+"</div>"+
     "<div class=\"n\">"+c[2]+"</div></div>").join("");
 
-  affordCharts(rows, A.base_year);
+  affordCharts(A);
+
+  if(A.sensitivity && A.sensitivity.length){
+    document.getElementById("afford-sens").innerHTML =
+      "<table><caption><b>The answer depends on what you compare it to, so here is all of it.</b> "+
+      "An index that reports only its most flattering denominator is not measuring, it is "+
+      "arguing. The minimum wage row is shown precisely because we rejected it.</caption>"+
+      "<thead><tr><th>Compared against</th><th>That rose</th><th>Puzzle vs it</th>"+
+      "<th>Why</th></tr></thead><tbody>"+
+      A.sensitivity.map(r=>{
+        const rej=/rejected/.test(r.note);
+        return "<tr"+(rej?" class=\"rejected\"":"")+"><td>"+r.denominator+"</td>"+
+          "<td class=\"n\">+"+r.change_pct.toFixed(1)+"%</td>"+
+          "<td class=\"n\">"+(r.puzzle_vs_it_pct>0?"+":"")+r.puzzle_vs_it_pct.toFixed(1)+"%</td>"+
+          "<td class=\"why\">"+r.note+"</td></tr>";
+      }).join("")+"</tbody></table>";
+  }
 
   document.getElementById("afford-note").innerHTML =
     "Constant-basket chain index, "+A.base_year+" = 100, built the way the CPI is built: "+
     "only titles priced in both of a pair of years contribute, and each contributes a change "+
     "measured against itself, so titles joining or leaving the range never move the level. "+
-    "List prices, not discounted prices. Wage series is the national minimum wage, hourly, "+
-    "effective 1 July. Prices derived from public archived retail listings.";
+    "List prices, not discounted prices. Deflators are ABS series, March quarter, pulled from "+
+    "the ABS Data API: CPI all groups, and the Wage Price Index, total hourly rates excluding "+
+    "bonuses. Both are constant-quality measures, which is what makes them comparable with a "+
+    "constant-basket price index. Puzzle prices derived from public archived retail listings.";
 }
 
 render(DATA);
