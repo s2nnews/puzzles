@@ -66,7 +66,7 @@
      rewriting every selector before a "{", which mangles @media at-rules and
      drops the whole block. The rest of the page uses auto-fit for the same
      reason. See kb/business/puzzle-intelligence-handover.md. */
-  .afford-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px}
+  .afford-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px}
   .afford .lead{background:var(--panel);border:1px solid var(--line);border-radius:10px;
     padding:15px 18px;margin:12px 0 0;font-size:14px;line-height:1.65;color:var(--muted)}
   .afford .lead b{color:var(--ink);font-size:16px}
@@ -1943,7 +1943,7 @@ const AFFORD = {
   }
  ]
 };
-const BUILT_AT = "2026-08-24 02:33 UTC";
+const BUILT_AT = "2026-08-24 02:35 UTC";
 const RAW_URL = "https://raw.githubusercontent.com/s2nnews/puzzles/main/data/processed/index.json";
 
 const BRAND_COLORS = {
