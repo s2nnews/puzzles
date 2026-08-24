@@ -72,6 +72,10 @@
   .afford .lead b{color:var(--ink);font-size:16px}
   .afford .panel{padding:10px 12px 6px}
   .gridline{stroke:var(--line);stroke-width:1}
+  /* The loader injects into the live storefront DOM, so theme CSS cascades onto
+     these nodes too. Phantom vertical gridlines came from a theme rule striking
+     the hover rects. Never let the theme stroke anything in this section. */
+  .afford rect.pp-af-hit{stroke:none;fill:transparent}
   .ser-end{font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;fill:var(--ink)}
   .ser-key{font-size:11.5px;fill:var(--muted)}
   .ptitle{font-size:12.5px;font-weight:600;fill:var(--ink);
@@ -431,10 +435,10 @@ function affordLine(svgId, rows, opts){
 
   const tip = d3.select("#tip");
   const bw = iw/(rows.length-1);
-  svg.selectAll(".hit").data(rows).join("rect")
-     .attr("class","hit")
+  svg.selectAll(".pp-af-hit").data(rows).join("rect")
+     .attr("class","pp-af-hit")
      .attr("x",r=>x(r.year)-bw/2).attr("y",M.t).attr("width",bw).attr("height",ih)
-     .attr("fill","transparent")
+     .attr("fill","transparent").attr("stroke","none")
      .on("mousemove",(e,r)=>{
        tip.style("opacity",1)
           .style("left",(e.clientX+16)+"px").style("top",(e.clientY+16)+"px")
