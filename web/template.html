@@ -62,8 +62,11 @@
   footer{color:var(--muted);font-size:11px;margin-top:26px;line-height:1.6}
   .spark{height:38px}
   a{color:var(--accent)}
-  .afford-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  @media (max-width:860px){.afford-grid{grid-template-columns:1fr}}
+  /* auto-fit, NOT a media query: the Shopify loader scopes this stylesheet by
+     rewriting every selector before a "{", which mangles @media at-rules and
+     drops the whole block. The rest of the page uses auto-fit for the same
+     reason. See kb/business/puzzle-intelligence-handover.md. */
+  .afford-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px}
   .afford .lead{background:var(--panel);border:1px solid var(--line);border-radius:10px;
     padding:15px 18px;margin:12px 0 0;font-size:14px;line-height:1.65;color:var(--muted)}
   .afford .lead b{color:var(--ink);font-size:16px}
