@@ -38,3 +38,10 @@ dashboard/rank-tracking.json
 # is a smaller residual exposure. The fix is to set the CAMPAIGNS_CSV,
 # CHANNELS_CSV, PORTER_CSV, LEADGEN_CSV, SEARCH_CONSOLE_CSV and RANK_TRACKING_CSV
 # secrets to their published URLs, then delete the committed fallbacks.
+
+# Supplier and brand prospecting notes. These name prospective suppliers, and
+# this repo is PUBLIC — CLAUDE.md forbids supplier names in any committed file.
+# The folder convention is documented in research/README.md, which is the only
+# file in here that is committed.
+research/*
+!research/README.md
