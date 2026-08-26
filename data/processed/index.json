@@ -1,29 +1,31 @@
 {
-  "as_of": "2026-08-25",
+  "as_of": "2026-08-26",
   "inception": "2026-06-11",
-  "days_of_history": 34,
+  "days_of_history": 35,
   "market": {
-    "index_level": 95.63,
-    "equal_weight_level": 100.08,
-    "index_mom": -4.37,
-    "cap_vs_equal_spread": -4.45,
-    "top7_share": 0.415,
-    "hhi_brands": 0.1989,
-    "breadth_pct": 11.1,
+    "index_level": 96.33,
+    "equal_weight_level": 100.65,
+    "index_mom": -3.67,
+    "cap_vs_equal_spread": -4.32,
+    "top7_share": 0.447,
+    "hhi_brands": 0.2005,
+    "breadth_pct": 32.4,
     "regime": "contraction",
-    "constituents": 36,
+    "constituents": 46,
     "universe": 96,
     "brand_indices": {
-      "White Mountain": 104.2,
-      "Other": 103.3,
-      "Ravensburger": 100.1,
-      "Heye": 99.4,
-      "Buffalo Games": 99.4,
+      "Clementoni": 108.8,
+      "Other": 102.7,
+      "White Mountain": 101.6,
+      "Ravensburger": 101.2,
+      "Buffalo Games": 101.0,
+      "Heye": 99.3,
       "Wasgij": 99.0,
       "Melissa & Doug": 98.1,
-      "Clementoni": 97.7,
-      "Educa": 95.5,
-      "Magic Puzzle Company": 94.2,
+      "Galison": 97.1,
+      "Eurographics": 96.7,
+      "Educa": 95.3,
+      "Magic Puzzle Company": 93.5,
       "Cobble Hill": 90.1
     }
   },
@@ -35,209 +37,188 @@
     },
     {
       "date": "2026-06-12",
-      "level": 99.99,
-      "equal_weight": 99.8
+      "level": 100.0,
+      "equal_weight": 100.0
     },
     {
       "date": "2026-06-13",
-      "level": 97.49,
-      "equal_weight": 99.86
-    },
-    {
-      "date": "2026-06-14",
-      "level": 93.39,
-      "equal_weight": 98.86
-    },
-    {
-      "date": "2026-06-15",
-      "level": 96.78,
-      "equal_weight": 99.96
-    },
-    {
-      "date": "2026-06-16",
-      "level": 94.22,
-      "equal_weight": 99.84
-    },
-    {
-      "date": "2026-06-17",
-      "level": 94.21,
-      "equal_weight": 99.82
-    },
-    {
-      "date": "2026-06-20",
-      "level": 95.71,
-      "equal_weight": 100.17
-    },
-    {
-      "date": "2026-06-22",
-      "level": 94.77,
-      "equal_weight": 99.64
-    },
-    {
-      "date": "2026-06-23",
-      "level": 94.21,
-      "equal_weight": 99.42
-    },
-    {
-      "date": "2026-06-24",
-      "level": 99.21,
-      "equal_weight": 100.34
-    },
-    {
-      "date": "2026-06-26",
-      "level": 94.74,
-      "equal_weight": 99.55
-    },
-    {
-      "date": "2026-06-28",
-      "level": 99.48,
-      "equal_weight": 100.35
-    },
-    {
-      "date": "2026-07-01",
-      "level": 99.95,
-      "equal_weight": 100.55
-    },
-    {
-      "date": "2026-07-03",
-      "level": 100.45,
-      "equal_weight": 100.61
-    },
-    {
-      "date": "2026-07-09",
-      "level": 98.79,
-      "equal_weight": 100.27
-    },
-    {
-      "date": "2026-07-10",
-      "level": 98.59,
-      "equal_weight": 99.67
-    },
-    {
-      "date": "2026-07-15",
-      "level": 98.65,
-      "equal_weight": 100.05
-    },
-    {
-      "date": "2026-07-16",
-      "level": 93.76,
-      "equal_weight": 99.34
-    },
-    {
-      "date": "2026-07-20",
-      "level": 98.65,
-      "equal_weight": 99.83
-    },
-    {
-      "date": "2026-07-21",
-      "level": 97.17,
-      "equal_weight": 99.18
-    },
-    {
-      "date": "2026-07-26",
-      "level": 93.39,
-      "equal_weight": 99.71
-    },
-    {
-      "date": "2026-08-03",
-      "level": 95.4,
-      "equal_weight": 99.66
-    },
-    {
-      "date": "2026-08-04",
-      "level": 95.84,
-      "equal_weight": 100.39
-    },
-    {
-      "date": "2026-08-06",
-      "level": 95.8,
-      "equal_weight": 100.54
-    },
-    {
-      "date": "2026-08-07",
-      "level": 95.23,
-      "equal_weight": 100.72
-    },
-    {
-      "date": "2026-08-09",
-      "level": 94.97,
+      "level": 97.96,
       "equal_weight": 100.04
     },
     {
-      "date": "2026-08-10",
-      "level": 94.43,
-      "equal_weight": 100.01
+      "date": "2026-06-14",
+      "level": 94.41,
+      "equal_weight": 99.17
     },
     {
-      "date": "2026-08-14",
-      "level": 95.07,
-      "equal_weight": 99.6
+      "date": "2026-06-15",
+      "level": 97.36,
+      "equal_weight": 99.98
     },
     {
-      "date": "2026-08-16",
-      "level": 95.97,
-      "equal_weight": 100.57
+      "date": "2026-06-16",
+      "level": 95.11,
+      "equal_weight": 99.95
     },
     {
-      "date": "2026-08-20",
-      "level": 96.87,
+      "date": "2026-06-17",
+      "level": 95.09,
+      "equal_weight": 99.93
+    },
+    {
+      "date": "2026-06-20",
+      "level": 96.64,
+      "equal_weight": 100.25
+    },
+    {
+      "date": "2026-06-22",
+      "level": 96.08,
+      "equal_weight": 99.91
+    },
+    {
+      "date": "2026-06-23",
+      "level": 95.33,
+      "equal_weight": 99.66
+    },
+    {
+      "date": "2026-06-24",
+      "level": 99.72,
+      "equal_weight": 100.41
+    },
+    {
+      "date": "2026-06-26",
+      "level": 95.83,
+      "equal_weight": 99.64
+    },
+    {
+      "date": "2026-06-28",
+      "level": 99.94,
+      "equal_weight": 100.49
+    },
+    {
+      "date": "2026-07-01",
+      "level": 100.38,
+      "equal_weight": 100.78
+    },
+    {
+      "date": "2026-07-03",
+      "level": 100.72,
       "equal_weight": 100.58
     },
     {
+      "date": "2026-07-09",
+      "level": 99.29,
+      "equal_weight": 100.66
+    },
+    {
+      "date": "2026-07-10",
+      "level": 98.96,
+      "equal_weight": 100.01
+    },
+    {
+      "date": "2026-07-15",
+      "level": 98.79,
+      "equal_weight": 99.63
+    },
+    {
+      "date": "2026-07-16",
+      "level": 95.11,
+      "equal_weight": 99.95
+    },
+    {
+      "date": "2026-07-20",
+      "level": 99.09,
+      "equal_weight": 100.15
+    },
+    {
+      "date": "2026-07-21",
+      "level": 97.68,
+      "equal_weight": 99.5
+    },
+    {
+      "date": "2026-07-26",
+      "level": 94.42,
+      "equal_weight": 99.72
+    },
+    {
+      "date": "2026-08-03",
+      "level": 96.26,
+      "equal_weight": 100.23
+    },
+    {
+      "date": "2026-08-04",
+      "level": 97.06,
+      "equal_weight": 101.77
+    },
+    {
+      "date": "2026-08-06",
+      "level": 96.99,
+      "equal_weight": 101.5
+    },
+    {
+      "date": "2026-08-07",
+      "level": 96.53,
+      "equal_weight": 101.74
+    },
+    {
+      "date": "2026-08-09",
+      "level": 96.12,
+      "equal_weight": 100.9
+    },
+    {
+      "date": "2026-08-10",
+      "level": 95.52,
+      "equal_weight": 100.67
+    },
+    {
+      "date": "2026-08-14",
+      "level": 96.08,
+      "equal_weight": 100.56
+    },
+    {
+      "date": "2026-08-16",
+      "level": 96.37,
+      "equal_weight": 100.34
+    },
+    {
+      "date": "2026-08-20",
+      "level": 97.63,
+      "equal_weight": 101.25
+    },
+    {
       "date": "2026-08-23",
-      "level": 95.58,
-      "equal_weight": 99.32
+      "level": 96.22,
+      "equal_weight": 99.68
     },
     {
       "date": "2026-08-24",
-      "level": 95.57,
-      "equal_weight": 99.31
+      "level": 96.22,
+      "equal_weight": 99.68
     },
     {
       "date": "2026-08-25",
-      "level": 95.63,
-      "equal_weight": 100.08
+      "level": 96.67,
+      "equal_weight": 100.58
+    },
+    {
+      "date": "2026-08-26",
+      "level": 96.33,
+      "equal_weight": 100.65
     }
   ],
   "titles": [
     {
-      "asin": "B092VQ4L4C",
-      "title": "4 x 48 Pieces Puzzles for Toddlers 3-5 - Floor Puzzles for Kids Ages 2-4 | Learning Farm Animals for 4-6 - Jigsaw Game for Boy and Girl 3-5-7 Year Old",
-      "brand": "Other",
-      "piece_count": 48,
-      "index_score": 80.5,
-      "bsr": 90,
-      "review_count": 695,
-      "review_velocity_1d": null,
-      "avg_rating": 4.6,
-      "price_au": 34.99,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "B0D79DBBPY",
-      "title": "4 x 48 Pieces Puzzles for Toddlers 4-6 - Jigsaw Puzzles for Kids Ages 3-5 | Learning Insects, African, Amazon and Ocean Animals for 2-4 - Jigsaw Game for Boy and Girl 4-8 Year Old",
-      "brand": "Other",
-      "piece_count": 48,
-      "index_score": 80.5,
-      "bsr": 90,
-      "review_count": 695,
-      "review_velocity_1d": null,
-      "avg_rating": 4.6,
-      "price_au": 34.99,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "B0B77BRRN2",
-      "title": "4 x 60 Puzzles for Kids Ages 4-6 - Educational Puzzles for Toddlers 3-5 | Search and Find Toy for 6-8-10 yo - Learning Forest, Polar, USA National Park Animals and City Life",
-      "brand": "Educa",
+      "asin": "B0D4QYMTR8",
+      "title": "Ravensburger Myths & Legends Jigsaw Puzzle for Adults | Spectacular Mythical Scene, Bold Heroes & Villains, Vivid Colours",
+      "brand": "Ravensburger",
       "piece_count": null,
-      "index_score": 78.0,
-      "bsr": 159,
-      "review_count": 1363,
+      "index_score": 86.0,
+      "bsr": 25,
+      "review_count": 352,
       "review_velocity_1d": null,
-      "avg_rating": 4.5,
-      "price_au": 38.99,
-      "brand_mentions_30d": null
+      "avg_rating": 4.7,
+      "price_au": 34.88,
+      "brand_mentions_30d": 25
     },
     {
       "asin": "B0D7J7DZ9G",
@@ -245,24 +226,11 @@
       "brand": "Magic Puzzle Company",
       "piece_count": 1000,
       "index_score": 77.1,
-      "bsr": 195,
+      "bsr": 197,
       "review_count": 297,
-      "review_velocity_1d": 1,
+      "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": 148.41,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "B0GFMYN7RK",
-      "title": "1500 Piece Jigsaw Puzzle Board with 2-in-1 Stand & Cover, Lightweight Portable Puzzle Table with Felt Mat, 6 Colored Drawers & Storage for Adults (1500pcs)",
-      "brand": "Other",
-      "piece_count": 1500,
-      "index_score": 77.0,
-      "bsr": 201,
-      "review_count": 7,
-      "review_velocity_1d": null,
-      "avg_rating": 4.1,
-      "price_au": 69.99,
       "brand_mentions_30d": null
     },
     {
@@ -271,11 +239,24 @@
       "brand": "Magic Puzzle Company",
       "piece_count": 1000,
       "index_score": 76.4,
-      "bsr": 227,
+      "bsr": 230,
       "review_count": 2010,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": 63.63,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "B0H1RN4198",
+      "title": "1000\u2011Piece Foldable Felt Jigsaw Puzzle Board 6 Sorting Drawers & Tilt Stand | Protective cover,3\u2011angle built\u2011in stand,lightweight portable,non\u2011slip felt,77x53.6cm,deep grey,for adults & kids,ideal gift",
+      "brand": "Other",
+      "piece_count": null,
+      "index_score": 76.0,
+      "bsr": 249,
+      "review_count": 2,
+      "review_velocity_1d": null,
+      "avg_rating": 5.0,
+      "price_au": 49.99,
       "brand_mentions_30d": null
     },
     {
@@ -284,11 +265,50 @@
       "brand": "Magic Puzzle Company",
       "piece_count": 1000,
       "index_score": 74.5,
-      "bsr": 351,
+      "bsr": 354,
       "review_count": 1598,
-      "review_velocity_1d": -1,
+      "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": 47.15,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "B0D6HD5LRV",
+      "title": "Super Mario \u201cChaos & Fun\u201d 1,000 Piece Jigsaw Puzzle, Dimensions 19\u201d x 27\u201d, Collectible Puzzle Artwork Featuring Mario, Luigi, Nabbit and More! Officially Licensed Nintendo Puzzle & Merchandise",
+      "brand": "Other",
+      "piece_count": 0,
+      "index_score": 73.7,
+      "bsr": 423,
+      "review_count": 130,
+      "review_velocity_1d": 0,
+      "avg_rating": 4.9,
+      "price_au": 26.92,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "B0CPFML533",
+      "title": "Ravensburger The Kitchen Cupboard 1000 Piece Jigsaw Puzzle for Adults",
+      "brand": "Ravensburger",
+      "piece_count": 1000,
+      "index_score": 73.5,
+      "bsr": 451,
+      "review_count": 58,
+      "review_velocity_1d": null,
+      "avg_rating": 4.8,
+      "price_au": 34.99,
+      "brand_mentions_30d": 25
+    },
+    {
+      "asin": "139962962X",
+      "title": "The World of Grimms' Fairy Tales a 1000-piece Jigsaw Puzzle: A Puzzle by Adam Simpson",
+      "brand": "Other",
+      "piece_count": 1000,
+      "index_score": 73.2,
+      "bsr": 475,
+      "review_count": 106,
+      "review_velocity_1d": 0,
+      "avg_rating": 4.9,
+      "price_au": 52.99,
       "brand_mentions_30d": null
     },
     {
@@ -297,11 +317,24 @@
       "brand": "Other",
       "piece_count": null,
       "index_score": 72.9,
-      "bsr": 509,
+      "bsr": 511,
       "review_count": 121,
-      "review_velocity_1d": null,
+      "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": null,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "B0H8CG2R95",
+      "title": "1000 Piece Deep Sea Voyage Jigsaw Puzzle for Adults, Challenging Colourful Art Puzzle, 70 x 50 cm Finished Size, Lettered Back and Reference Image, Decorative Puzzle for Relaxing Family Time",
+      "brand": "Other",
+      "piece_count": 1000,
+      "index_score": 72.8,
+      "bsr": 525,
+      "review_count": 4,
+      "review_velocity_1d": null,
+      "avg_rating": 5.0,
+      "price_au": 20.99,
       "brand_mentions_30d": null
     },
     {
@@ -310,24 +343,37 @@
       "brand": "Magic Puzzle Company",
       "piece_count": 1000,
       "index_score": 72.5,
-      "bsr": 563,
-      "review_count": 140,
-      "review_velocity_1d": 0,
+      "bsr": 565,
+      "review_count": 141,
+      "review_velocity_1d": 1,
       "avg_rating": 4.9,
       "price_au": 64.1,
       "brand_mentions_30d": null
     },
     {
-      "asin": "B07PBX53XD",
-      "title": "Crocodile Creek Above + Below 48-Piece Jigsaw Floor Puzzle - Fun Floor Puzzles for Kids Ages 4-8 - Day at The Zoo - 18 x 24 inches Finished",
-      "brand": "Other",
-      "piece_count": 48,
-      "index_score": 71.9,
-      "bsr": 639,
-      "review_count": 86,
+      "asin": "B0CRBL7N9K",
+      "title": "Buffalo Games - Charles Wysocki - Windjammer Canal - 1000 Piece Jigsaw Puzzle for Adults Challenging Puzzle Perfect for Game Nights - Finished Size 26.75 x 19.75",
+      "brand": "Buffalo Games",
+      "piece_count": 1000,
+      "index_score": 72.4,
+      "bsr": 572,
+      "review_count": 163,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": null,
+      "price_au": 25.27,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "B0D7JB3M2S",
+      "title": "The Awakened Artifacts \u2022 1000-Piece Jigsaw Puzzle from The Magic Puzzle Company \u2022 Series Four",
+      "brand": "Magic Puzzle Company",
+      "piece_count": 1000,
+      "index_score": 72.3,
+      "bsr": 593,
+      "review_count": 700,
+      "review_velocity_1d": 1,
+      "avg_rating": 4.9,
+      "price_au": 63.96,
       "brand_mentions_30d": null
     },
     {
@@ -336,11 +382,11 @@
       "brand": "Magic Puzzle Company",
       "piece_count": 1000,
       "index_score": 71.9,
-      "bsr": 649,
-      "review_count": 1133,
-      "review_velocity_1d": 0,
+      "bsr": 651,
+      "review_count": 1134,
+      "review_velocity_1d": 1,
       "avg_rating": 4.9,
-      "price_au": 63.65,
+      "price_au": 71.31,
       "brand_mentions_30d": null
     },
     {
@@ -349,7 +395,7 @@
       "brand": "Other",
       "piece_count": 1000,
       "index_score": 71.7,
-      "bsr": 670,
+      "bsr": 672,
       "review_count": 161,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
@@ -357,16 +403,16 @@
       "brand_mentions_30d": null
     },
     {
-      "asin": "B0FTZV6P9P",
-      "title": "Buffalo Games \u2013 Pleasant Sunday \u2013 Charles Wysocki \u2013 1000 Piece Jigsaw Puzzle \u200b Colorful Puzzle for Adults \u2013 Precision-Cut Pieces, Beautiful Artwork, and Hours of Relaxing Fun",
-      "brand": "Buffalo Games",
+      "asin": "B0CTTWGTYP",
+      "title": "Clementoni 39811 Collection - Disney Mickey Mouse Celebration - 1000 Pieces - Vertical Jigsaw Puzzle, Fun for Adults, Made in Italy, Multi-Colour",
+      "brand": "Clementoni",
       "piece_count": 1000,
-      "index_score": 71.4,
-      "bsr": 726,
-      "review_count": 105,
+      "index_score": 71.7,
+      "bsr": 679,
+      "review_count": 88,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": 26.87,
+      "price_au": 32.28,
       "brand_mentions_30d": null
     },
     {
@@ -375,7 +421,7 @@
       "brand": "Galison",
       "piece_count": 500,
       "index_score": 71.2,
-      "bsr": 754,
+      "bsr": 757,
       "review_count": 139,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
@@ -388,9 +434,9 @@
       "brand": "Ravensburger",
       "piece_count": 1000,
       "index_score": 71.0,
-      "bsr": 787,
-      "review_count": 164,
-      "review_velocity_1d": 0,
+      "bsr": 790,
+      "review_count": 165,
+      "review_velocity_1d": 1,
       "avg_rating": 5.0,
       "price_au": 34.95,
       "brand_mentions_30d": 25
@@ -401,7 +447,7 @@
       "brand": "Ravensburger",
       "piece_count": 1000,
       "index_score": 70.9,
-      "bsr": 809,
+      "bsr": 812,
       "review_count": 138,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
@@ -414,11 +460,11 @@
       "brand": "Ravensburger",
       "piece_count": 300,
       "index_score": 70.8,
-      "bsr": 825,
+      "bsr": 828,
       "review_count": 361,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": 36.99,
+      "price_au": 35.32,
       "brand_mentions_30d": 25
     },
     {
@@ -427,25 +473,12 @@
       "brand": "Magic Puzzle Company",
       "piece_count": 1000,
       "index_score": 70.7,
-      "bsr": 843,
+      "bsr": 846,
       "review_count": 921,
-      "review_velocity_1d": 1,
+      "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": 66.39,
       "brand_mentions_30d": null
-    },
-    {
-      "asin": "B0CPMB36S5",
-      "title": "Ravensburger - Snow White and the Seven Gnomes Puzzle 1000 Pieces",
-      "brand": "Ravensburger",
-      "piece_count": 1000,
-      "index_score": 70.4,
-      "bsr": 915,
-      "review_count": 102,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": 43.34,
-      "brand_mentions_30d": 25
     },
     {
       "asin": "B0FTZW41H2",
@@ -453,11 +486,24 @@
       "brand": "Buffalo Games",
       "piece_count": 1000,
       "index_score": 69.9,
-      "bsr": 1012,
-      "review_count": 161,
-      "review_velocity_1d": 0,
+      "bsr": 1015,
+      "review_count": 162,
+      "review_velocity_1d": 1,
       "avg_rating": 4.9,
       "price_au": 38.32,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "B0FTZV6P9P",
+      "title": "Buffalo Games \u2013 Pleasant Sunday \u2013 Charles Wysocki \u2013 1000 Piece Jigsaw Puzzle \u200b Colorful Puzzle for Adults \u2013 Precision-Cut Pieces, Beautiful Artwork, and Hours of Relaxing Fun",
+      "brand": "Buffalo Games",
+      "piece_count": 1000,
+      "index_score": 69.6,
+      "bsr": 1109,
+      "review_count": 105,
+      "review_velocity_1d": 0,
+      "avg_rating": 4.9,
+      "price_au": 26.87,
       "brand_mentions_30d": null
     },
     {
@@ -466,11 +512,11 @@
       "brand": "Other",
       "piece_count": 500,
       "index_score": 69.3,
-      "bsr": 1166,
+      "bsr": 1169,
       "review_count": 936,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": 27.72,
+      "price_au": 27.58,
       "brand_mentions_30d": null
     },
     {
@@ -479,7 +525,7 @@
       "brand": "Magic Puzzle Company",
       "piece_count": 1000,
       "index_score": 69.1,
-      "bsr": 1217,
+      "bsr": 1219,
       "review_count": 447,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
@@ -487,16 +533,16 @@
       "brand_mentions_30d": null
     },
     {
-      "asin": "B0BMM6R8T4",
-      "title": "Ravensburger - Disney Castles: Merida 1000-Piece Jigsaw Puzzle for Adults & Collectors, Brave Movie Theme",
+      "asin": "B0CPMB36S5",
+      "title": "Ravensburger - Snow White and the Seven Gnomes Puzzle 1000 Pieces",
       "brand": "Ravensburger",
       "piece_count": 1000,
-      "index_score": 68.9,
-      "bsr": 1282,
-      "review_count": 88,
+      "index_score": 69.0,
+      "bsr": 1250,
+      "review_count": 102,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": 34.95,
+      "price_au": 61.15,
       "brand_mentions_30d": 25
     },
     {
@@ -505,9 +551,9 @@
       "brand": "Ravensburger",
       "piece_count": 100,
       "index_score": 68.8,
-      "bsr": 1331,
-      "review_count": 324,
-      "review_velocity_1d": -1,
+      "bsr": 1333,
+      "review_count": 325,
+      "review_velocity_1d": 1,
       "avg_rating": 4.9,
       "price_au": 34.98,
       "brand_mentions_30d": 25
@@ -518,7 +564,7 @@
       "brand": "Other",
       "piece_count": null,
       "index_score": 68.4,
-      "bsr": 1451,
+      "bsr": 1453,
       "review_count": 62,
       "review_velocity_1d": 0,
       "avg_rating": 5.0,
@@ -526,16 +572,29 @@
       "brand_mentions_30d": null
     },
     {
-      "asin": "B09HR4RRSR",
-      "title": "4 x 30 Pieces Puzzles for Toddlers 3-5 - Meadow Kids Puzzles Ages 2-4 | Girls Learning Jigsaw for Kids 4-6 Years Old - Educational Toys for Boy and Girl",
-      "brand": "Educa",
-      "piece_count": 30,
+      "asin": "B0CHWM1GHN",
+      "title": "Cross & Glory \u2013 Neon Robot Rhapsody \u2013 1000 Piece Jigsaw Puzzle for Adults | Abstract Neo-Expressionism Art | Luminous Yellow Highlights | Premium Quality | Vibrant Colours",
+      "brand": "Other",
+      "piece_count": 1000,
+      "index_score": 68.4,
+      "bsr": 1459,
+      "review_count": 97,
+      "review_velocity_1d": 0,
+      "avg_rating": 4.9,
+      "price_au": 32.95,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "B0F2Q422VG",
+      "title": "The Drippy Trip \u2022 1000-Piece Jigsaw Puzzle from The Magic Puzzle Company \u2022 Series Five",
+      "brand": "Magic Puzzle Company",
+      "piece_count": 1000,
       "index_score": 67.6,
-      "bsr": 1739,
-      "review_count": 340,
-      "review_velocity_1d": null,
-      "avg_rating": 4.3,
-      "price_au": 31.99,
+      "bsr": 1726,
+      "review_count": 311,
+      "review_velocity_1d": 0,
+      "avg_rating": 4.9,
+      "price_au": 62.78,
       "brand_mentions_30d": null
     },
     {
@@ -544,7 +603,7 @@
       "brand": "Other",
       "piece_count": 1000,
       "index_score": 67.5,
-      "bsr": 1777,
+      "bsr": 1778,
       "review_count": 105,
       "review_velocity_1d": 0,
       "avg_rating": 5.0,
@@ -557,11 +616,24 @@
       "brand": "Ravensburger",
       "piece_count": 500,
       "index_score": 67.3,
-      "bsr": 1879,
+      "bsr": 1880,
       "review_count": 161,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": 29.99,
+      "brand_mentions_30d": 25
+    },
+    {
+      "asin": "B0CX3DTMH8",
+      "title": "Ravensburger Karen Puzzles Colors on Colors 1000 Piece Jigsaw Puzzle for Adults - 12001027 - Handcrafted Tooling, Made in Germany, Every Piece Fits Together Perfectly",
+      "brand": "Ravensburger",
+      "piece_count": 1000,
+      "index_score": 67.1,
+      "bsr": 1963,
+      "review_count": 280,
+      "review_velocity_1d": null,
+      "avg_rating": 4.9,
+      "price_au": null,
       "brand_mentions_30d": 25
     },
     {
@@ -570,11 +642,11 @@
       "brand": "Buffalo Games",
       "piece_count": 1000,
       "index_score": 66.9,
-      "bsr": 2023,
+      "bsr": 2024,
       "review_count": 121,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": 28.79,
+      "price_au": 29.6,
       "brand_mentions_30d": null
     },
     {
@@ -583,24 +655,11 @@
       "brand": "Buffalo Games",
       "piece_count": 1000,
       "index_score": 66.8,
-      "bsr": 2089,
+      "bsr": 2090,
       "review_count": 123,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": 27.34,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "0735384290",
-      "title": "Purrfect Accessories 500 Piece Foil Puzzle",
-      "brand": "Other",
-      "piece_count": 500,
-      "index_score": 66.3,
-      "bsr": 2352,
-      "review_count": 42,
-      "review_velocity_1d": 0,
-      "avg_rating": 5.0,
-      "price_au": 29.46,
       "brand_mentions_30d": null
     },
     {
@@ -609,11 +668,37 @@
       "brand": "Buffalo Games",
       "piece_count": 1000,
       "index_score": 66.3,
-      "bsr": 2357,
-      "review_count": 114,
-      "review_velocity_1d": 0,
+      "bsr": 2358,
+      "review_count": 115,
+      "review_velocity_1d": 1,
       "avg_rating": 4.9,
       "price_au": 25.36,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "0735384290",
+      "title": "Purrfect Accessories 500 Piece Foil Puzzle",
+      "brand": "Other",
+      "piece_count": 500,
+      "index_score": 66.1,
+      "bsr": 2457,
+      "review_count": 42,
+      "review_velocity_1d": 0,
+      "avg_rating": 5.0,
+      "price_au": 29.46,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "1635448743",
+      "title": "Cavallini Papers & Co. Jelly Fish 1,000 Piece Puzzle, Multi",
+      "brand": "Other",
+      "piece_count": 0,
+      "index_score": 65.9,
+      "bsr": 2561,
+      "review_count": 308,
+      "review_velocity_1d": 0,
+      "avg_rating": 4.9,
+      "price_au": null,
       "brand_mentions_30d": null
     },
     {
@@ -621,12 +706,12 @@
       "title": "Caturday Afternoon Family Puzzle: 500 Pieces",
       "brand": "Other",
       "piece_count": 500,
-      "index_score": 65.4,
-      "bsr": 2860,
+      "index_score": 65.3,
+      "bsr": 2943,
       "review_count": 101,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": 28.6,
+      "price_au": 29.27,
       "brand_mentions_30d": null
     },
     {
@@ -635,7 +720,7 @@
       "brand": "Other",
       "piece_count": null,
       "index_score": 65.2,
-      "bsr": 3019,
+      "bsr": 3020,
       "review_count": 178,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
@@ -647,8 +732,8 @@
       "title": "Heye Funky Zoo Cosmic Habitat Puzzle (1000 Pieces)",
       "brand": "Heye",
       "piece_count": 1000,
-      "index_score": 65.1,
-      "bsr": 3080,
+      "index_score": 65.0,
+      "bsr": 3151,
       "review_count": 44,
       "review_velocity_1d": 0,
       "avg_rating": 5.0,
@@ -656,17 +741,30 @@
       "brand_mentions_30d": null
     },
     {
-      "asin": "B0F3FG7RCN",
-      "title": "Ravensburger Puzzle 1000 Mediterranena View",
-      "brand": "Ravensburger",
+      "asin": "B09L3SHVYM",
+      "title": "ensky - News from a Mysterious Town [Spirited Away] Artcrystal Puzzle (1000-AC016) - Official Studio Ghibli Merchandise, Multi",
+      "brand": "Other",
       "piece_count": null,
-      "index_score": 64.8,
-      "bsr": 3333,
-      "review_count": 108,
+      "index_score": 64.9,
+      "bsr": 3250,
+      "review_count": 113,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": 44.74,
-      "brand_mentions_30d": 25
+      "price_au": 102.52,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "0735373698",
+      "title": "Galison Wintry Cats Puzzle 500 Piece - Cute Cat Artwork Winter Scene Jigsaw Puzzle for Adults",
+      "brand": "Galison",
+      "piece_count": 500,
+      "index_score": 64.9,
+      "bsr": 3268,
+      "review_count": 537,
+      "review_velocity_1d": 0,
+      "avg_rating": 4.9,
+      "price_au": 28.31,
+      "brand_mentions_30d": null
     },
     {
       "asin": "B081GBWKZQ",
@@ -674,24 +772,11 @@
       "brand": "Cobble Hill",
       "piece_count": 1000,
       "index_score": 64.5,
-      "bsr": 3535,
+      "bsr": 3583,
       "review_count": 112,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": 35.95,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "B0CTTWGTYP",
-      "title": "Clementoni 39811 Collection - Disney Mickey Mouse Celebration - 1000 Pieces - Vertical Jigsaw Puzzle, Fun for Adults, Made in Italy, Multi-Colour",
-      "brand": "Clementoni",
-      "piece_count": 1000,
-      "index_score": 64.4,
-      "bsr": 3660,
-      "review_count": 88,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": 32.23,
       "brand_mentions_30d": null
     },
     {
@@ -700,8 +785,8 @@
       "brand": "White Mountain",
       "piece_count": 1000,
       "index_score": 63.8,
-      "bsr": 4200,
-      "review_count": 125,
+      "bsr": 4201,
+      "review_count": 126,
       "review_velocity_1d": 1,
       "avg_rating": 4.9,
       "price_au": 43.47,
@@ -713,25 +798,12 @@
       "brand": "Ravensburger",
       "piece_count": 1000,
       "index_score": 63.7,
-      "bsr": 4283,
+      "bsr": 4284,
       "review_count": 125,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": 43.99,
+      "price_au": 41.13,
       "brand_mentions_30d": 25
-    },
-    {
-      "asin": "B08ZZNWVJ5",
-      "title": "Orchard Toys - Dino Opposites Activity Puzzles for Kids Age 3-6 | Educational 20 Piece Learning Puzzle",
-      "brand": "Educa",
-      "piece_count": 20,
-      "index_score": 63.5,
-      "bsr": 4512,
-      "review_count": 94,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": 22.95,
-      "brand_mentions_30d": null
     },
     {
       "asin": "B07NBSCQM5",
@@ -739,11 +811,24 @@
       "brand": "Other",
       "piece_count": 1000,
       "index_score": 63.4,
-      "bsr": 4533,
-      "review_count": 234,
-      "review_velocity_1d": 0,
+      "bsr": 4534,
+      "review_count": 235,
+      "review_velocity_1d": 1,
       "avg_rating": 4.9,
       "price_au": 38.69,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "B08ZZNWVJ5",
+      "title": "Orchard Toys - Dino Opposites Activity Puzzles for Kids Age 3-6 | Educational 20 Piece Learning Puzzle",
+      "brand": "Educa",
+      "piece_count": 20,
+      "index_score": 63.4,
+      "bsr": 4613,
+      "review_count": 94,
+      "review_velocity_1d": 0,
+      "avg_rating": 4.9,
+      "price_au": 22.95,
       "brand_mentions_30d": null
     },
     {
@@ -752,9 +837,9 @@
       "brand": "Other",
       "piece_count": 500,
       "index_score": 63.0,
-      "bsr": 5037,
-      "review_count": 141,
-      "review_velocity_1d": 0,
+      "bsr": 5038,
+      "review_count": 142,
+      "review_velocity_1d": 1,
       "avg_rating": 4.9,
       "price_au": 40.98,
       "brand_mentions_30d": null
@@ -765,11 +850,11 @@
       "brand": "Melissa & Doug",
       "piece_count": 48,
       "index_score": 62.5,
-      "bsr": 5583,
+      "bsr": 5582,
       "review_count": 3194,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": 43.58,
+      "price_au": null,
       "brand_mentions_30d": null
     },
     {
@@ -778,7 +863,7 @@
       "brand": "Other",
       "piece_count": null,
       "index_score": 62.1,
-      "bsr": 6130,
+      "bsr": 6131,
       "review_count": 55,
       "review_velocity_1d": 0,
       "avg_rating": 5.0,
@@ -799,16 +884,29 @@
       "brand_mentions_30d": null
     },
     {
+      "asin": "B01D24PK96",
+      "title": "Ravensburger \u2013 Disney 10 Classic Memorable Moments Puzzle 40,320 Pieces \u2013 Ultimate Collectible & Challenging Jigsaw Puzzle for Adults",
+      "brand": "Ravensburger",
+      "piece_count": 320,
+      "index_score": 61.6,
+      "bsr": 6928,
+      "review_count": 285,
+      "review_velocity_1d": null,
+      "avg_rating": 4.6,
+      "price_au": 1467.95,
+      "brand_mentions_30d": 25
+    },
+    {
       "asin": "B08X4MX5MD",
       "title": "Ravensburger Kinderpuzzle 05225 - Die Maus und der Gr\u00fcffelo - 15 Teile Rahmenpuzzle f\u00fcr Kinder ab 3 Jahren",
       "brand": "Ravensburger",
       "piece_count": null,
       "index_score": 61.5,
-      "bsr": 7109,
+      "bsr": 7107,
       "review_count": 163,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": 21.79,
+      "price_au": 21.75,
       "brand_mentions_30d": 25
     },
     {
@@ -817,11 +915,24 @@
       "brand": "Other",
       "piece_count": 1000,
       "index_score": 61.2,
-      "bsr": 7536,
+      "bsr": 7534,
       "review_count": 147,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": 61.78,
+      "price_au": 61.75,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "1635446414",
+      "title": "Cavallini & Co 1,000 Piece Puzzle - Aquarium",
+      "brand": "Other",
+      "piece_count": 0,
+      "index_score": 61.2,
+      "bsr": 7560,
+      "review_count": 154,
+      "review_velocity_1d": 0,
+      "avg_rating": 4.9,
+      "price_au": 65.0,
       "brand_mentions_30d": null
     },
     {
@@ -830,7 +941,7 @@
       "brand": "Other",
       "piece_count": 1000,
       "index_score": 61.2,
-      "bsr": 7606,
+      "bsr": 7604,
       "review_count": 58,
       "review_velocity_1d": 0,
       "avg_rating": 5.0,
@@ -843,7 +954,7 @@
       "brand": "Heye",
       "piece_count": 1000,
       "index_score": 61.1,
-      "bsr": 7852,
+      "bsr": 7848,
       "review_count": 277,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
@@ -851,29 +962,29 @@
       "brand_mentions_30d": null
     },
     {
-      "asin": "B0C23B53NF",
-      "title": "Ravensburger Puzzle 17577 - Pok\u00e9mon Abenteuer - 1000 Teile Pok\u00e9mon Puzzle f\u00fcr Erwachsene und Kinder ab 14 Jahren",
-      "brand": "Ravensburger",
-      "piece_count": null,
-      "index_score": 60.8,
-      "bsr": 8253,
-      "review_count": 193,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": 61.38,
-      "brand_mentions_30d": 25
-    },
-    {
       "asin": "B0GFXXW32J",
       "title": "White Mountain 1000 Piece Jigsaw Puzzle Vintage Fish Signs Collage Puzzles with Large Pieces Gift for Adults and Family 24\"x30\" - I Love Fishing",
       "brand": "White Mountain",
       "piece_count": 1000,
       "index_score": 60.8,
-      "bsr": 8362,
+      "bsr": 8358,
       "review_count": 47,
       "review_velocity_1d": 0,
       "avg_rating": 5.0,
       "price_au": 41.15,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "B0FFYSJP1Z",
+      "title": "Old Sisters Puzzles for Adults 1000 Pieces,Forever Friendship Art Jigsaw Puzzles, Funny Women for Adults Gifts Happy Grandma Challenging Puzzle Fun Family Activity",
+      "brand": "Other",
+      "piece_count": 1000,
+      "index_score": 60.7,
+      "bsr": 8489,
+      "review_count": 50,
+      "review_velocity_1d": null,
+      "avg_rating": 5.0,
+      "price_au": 38.99,
       "brand_mentions_30d": null
     },
     {
@@ -882,24 +993,11 @@
       "brand": "White Mountain",
       "piece_count": 1000,
       "index_score": 60.7,
-      "bsr": 8436,
+      "bsr": 8606,
       "review_count": 40,
       "review_velocity_1d": 0,
       "avg_rating": 5.0,
       "price_au": 44.18,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "B0FFYSY9WC",
-      "title": "Elderly Couples 1000 Piece Jigsaw Puzzle Grandpa Kisses Grandma Jigsaw Puzzles for Adults Gifts Forever Lover Challenging Puzzle Perfect for Game Nights Wedding Puzzle",
-      "brand": "Other",
-      "piece_count": 1000,
-      "index_score": 60.7,
-      "bsr": 8494,
-      "review_count": 50,
-      "review_velocity_1d": 0,
-      "avg_rating": 5.0,
-      "price_au": 38.54,
       "brand_mentions_30d": null
     },
     {
@@ -908,9 +1006,9 @@
       "brand": "Buffalo Games",
       "piece_count": null,
       "index_score": 60.5,
-      "bsr": 8852,
+      "bsr": 8894,
       "review_count": 84,
-      "review_velocity_1d": null,
+      "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": 21.36,
       "brand_mentions_30d": null
@@ -921,7 +1019,7 @@
       "brand": "Buffalo Games",
       "piece_count": 750,
       "index_score": 60.5,
-      "bsr": 8995,
+      "bsr": 8994,
       "review_count": 124,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
@@ -934,7 +1032,7 @@
       "brand": "Wasgij",
       "piece_count": null,
       "index_score": 60.3,
-      "bsr": 9363,
+      "bsr": 9359,
       "review_count": 260,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
@@ -942,16 +1040,16 @@
       "brand_mentions_30d": null
     },
     {
-      "asin": "B0C9R9S71H",
-      "title": "White Mountain Puzzles - Concert Tickets - 1000 Piece Jigsaw Puzzle",
+      "asin": "B0CM7NJT4W",
+      "title": "White Mountain The Trading Post Summer Puzzles 1000 Piece Beach Puzzle for Adults Grandparents and Family",
       "brand": "White Mountain",
       "piece_count": 1000,
-      "index_score": 59.9,
-      "bsr": 10146,
-      "review_count": 104,
-      "review_velocity_1d": 0,
+      "index_score": 60.2,
+      "bsr": 9627,
+      "review_count": 160,
+      "review_velocity_1d": null,
       "avg_rating": 4.9,
-      "price_au": 46.92,
+      "price_au": 40.62,
       "brand_mentions_30d": null
     },
     {
@@ -960,12 +1058,25 @@
       "brand": "Ravensburger",
       "piece_count": 24,
       "index_score": 59.9,
-      "bsr": 10178,
-      "review_count": 1065,
+      "bsr": 10176,
+      "review_count": 1066,
+      "review_velocity_1d": 1,
+      "avg_rating": 4.9,
+      "price_au": 28.31,
+      "brand_mentions_30d": 25
+    },
+    {
+      "asin": "B0C9R9S71H",
+      "title": "White Mountain Puzzles - Concert Tickets - 1000 Piece Jigsaw Puzzle",
+      "brand": "White Mountain",
+      "piece_count": 1000,
+      "index_score": 59.9,
+      "bsr": 10259,
+      "review_count": 104,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": 31.46,
-      "brand_mentions_30d": 25
+      "price_au": 46.92,
+      "brand_mentions_30d": null
     },
     {
       "asin": "B0BXMPW7FC",
@@ -973,7 +1084,7 @@
       "brand": "White Mountain",
       "piece_count": 1000,
       "index_score": 59.5,
-      "bsr": 11296,
+      "bsr": 11290,
       "review_count": 189,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
@@ -986,11 +1097,24 @@
       "brand": "Other",
       "piece_count": 100,
       "index_score": 59.2,
-      "bsr": 11990,
+      "bsr": 12155,
       "review_count": 106,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": 38.7,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "B0C8PZC94P",
+      "title": "Genius Games LLC Owl: Anatomy Jigsaw Floor Puzzle, 100-Piece",
+      "brand": "Other",
+      "piece_count": 100,
+      "index_score": 59.0,
+      "bsr": 12614,
+      "review_count": 225,
+      "review_velocity_1d": 0,
+      "avg_rating": 4.9,
+      "price_au": 40.0,
       "brand_mentions_30d": null
     },
     {
@@ -999,11 +1123,11 @@
       "brand": "Other",
       "piece_count": null,
       "index_score": 59.0,
-      "bsr": 12733,
+      "bsr": 12731,
       "review_count": 54,
       "review_velocity_1d": 0,
       "avg_rating": 5.0,
-      "price_au": 33.12,
+      "price_au": 33.74,
       "brand_mentions_30d": null
     },
     {
@@ -1012,11 +1136,24 @@
       "brand": "Other",
       "piece_count": 0,
       "index_score": 58.9,
-      "bsr": 12964,
+      "bsr": 12963,
       "review_count": 435,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": 48.65,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "B078HZ6RB8",
+      "title": "EuroGraphics Sunset Over Venice by Dominic Davison 1000-Piece Puzzle",
+      "brand": "Eurographics",
+      "piece_count": 1000,
+      "index_score": 58.5,
+      "bsr": 13975,
+      "review_count": 41,
+      "review_velocity_1d": 0,
+      "avg_rating": 5.0,
+      "price_au": null,
       "brand_mentions_30d": null
     },
     {
@@ -1025,11 +1162,24 @@
       "brand": "Other",
       "piece_count": 20,
       "index_score": 58.5,
-      "bsr": 14152,
+      "bsr": 14150,
       "review_count": 153,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": 28.19,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "B07BHGSBZS",
+      "title": "Jan Van Haasteren - Die Zauberer-Messe - 1000 Teile Puzzle",
+      "brand": "Other",
+      "piece_count": null,
+      "index_score": 58.4,
+      "bsr": 14376,
+      "review_count": 388,
+      "review_velocity_1d": 0,
+      "avg_rating": 4.9,
+      "price_au": 64.47,
       "brand_mentions_30d": null
     },
     {
@@ -1038,7 +1188,7 @@
       "brand": "Other",
       "piece_count": null,
       "index_score": 58.2,
-      "bsr": 14976,
+      "bsr": 15012,
       "review_count": 41,
       "review_velocity_1d": 0,
       "avg_rating": 5.0,
@@ -1051,7 +1201,7 @@
       "brand": "Other",
       "piece_count": 500,
       "index_score": 57.7,
-      "bsr": 16800,
+      "bsr": 16795,
       "review_count": 118,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
@@ -1064,7 +1214,7 @@
       "brand": "Cobble Hill",
       "piece_count": 1000,
       "index_score": 57.7,
-      "bsr": 16917,
+      "bsr": 16912,
       "review_count": 90,
       "review_velocity_1d": 0,
       "avg_rating": 5.0,
@@ -1077,7 +1227,7 @@
       "brand": "Other",
       "piece_count": null,
       "index_score": 57.7,
-      "bsr": 17028,
+      "bsr": 17046,
       "review_count": 39,
       "review_velocity_1d": 0,
       "avg_rating": 5.0,
@@ -1090,63 +1240,11 @@
       "brand": "Other",
       "piece_count": null,
       "index_score": 56.9,
-      "bsr": 20214,
+      "bsr": 20234,
       "review_count": 39,
       "review_velocity_1d": 0,
       "avg_rating": 5.0,
       "price_au": 28.54,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "0735373698",
-      "title": "Galison Wintry Cats Puzzle 500 Piece - Cute Cat Artwork Winter Scene Jigsaw Puzzle for Adults",
-      "brand": "Galison",
-      "piece_count": 500,
-      "index_score": null,
-      "bsr": null,
-      "review_count": 537,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": 28.31,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "B07BHGSBZS",
-      "title": "Jan Van Haasteren - Die Zauberer-Messe - 1000 Teile Puzzle",
-      "brand": "Other",
-      "piece_count": null,
-      "index_score": null,
-      "bsr": null,
-      "review_count": 388,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": 64.47,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "1635448743",
-      "title": "Cavallini Papers & Co. Jelly Fish 1,000 Piece Puzzle, Multi",
-      "brand": "Other",
-      "piece_count": 0,
-      "index_score": null,
-      "bsr": null,
-      "review_count": 308,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": null,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "B0F2Q422VG",
-      "title": "The Drippy Trip \u2022 1000-Piece Jigsaw Puzzle from The Magic Puzzle Company \u2022 Series Five",
-      "brand": "Magic Puzzle Company",
-      "piece_count": 1000,
-      "index_score": null,
-      "bsr": null,
-      "review_count": 311,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": 62.78,
       "brand_mentions_30d": null
     },
     {
@@ -1159,7 +1257,7 @@
       "review_count": 229,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": null,
+      "price_au": 50.38,
       "brand_mentions_30d": null
     },
     {
@@ -1202,58 +1300,6 @@
       "brand_mentions_30d": null
     },
     {
-      "asin": "B0CRBL7N9K",
-      "title": "Buffalo Games - Charles Wysocki - Windjammer Canal - 1000 Piece Jigsaw Puzzle for Adults Challenging Puzzle Perfect for Game Nights - Finished Size 26.75 x 19.75",
-      "brand": "Buffalo Games",
-      "piece_count": 1000,
-      "index_score": null,
-      "bsr": null,
-      "review_count": 163,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": 25.26,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "B0C8PZC94P",
-      "title": "Genius Games LLC Owl: Anatomy Jigsaw Floor Puzzle, 100-Piece",
-      "brand": "Other",
-      "piece_count": 100,
-      "index_score": null,
-      "bsr": null,
-      "review_count": 225,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": 40.0,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "1635446414",
-      "title": "Cavallini & Co 1,000 Piece Puzzle - Aquarium",
-      "brand": "Other",
-      "piece_count": 0,
-      "index_score": null,
-      "bsr": null,
-      "review_count": 154,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": 65.0,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "B0D6HD5LRV",
-      "title": "Super Mario \u201cChaos & Fun\u201d 1,000 Piece Jigsaw Puzzle, Dimensions 19\u201d x 27\u201d, Collectible Puzzle Artwork Featuring Mario, Luigi, Nabbit and More! Officially Licensed Nintendo Puzzle & Merchandise",
-      "brand": "Other",
-      "piece_count": 0,
-      "index_score": null,
-      "bsr": null,
-      "review_count": 130,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": 26.57,
-      "brand_mentions_30d": null
-    },
-    {
       "asin": "B08P29JZXP",
       "title": "Buffalo Games - Props Cupboard - 750 Piece Jigsaw Puzzle",
       "brand": "Buffalo Games",
@@ -1264,19 +1310,6 @@
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": 29.99,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "B09L3SHVYM",
-      "title": "ensky - News from a Mysterious Town [Spirited Away] Artcrystal Puzzle (1000-AC016) - Official Studio Ghibli Merchandise, Multi",
-      "brand": "Other",
-      "piece_count": null,
-      "index_score": null,
-      "bsr": null,
-      "review_count": 113,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": 102.52,
       "brand_mentions_30d": null
     },
     {
@@ -1319,30 +1352,17 @@
       "brand_mentions_30d": null
     },
     {
-      "asin": "B078HZ6RB8",
-      "title": "EuroGraphics Sunset Over Venice by Dominic Davison 1000-Piece Puzzle",
-      "brand": "Eurographics",
-      "piece_count": 1000,
+      "asin": "B0F3FG7RCN",
+      "title": "Ravensburger Puzzle 1000 Mediterranena View",
+      "brand": "Ravensburger",
+      "piece_count": null,
       "index_score": null,
       "bsr": null,
-      "review_count": 41,
-      "review_velocity_1d": 0,
-      "avg_rating": 5.0,
-      "price_au": null,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "139962962X",
-      "title": "The World of Grimms' Fairy Tales a 1000-piece Jigsaw Puzzle: A Puzzle by Adam Simpson",
-      "brand": "Other",
-      "piece_count": 1000,
-      "index_score": null,
-      "bsr": null,
-      "review_count": 106,
+      "review_count": 108,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": 52.99,
-      "brand_mentions_30d": null
+      "price_au": 43.95,
+      "brand_mentions_30d": 25
     },
     {
       "asin": "B0CFY1CPYP",
@@ -1355,19 +1375,6 @@
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": 18.56,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "B0CHWM1GHN",
-      "title": "Cross & Glory \u2013 Neon Robot Rhapsody \u2013 1000 Piece Jigsaw Puzzle for Adults | Abstract Neo-Expressionism Art | Luminous Yellow Highlights | Premium Quality | Vibrant Colours",
-      "brand": "Other",
-      "piece_count": 1000,
-      "index_score": null,
-      "bsr": null,
-      "review_count": 97,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": 32.95,
       "brand_mentions_30d": null
     },
     {
@@ -1384,30 +1391,17 @@
       "brand_mentions_30d": null
     },
     {
-      "asin": "B0B64GZDRV",
-      "title": "The Gnomes' Homes \u2022 1000 Piece Jigsaw Puzzle from The Magic Puzzle Company \u2022 Series Three",
-      "brand": "Magic Puzzle Company",
+      "asin": "B0BMM6R8T4",
+      "title": "Ravensburger - Disney Castles: Merida 1000-Piece Jigsaw Puzzle for Adults & Collectors, Brave Movie Theme",
+      "brand": "Ravensburger",
       "piece_count": 1000,
       "index_score": null,
       "bsr": null,
-      "review_count": 1036,
+      "review_count": 88,
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
-      "price_au": 64.81,
-      "brand_mentions_30d": null
-    },
-    {
-      "asin": "B0D7JB3M2S",
-      "title": "The Awakened Artifacts \u2022 1000-Piece Jigsaw Puzzle from The Magic Puzzle Company \u2022 Series Four",
-      "brand": "Magic Puzzle Company",
-      "piece_count": 1000,
-      "index_score": null,
-      "bsr": null,
-      "review_count": 699,
-      "review_velocity_1d": 0,
-      "avg_rating": 4.9,
-      "price_au": 63.96,
-      "brand_mentions_30d": null
+      "price_au": 34.95,
+      "brand_mentions_30d": 25
     },
     {
       "asin": "0735367035",
@@ -1420,6 +1414,19 @@
       "review_velocity_1d": 0,
       "avg_rating": 4.9,
       "price_au": 44.0,
+      "brand_mentions_30d": null
+    },
+    {
+      "asin": "B07PBX53XD",
+      "title": "Crocodile Creek Above + Below 48-Piece Jigsaw Floor Puzzle - Fun Floor Puzzles for Kids Ages 4-8 - Day at The Zoo - 18 x 24 inches Finished",
+      "brand": "Other",
+      "piece_count": 48,
+      "index_score": null,
+      "bsr": null,
+      "review_count": 86,
+      "review_velocity_1d": 0,
+      "avg_rating": 4.9,
+      "price_au": null,
       "brand_mentions_30d": null
     },
     {
@@ -1445,7 +1452,7 @@
       "review_count": 43,
       "review_velocity_1d": 0,
       "avg_rating": 5.0,
-      "price_au": 60.47,
+      "price_au": 59.75,
       "brand_mentions_30d": null
     }
   ],
