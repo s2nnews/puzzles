@@ -529,6 +529,7 @@ function aggregate(rows){
     metaConv:S('Meta conversions'), googleConv:S('Google conversions'),
     cogs:S('COGS'), costedRev:S('Costed revenue'), costedUnits:S('Costed units'),
     lineRev:S('Line revenue'),
+    aiSessions:S('AI sessions'), aiOrders:S('AI orders'), aiSales:S('AI sales'),
     listSize:last('Subscriber list size'),
     listSizeAt:lastAt('Subscriber list size'),
     shipCharged:S('Shipping charged'), shipCost:S('Shipping cost')};
@@ -676,6 +677,29 @@ function buildModel(a,p,ctx){
         ?'Ad spend ÷ an ESTIMATE of paid orders (platform revenue ÷ AOV), used only while conversion counts are missing for this range.'
         :'Ad spend ÷ the conversions Google and Meta each report for the selected range — the same counts as the campaign table below, so the two tie out. Platform attribution overlaps and is not the same as a Shopify order.'},
       {label:'Conversion rate',val:pct(conv,2),prev:pconv,cur:conv,pv:pct(pconv,2)+' prev',tip:'Orders ÷ sessions — one source of truth for a sale.'},
+      /* AI referrals. Sits in the marketing row rather than the money row
+         because it is a channel forming, not a channel earning: the numbers
+         are small enough that one order moves every ratio on this card.
+
+         It is here at all because it was invisible until 30 Aug 2026, when
+         the first ChatGPT-referred order of Michael's ownership arrived, and
+         nobody could say whether it was the first ever without a manual
+         query. A channel nobody is counting is a channel nobody can act on.
+
+         Sessions lead the tile, orders sit underneath. At this volume the
+         session count is the signal that moves week to week; the order count
+         is the one that matters and will stay at nought or one for a while. */
+      {label:'AI referrals',val:fmt(a.aiSessions)+' <small>sessions</small>',
+        prev:p.aiSessions, cur:a.aiSessions,
+        pv:fmt(a.aiOrders)+' order'+(a.aiOrders===1?'':'s')
+           +(a.aiSales?' · '+money(a.aiSales,0):'')+' · '+fmt(p.aiSessions)+' sess prev',
+        tip:'Sessions and orders whose referrer is an AI assistant: ChatGPT, '
+          +'Perplexity, Claude, Gemini, Copilot and the rest, matched on an explicit '
+          +'list of referrer names in collect.py. The ORDER figure uses the referrer '
+          +'of the order, so a journey that starts at an assistant and finishes '
+          +'elsewhere is not counted here, which under-claims rather than over-claims. '
+          +'Zero ad cost by definition. Treat single-digit movements as noise: the '
+          +'whole channel ran 48 sessions in the 20 months to Aug 2026.'},
     ],
     profit:[
       {label:'Gross margin',val:pct(margin,1),

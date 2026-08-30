@@ -31,6 +31,7 @@ import os
 import sys
 import time
 from datetime import date, datetime, time as dtime, timedelta
+from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
 
 import requests
@@ -69,7 +70,51 @@ COLUMNS = [
     # costs never do. "Costed revenue" and "Costed units" are the coverage
     # base: they cover the same lines as COGS and nothing else.
     "COGS", "Costed revenue", "Costed units", "Line revenue",
+    # Referrals from an AI assistant. A channel that did not exist when this
+    # file was written and was invisible until it produced an order. See
+    # AI_REFERRERS.
+    "AI sessions", "AI orders", "AI sales",
 ]
+
+# The hosts an AI assistant sends a click from. Matched on the HOST of the
+# order's referrer URL, exactly or as a subdomain, never as a substring:
+# "google.com" would swallow Search, and Shopify's own short referrer_name
+# ("microsoft") cannot tell Copilot from Outlook. A false positive here is
+# invisible once it has been summed into a tile.
+#
+# Most of these have never appeared. They are listed so that the day one does,
+# it is already counted rather than noticed a month later. To find a name this
+# list is missing, run over a long window and eyeball the tail:
+#   FROM sessions SHOW sessions GROUP BY referrer_name SINCE -365d
+AI_REFERRER_HOSTS = (
+    "chatgpt.com", "chat.openai.com", "openai.com",     # ChatGPT
+    "perplexity.ai",                                    # Perplexity
+    "claude.ai", "claude.com",                          # Claude
+    "gemini.google.com", "bard.google.com",             # Gemini
+    "copilot.microsoft.com", "m365.cloud.microsoft",    # Copilot
+    "grok.com", "x.ai", "duck.ai", "you.com", "poe.com",
+    "chat.mistral.ai", "chat.deepseek.com", "phind.com",
+)
+
+# The same engines as Shopify's own short referrer names, for the ShopifyQL
+# sessions query, which has no referrer URL to match on.
+AI_REFERRERS = ("chatgpt", "openai", "perplexity", "claude", "anthropic",
+                "gemini", "bard", "copilot", "grok", "deepseek", "poe",
+                "you.com", "mistral", "phind")
+
+
+def _is_ai_referrer(url):
+    """True when a referrer URL is one of the AI assistants.
+
+    Exact host or subdomain, so `gemini.google.com` counts and `google.com`
+    does not.
+    """
+    if not url:
+        return False
+    host = (urlparse(url).hostname or "").lower().lstrip(".")
+    if host.startswith("www."):
+        host = host[4:]
+    return any(host == h or host.endswith("." + h) for h in AI_REFERRER_HOSTS)
 
 # Porter feed header -> data.json column(s). The feed carries Meta Ads, GA4
 # and Google Ads on one date-keyed row (one Porter blend, all three
@@ -301,6 +346,27 @@ def fetch_shopifyql_sessions(store, token, days):
     return {row["day"][:10]: row for row in shopifyql(store, token, ql)}
 
 
+def _ai_where(field):
+    return " OR ".join("%s = '%s'" % (field, n) for n in AI_REFERRERS)
+
+
+def fetch_shopifyql_ai_sessions(store, token, days):
+    """Daily sessions referred by an AI assistant, {day: sessions}.
+
+    Grouped by referrer_name as well as day and summed here rather than in
+    ShopifyQL, so that adding a name to AI_REFERRERS needs no query change and
+    a per-engine split is one edit away if this ever stops being all ChatGPT.
+    """
+    ql = ("FROM sessions SHOW sessions GROUP BY day, referrer_name WHERE %s "
+          "SINCE -%dd UNTIL today ORDER BY day ASC LIMIT 1000"
+          % (_ai_where("referrer_name"), days))
+    out = {}
+    for row in shopifyql(store, token, ql):
+        day = row["day"][:10]
+        out[day] = out.get(day, 0) + int(float(row.get("sessions") or 0))
+    return out
+
+
 # Page size is 25, not 100: the line-item and refund-line sub-selections that
 # carry unit cost multiply the query's calculated cost, and 100 orders deep
 # exceeds the 1000-point limit.
@@ -308,7 +374,7 @@ ORDERS_GQL = (
     "query($q: String!, $cursor: String) { "
     "orders(first: 25, query: $q, after: $cursor) { "
     "pageInfo { hasNextPage endCursor } "
-    "nodes { createdAt test taxesIncluded "
+    "nodes { createdAt test taxesIncluded referrerUrl "
     "currentSubtotalLineItemsQuantity "
     "subtotalPriceSet { shopMoney { amount } } "
     "totalDiscountsSet { shopMoney { amount } } "
@@ -372,6 +438,9 @@ def fetch_orders(store, token, since):
             # lines that carry a unit cost. Keeping the matching revenue is
             # what lets the dashboard measure a real margin on the costed
             # part and extrapolate it honestly over the rest.
+            # Orders whose referrer is an AI assistant, and what they were
+            # worth. A subset of `orders` and `total`, never an addition.
+            "ai_orders": 0, "ai_total": 0.0,
             "cogs": 0.0, "costed_rev": 0.0, "costed_units": 0,
             # ALL line revenue, costed or not. Subtracting costed_rev gives
             # exactly the revenue with no cost behind it, which is the base
@@ -399,6 +468,8 @@ def fetch_orders(store, token, since):
                                + _money(sl, "taxAmountSet") for sl in ships), amount)
                 rb = bucket(sydney_day(refund["createdAt"]))
                 rb["total"] -= amount
+                if _is_ai_referrer(node.get("referrerUrl")):
+                    rb["ai_total"] -= amount
                 rb["returns"] -= amount - ship
                 rb["shipping"] -= ship
                 # Returned goods come back off COGS on the refund date, so
@@ -424,6 +495,13 @@ def fetch_orders(store, token, since):
             b["discounts"] -= disc
             b["shipping"] += _money(node, "totalShippingPriceSet")
             b["total"] += _money(node, "totalPriceSet")
+            # The referrer of the ORDER, so a journey that starts at an
+            # assistant and finishes somewhere else is not counted. That
+            # under-claims rather than over-claims, which is the right
+            # direction for a channel small enough that one order moves it.
+            if _is_ai_referrer(node.get("referrerUrl")):
+                b["ai_orders"] += 1
+                b["ai_total"] += _money(node, "totalPriceSet")
             # A line's discountedTotalSet carries LINE-level discounts only.
             # An order-level discount code — which is how most Premium Puzzles
             # promotions run — is not in it, so the lines sum HIGHER than the
@@ -1551,6 +1629,21 @@ def main():
         print("ShopifyQL denied (%s...). Deriving sales from the Orders API; "
               "sessions funnel has no source on this plan." % str(exc)[:80])
 
+    # AI-referred SESSIONS have exactly one source and it is currently shut:
+    # the ShopifyQL sessions dataset needs the `read_reports` scope plus Level
+    # 2 protected-customer-data approval on the app. Until that is granted the
+    # column stays blank, which merge_previous preserves rather than
+    # overwrites. AI-referred ORDERS need neither and come off the Orders pass
+    # below. None means "no source"; 0 means "a real zero on this day".
+    ai_sessions = None
+    try:
+        ai_sessions = fetch_shopifyql_ai_sessions(store, token, days)
+        print("AI sessions: %d over %d days" % (sum(ai_sessions.values()), days))
+    except ShopifyAccessDenied:
+        print("AI sessions: ShopifyQL denied (needs read_reports + Level 2 "
+              "protected customer data). Column left blank; AI orders are "
+              "unaffected.")
+
     order_days = fetch_orders(store, token, since)
     units = {d: b["units"] for d, b in order_days.items()}
     cogs_day = order_days
@@ -1567,6 +1660,9 @@ def main():
           "margin on costed lines %.1f%%"
           % (since, today, covered, sold, 100.0 * covered / sold if sold else 0,
              100.0 * (cogs_rev - cogs_amt) / cogs_rev if cogs_rev else 0))
+    print("AI referrals, %s to %s: %d order(s), $%.2f"
+          % (since, today, sum(b["ai_orders"] for b in in_window),
+             sum(b["ai_total"] for b in in_window)))
     if sales is None:
         sales = derived_sales_rows(order_days, since, today)
     if sessions is None:
@@ -1724,6 +1820,13 @@ def main():
             "Costed revenue": to_num(round(cogs_day.get(day, {}).get("costed_rev", 0), 2)),
             "Costed units": to_num(cogs_day.get(day, {}).get("costed_units", 0)),
             "Line revenue": to_num(round(cogs_day.get(day, {}).get("line_rev", 0), 2)),
+            # ShopifyQL omits a day entirely when nothing matched, so an
+            # absent day is a real zero, not a gap. Blank only where the fetch
+            # had no source at all.
+            "AI sessions": ("" if ai_sessions is None
+                            else ai_sessions.get(day, 0)),
+            "AI orders": cogs_day.get(day, {}).get("ai_orders", 0),
+            "AI sales": to_num(round(cogs_day.get(day, {}).get("ai_total", 0), 2)),
         }
         # Porter owns the ad columns, and the funnel wherever it reaches:
         # GA4 is the only funnel source now that ShopifyQL sessions are
