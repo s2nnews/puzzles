@@ -1629,20 +1629,22 @@ def main():
         print("ShopifyQL denied (%s...). Deriving sales from the Orders API; "
               "sessions funnel has no source on this plan." % str(exc)[:80])
 
-    # AI-referred SESSIONS have exactly one source and it is currently shut:
-    # the ShopifyQL sessions dataset needs the `read_reports` scope plus Level
-    # 2 protected-customer-data approval on the app. Until that is granted the
-    # column stays blank, which merge_previous preserves rather than
-    # overwrites. AI-referred ORDERS need neither and come off the Orders pass
-    # below. None means "no source"; 0 means "a real zero on this day".
+    # AI-referred SESSIONS have exactly one source and the PLAN shuts it:
+    # Shopify Basic cannot use ShopifyQL from an app at all, which is the same
+    # reason sales fall back to the Orders API above. The error names the
+    # `read_reports` scope and Level 2 protected-customer-data approval, so it
+    # reads like a permissions job. It is not one, and granting them changes
+    # nothing on Basic. Left running so the column fills itself if the plan
+    # ever changes; the blank is preserved by merge_previous meanwhile.
+    # AI-referred ORDERS need none of this and come off the Orders pass below.
+    # None means "no source"; 0 means "a real zero on this day".
     ai_sessions = None
     try:
         ai_sessions = fetch_shopifyql_ai_sessions(store, token, days)
         print("AI sessions: %d over %d days" % (sum(ai_sessions.values()), days))
     except ShopifyAccessDenied:
-        print("AI sessions: ShopifyQL denied (needs read_reports + Level 2 "
-              "protected customer data). Column left blank; AI orders are "
-              "unaffected.")
+        print("AI sessions: ShopifyQL unavailable on this plan, as expected. "
+              "Column left blank; AI orders are unaffected.")
 
     order_days = fetch_orders(store, token, since)
     units = {d: b["units"] for d, b in order_days.items()}
