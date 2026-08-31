@@ -39,6 +39,19 @@ jobs:
       - name: Install dependencies
         run: pip install -r dashboard/requirements.txt
 
+      # MUST run before collect.py. collect.py accumulates: merge_previous and
+      # write_rows merge the new window into the plaintext JSON already on
+      # disk, and that plaintext is gitignored, so a fresh checkout has none of
+      # it and every run would rebuild each feed from its upstream window
+      # alone. That is not hypothetical - it is why channels.json sat at a
+      # fixed ~276 rows sliding forward a day at a time until 2026-08-31, and
+      # why Total ROAS printed a dash on a 1-31 August range: GA4 coverage had
+      # quietly walked forward to 2 August. See dashboard/decrypt.py.
+      - name: Restore the previous feeds, so collect.py merges onto them
+        env:
+          DASHBOARD_PASSPHRASE: ${{ secrets.DASHBOARD_PASSPHRASE }}
+        run: python dashboard/decrypt.py
+
       - name: Build dashboard/data.json
         env:
           SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}

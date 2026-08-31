@@ -168,9 +168,24 @@ from the JSON. Hit on 2026-08-14 removing a provisional Search Console day.
 
 Porter's free tier keeps only a **rolling 30 days**. `merge_previous` therefore
 **never overwrites an existing value with a blank**, and days outside the
-current window are carried forward untouched. The committed JSON is the history;
+current window are carried forward untouched. The JSON on disk is the history;
 Porter only ever supplies the trailing window. Delete those files and you lose
 everything before ~30 days ago, permanently.
+
+**And for a while, that is exactly what was happening.** These files stopped
+being committed when `encrypt.py` landed: only `feeds.enc` goes to git now and
+the plaintext is gitignored, so a CI checkout arrived with nothing to merge
+onto and every run rebuilt each feed from its upstream window alone. Nothing
+failed and nothing said so. `channels.json` simply sat at a fixed ~276 rows,
+sliding forward one day at a time, until on 2026-08-31 the GA4 coverage had
+walked to 2 August and the Total ROAS tile refused to compute on a 1-31 August
+range. The tile was right; the feed under it had become a 30-day window.
+
+`decrypt.py` now runs **before** `collect.py` in the workflow and lays the
+previous bundle's plaintext back down, so the merge has its base again. The
+rule to keep: **whatever holds the history must exist on the runner before
+`collect.py` starts.** It is `feeds.enc` that is committed, so it is
+`feeds.enc` that has to be unpacked first.
 
 The one exception is `Shipping cost`: when ShipStation runs, a day with no
 Premium Puzzles shipment is written as `0`, not blank, so a superseded figure
