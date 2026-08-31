@@ -530,6 +530,11 @@ function aggregate(rows){
     cogs:S('COGS'), costedRev:S('Costed revenue'), costedUnits:S('Costed units'),
     lineRev:S('Line revenue'),
     aiSessions:S('AI sessions'), aiOrders:S('AI orders'), aiSales:S('AI sales'),
+    // S() coerces '' to 0, so a column with NO SOURCE sums to a confident
+    // zero and is indistinguishable from a real quiet week. AI sessions is
+    // exactly that column on this plan, so carry whether anything was ever
+    // actually stamped and let the tile say "not collected" instead of "0".
+    aiSessionsKnown:rows.some(r=>r['AI sessions']!=null && r['AI sessions']!==''),
     listSize:last('Subscriber list size'),
     listSizeAt:lastAt('Subscriber list size'),
     shipCharged:S('Shipping charged'), shipCost:S('Shipping cost')};
@@ -580,6 +585,26 @@ function emailRevenueIn(fromS,toS){
   if(fromS<covFrom) return null;
   return CHANNEL_DATA.filter(r=>r.Date>=fromS && r.Date<=toS && r.Channel==='Email')
     .reduce((t,r)=>t+(+r.Revenue||0),0);
+}
+
+/* AI-assistant sessions for a window, from GA4's own "AI Assistant" default
+   channel via the Porter channels feed.
+
+   This is a SECOND ruler, not the same one as the AI orders column. Orders are
+   matched by us against the host of the order's referrer URL. These sessions
+   are GA4's own channel grouping, which catches assistants arriving with no
+   usable referrer, so it reads HIGHER: 13 sessions in August to the 23rd
+   against Shopify's 7. Neither is wrong, they count different things, and the
+   tile says which is which.
+
+   Returns null when the range starts before GA4 coverage does, exactly as
+   emailRevenueIn does, so the tile can say "not covered" rather than "nought". */
+function aiSessionsIn(fromS,toS){
+  if(!CHANNEL_DATA.length) return null;
+  const covFrom=CHANNEL_DATA.reduce((m,r)=>r.Date<m?r.Date:m,CHANNEL_DATA[0].Date);
+  if(fromS<covFrom) return null;
+  return CHANNEL_DATA.filter(r=>r.Date>=fromS && r.Date<=toS && r.Channel==='AI Assistant')
+    .reduce((t,r)=>t+(+r.Sessions||0),0);
 }
 
 function buildModel(a,p,ctx){
@@ -686,20 +711,34 @@ function buildModel(a,p,ctx){
          nobody could say whether it was the first ever without a manual
          query. A channel nobody is counting is a channel nobody can act on.
 
-         Sessions lead the tile, orders sit underneath. At this volume the
-         session count is the signal that moves week to week; the order count
-         is the one that matters and will stay at nought or one for a while. */
-      {label:'AI referrals',val:fmt(a.aiSessions)+' <small>sessions</small>',
-        prev:p.aiSessions, cur:a.aiSessions,
-        pv:fmt(a.aiOrders)+' order'+(a.aiOrders===1?'':'s')
-           +(a.aiSales?' · '+money(a.aiSales,0):'')+' · '+fmt(p.aiSessions)+' sess prev',
+         ORDERS lead the tile. They are the measured, defensible number, matched
+         by Shopify itself. Sessions sit underneath and come from a DIFFERENT
+         feed with its own coverage window: leading with them printed a bare
+         "0 sessions" as the headline of a tile whose actual news was one order
+         and $105, because Shopify's own session column is blank on this plan
+         and S() coerces a blank to a zero that looks measured. */
+      {label:'AI referrals',
+        val:fmt(a.aiOrders)+' <small>order'+(a.aiOrders===1?'':'s')+'</small>',
+        prev:p.aiOrders>0?p.aiOrders:null, cur:a.aiOrders,
+        pv:money(a.aiSales,0)+' · '
+           +(ctx.aiSessions!=null
+               ?fmt(ctx.aiSessions)+' sessions (GA4)'
+               :a.aiSessionsKnown
+                 ?fmt(a.aiSessions)+' sessions'
+                 :'sessions need GA4, from 15 Jul'),
         tip:'Sessions and orders whose referrer is an AI assistant: ChatGPT, '
           +'Perplexity, Claude, Gemini, Copilot and the rest, matched on an explicit '
           +'list of referrer names in collect.py. The ORDER figure uses the referrer '
           +'of the order, so a journey that starts at an assistant and finishes '
           +'elsewhere is not counted here, which under-claims rather than over-claims. '
           +'Zero ad cost by definition. Treat single-digit movements as noise: the '
-          +'whole channel ran 48 sessions in the 20 months to Aug 2026.'},
+          +'whole channel ran 48 sessions in the 20 months to Aug 2026. '
+          +'ORDERS and SESSIONS here are two different rulers and are NOT a funnel: '
+          +'orders are matched by us on the host of the order referrer, sessions are '
+          +'GA4\'s own "AI Assistant" channel, which catches assistants arriving with '
+          +'no usable referrer and so reads higher. Sessions begin 15 Jul, when GA4 '
+          +'channel data does; a range starting earlier says so rather than showing a '
+          +'partial count as if it were the whole.'},
     ],
     profit:[
       {label:'Gross margin',val:pct(margin,1),
@@ -960,7 +999,8 @@ function initPicker(){
     // previous window is short, rate deltas (margin, AOV, conversion) still
     // hold but absolute ones do not, so buildModel drops those chips.
     const m=buildModel(aggregate(inR), aggregate(prevR),
-                       {emailRev:emailRevenueIn(fromS,toS)});
+                       {emailRev:emailRevenueIn(fromS,toS),
+                        aiSessions:aiSessionsIn(fromS,toS)});
     if(prevDays && prevDays<days) dropTotalDeltas(m);
     renderModel(m);
     renderCampaigns(fromS,toS);
