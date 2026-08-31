@@ -1453,9 +1453,17 @@ function renderLeadgen(){
   if(gap>0){
     notes.push('<span style="color:var(--down)">But only <b>'+fmt(tOurs)+'</b> subscriber'
       +(tOurs===1?'':'s')+' carrying a paid tag actually reached the list, so '+fmt(gap)
-      +' of those leads are unaccounted for.</span> On what was captured the real cost is '
-      +(tOurs?'<b>'+money(tSpend/tOurs,2)+'</b> each':'undefined')
-      +'. Meta fires its Lead event on submit, before the signup is saved, so it counts intent; '
+      +' of those leads are unaccounted for.</span> '
+      /* Deliberately NOT the literal word "undefined". Zero captured
+         subscribers is a real state of this campaign, not a fault, and
+         printing the word JavaScript prints when something IS broken makes a
+         correct page read as a broken one. It also tripped selftest.js, which
+         scans the rendered HTML for exactly that word because a genuine
+         undefined shipped once before. */
+      +(tOurs?'On what was captured the real cost is <b>'+money(tSpend/tOurs,2)+'</b> each. '
+             :'Nothing carrying a paid tag arrived in this window, so there is no cost per '
+              +'subscriber to quote: the spend has no denominator. ')
+      +'Meta fires its Lead event on submit, before the signup is saved, so it counts intent; '
       +'this counts arrival. Worth checking whether the form is failing, whether the Omnisend '
       +'welcome popup is capturing them first (those arrive tagged <code>form_subscriber</code> '
       +'with no campaign attached), or whether they were already subscribers, in which case '
