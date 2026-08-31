@@ -44,7 +44,31 @@ HERE = Path(__file__).resolve().parent
 SRC = HERE / "feeds.enc"
 
 
+
+def load_dotenv():
+    """Read dashboard/.env, the same way collect.py does.
+
+    Kept here rather than imported from collect.py so this script stays
+    standalone and pulls in nothing but `cryptography`. It means the
+    passphrase can live in .env, which is gitignored and already holds every
+    other credential, instead of being pasted into a shell where it lands in
+    the command history. CI sets the real environment variable, which wins:
+    setdefault never overwrites what is already there.
+    """
+    path = HERE / ".env"
+    if not path.exists():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        os.environ.setdefault(key.strip(),
+                              value.split(" #")[0].strip().strip('"').strip("'"))
+
+
 def main() -> int:
+    load_dotenv()
     passphrase = os.environ.get("DASHBOARD_PASSPHRASE", "")
     if not passphrase:
         sys.exit(
