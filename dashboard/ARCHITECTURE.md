@@ -191,6 +191,47 @@ The one exception is `Shipping cost`: when ShipStation runs, a day with no
 Premium Puzzles shipment is written as `0`, not blank, so a superseded figure
 cannot be resurrected by the merge.
 
+## The balance sheet panel
+
+Added 2026-09-01. Everything else on this page is a **flow** over a date range.
+The balance sheet is a **stock at an instant**, so it is deliberately not wired
+to the date picker, the same way the Search Console and rank panels render off
+their own series.
+
+`dashboard/balance_sheet.py` writes `balance-sheet.json`, which is gitignored
+and rides inside `feeds.enc` like every other feed. It is built in two halves:
+
+- **The manual half.** Cash at bank, PayPal, creditor balances and stock ordered
+  but not received. No API holds any of these. They live in the `manual` block
+  of `balance-sheet.json`, Michael edits them by hand, and the script never
+  overwrites them. They persist across CI runs because `decrypt.py` restores the
+  file from the bundle before anything else runs, which is why this needs **no
+  repo secret of its own**.
+- **The derived half.** Stock on hand at cost and at retail, pulled live from
+  the Shopify Admin API, and the Shopify Capital position computed from the
+  `Total sales` column already in `data.json`.
+
+**Stock is carried at cost.** The retail figure is a memo line and is never
+added into assets: the gap between them is margin that has not happened yet.
+`selftest.js` asserts both that the sheet balances and that no asset line is
+carrying the retail figure, because that is the one error nobody would catch by
+eye.
+
+**The Capital line is an estimate and says so on the tile.** Repayment is 25% of
+daily takings, so it is derivable from `data.json`, but the haircut applies to
+turnover settled through Shopify and the exact figure is on the Capital page in
+the admin. Refinancing eligibility is at **51% repaid**, confirmed by Michael
+2026-09-01.
+
+To update the manual figures:
+
+```bash
+# edit the `manual` block by hand, then
+python dashboard/balance_sheet.py
+python dashboard/encrypt.py
+git add dashboard/feeds.enc && git commit && git push
+```
+
 ## Configuration
 
 Set in `dashboard/.env` locally, and as **repo secrets** for the Action

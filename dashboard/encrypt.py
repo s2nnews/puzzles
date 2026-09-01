@@ -56,6 +56,7 @@ FEEDS = [
     "leadgen.json",
     "search-console.json",
     "rank-tracking.json",
+    "balance-sheet.json",
 ]
 
 ITERATIONS = 310_000

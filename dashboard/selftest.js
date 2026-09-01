@@ -39,6 +39,7 @@ try { LEADGEN_DATA = read('leadgen.json'); } catch (e) {}
 try { GSC_DATA = read('search-console.json'); } catch (e) {}
 try { RANK_DATA = read('rank-tracking.json'); } catch (e) {}
 try { EMAIL_DATA = read('email-campaigns.json'); } catch (e) {}
+try { BS_DATA = read('balance-sheet.json'); } catch (e) {}
 
 const last = DAILY_DATA[DAILY_DATA.length - 1].Date;
 const minus = (d, n) => new Date(new Date(d + 'T00:00:00') - n * 86400000)
@@ -85,6 +86,7 @@ check('buildModel without ctx', () => {
 // one of them missing. That false alarm is itself worth the comment.
 const NAMES = ['renderModel','renderCampaigns','renderTraffic','renderEmail',
   'renderQuizCohort','renderLeadgen','renderSearchConsole','renderRanks',
+  'renderBalanceSheet',
   'paintSubStats','emailRevenueIn','costing','buildModel','aggregate'];
 // dropTotalDeltas is deliberately absent: it lives inside initPicker(), so it
 // is not global and a check for it would fail forever.
@@ -217,6 +219,40 @@ check('not-ranking is excluded, not scored zero', () => {
 // The email table renders, and every column lines up. The unsub column was
 // added to a table whose subtotal rows spell their cells out one by one, so a
 // header and a body that disagree is a live risk here, not a theoretical one.
+check('balance sheet renders and balances', () => {
+  if (!BS_DATA || !BS_DATA.totals) return 'no feed, showed the empty state';
+  let out = '';
+  const host = el();
+  Object.defineProperty(host, 'innerHTML',
+    { get: () => out, set: v => { out = v; } });
+  const realGet = document.getElementById;
+  document.getElementById = id => (id === 'balance-sheet' ? host : realGet(id));
+  try { renderBalanceSheet(); } finally { document.getElementById = realGet; }
+
+  if (/NaN|undefined|\$Infinity/.test(out))
+    throw new Error('rendered NaN/undefined: ' + out.slice(0, 200));
+
+  const T = BS_DATA.totals;
+  const sumA = BS_DATA.assets.reduce((s, i) => s + i.amount, 0);
+  const sumL = BS_DATA.liabilities.reduce((s, i) => s + i.amount, 0);
+  const near = (a, b) => Math.abs(a - b) < 0.02;
+  if (!near(sumA, T.assets)) throw new Error('asset lines do not sum to the total');
+  if (!near(sumL, T.liabilities)) throw new Error('liability lines do not sum to the total');
+  if (!near(T.assets - T.liabilities, T.net_assets))
+    throw new Error('assets - liabilities does not equal net assets');
+
+  // Stock is carried at cost. If the retail memo were ever added into assets
+  // the sheet would silently overstate the business by its whole margin.
+  const cost = BS_DATA.derived.stock.cost;
+  if (!BS_DATA.assets.some(a => near(a.amount, cost)))
+    throw new Error('no asset line carries stock at cost');
+  if (BS_DATA.assets.some(a => near(a.amount, T.stock_retail_memo)))
+    throw new Error('stock is being carried at RETAIL in assets, must be at cost');
+
+  return BS_DATA.assets.length + ' asset lines, ' + BS_DATA.liabilities.length
+    + ' liability lines, net ' + T.net_assets.toFixed(2);
+});
+
 check('email campaign table renders', () => {
   let out = '';
   const host = el();

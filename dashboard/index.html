@@ -188,6 +188,16 @@
   <div class="section-title">Marketing efficiency — what did it cost?</div>
   <div class="grid kpis-2" id="kpis-mktg"></div>
 
+  <!-- ===================== BALANCE SHEET =====================
+       Point in time, deliberately NOT wired to the date picker. Everything
+       else on this page is a flow over a range; this is a stock at an instant,
+       and giving it a date range would be meaningless. Same treatment as the
+       Search Console and rank panels, which render off their own series. -->
+  <div class="section-title">The Balance Sheet &mdash; what the business owns and owes</div>
+  <div class="card" id="bs-card">
+    <div id="balance-sheet"></div>
+  </div>
+
   <!-- ===================== PROFIT WATERFALL + CUSTOMER VALUE ===================== -->
   <div class="cols c-2" style="margin-top:14px">
     <div class="card">
@@ -1048,6 +1058,87 @@ function initPicker(){
   preset(30);
 }
 
+/* ---------- BALANCE SHEET ----------
+   Built by dashboard/balance_sheet.py. Manual lines (cash, creditors, stock in
+   transit) come from the `manual` block of balance-sheet.json; stock at cost
+   and the Capital position are refreshed from Shopify on every run.
+
+   Stock is carried AT COST, which is the conservative basis. The retail figure
+   is shown as a memo underneath and never added into assets: unrealised margin
+   is not something the business owns yet. */
+let BS_DATA = null;
+
+function renderBalanceSheet(){
+  const el = document.getElementById('balance-sheet');
+  if(!el) return;
+  if(!BS_DATA || !BS_DATA.totals){
+    el.innerHTML = '<div class="hint">No balance sheet in this bundle. '
+      + 'Run <code>python dashboard/balance_sheet.py</code>, then '
+      + '<code>encrypt.py</code>.</div>';
+    return;
+  }
+  const d = BS_DATA, T = d.totals, cap = (d.derived||{}).capital;
+  const net = T.net_assets;
+
+  const rows = (items, sign) => items.map(i => {
+    const overdue = i.due && i.due < d.as_at;
+    return '<div style="display:flex;justify-content:space-between;gap:12px;'
+      + 'padding:7px 0;border-bottom:1px solid var(--line)">'
+      + '<div style="min-width:0">'
+      +   '<div>' + i.label + (overdue ? ' <span style="color:var(--warn)">overdue</span>' : '') + '</div>'
+      +   '<div class="k" style="color:var(--faint);font-size:11px">' + (i.source||'') + '</div>'
+      + '</div>'
+      + '<div style="white-space:nowrap;color:' + (sign<0?'var(--down)':'var(--ink)') + '">'
+      +   money(i.amount) + '</div>'
+      + '</div>';
+  }).join('');
+
+  let html = '<div class="hint">A point in time, <b>not</b> affected by the date '
+    + 'picker above. As at <b>' + d.as_at + '</b>. Stock is carried at cost. '
+    + 'The business is not GST registered, so there is no GST asset or liability '
+    + 'on this sheet.</div>'
+    + '<div class="cols c-2" style="margin-top:10px">'
+    + '<div><div class="k" style="margin-bottom:4px">ASSETS</div>' + rows(d.assets, 1)
+    +   '<div style="display:flex;justify-content:space-between;padding:9px 0;font-weight:600">'
+    +   '<div>Total assets</div><div>' + money(T.assets) + '</div></div></div>'
+    + '<div><div class="k" style="margin-bottom:4px">LIABILITIES</div>' + rows(d.liabilities, -1)
+    +   '<div style="display:flex;justify-content:space-between;padding:9px 0;font-weight:600">'
+    +   '<div>Total liabilities</div><div style="color:var(--down)">' + money(T.liabilities) + '</div></div></div>'
+    + '</div>';
+
+  html += '<div class="grid kpis-2" style="margin-top:12px">'
+    + '<div class="card kpi sm"><div class="v" style="color:' + (net<0?'var(--warn)':'var(--up)') + '">'
+    +   money(net) + '</div><div class="k">Net assets, stock at cost</div></div>'
+    + '<div class="card kpi sm"><div class="v">' + money(T.stock_retail_memo) + '</div>'
+    +   '<div class="k">Stock at retail (memo, not an asset)</div></div>'
+    + '<div class="card kpi sm"><div class="v" style="color:var(--up)">'
+    +   money(T.unrealised_margin_memo) + '</div><div class="k">Unrealised margin on the shelf</div></div>'
+    + '</div>';
+
+  if(cap){
+    const p = cap.pct_repaid, thr = cap.refinance_threshold;
+    html += '<div style="margin-top:14px">'
+      + '<div class="k" style="margin-bottom:6px">Shopify Capital &mdash; '
+      +   pct(p,0) + ' of ' + money(cap.total_remittance) + ' remitted</div>'
+      + '<div style="position:relative;height:20px;background:var(--panel2);'
+      +   'border:1px solid var(--line);border-radius:4px;overflow:hidden">'
+      +   '<div style="height:100%;width:' + Math.min(p*100,100) + '%;'
+      +     'background:var(--accent);opacity:.75"></div>'
+      +   '<div title="Refinancing eligibility" style="position:absolute;top:0;bottom:0;'
+      +     'left:' + (thr*100) + '%;width:2px;background:var(--warn)"></div>'
+      + '</div>'
+      + '<div class="notes">Repaid at ' + pct(cap.haircut,0) + ' of daily takings. '
+      +   '<b>' + money(cap.outstanding_estimate) + '</b> still to remit, and '
+      +   '<b>' + money(cap.refinance_gap) + '</b> of remittance to the '
+      +   pct(thr,0) + ' refinancing threshold (the amber marker), which at '
+      +   'recent trading is roughly ' + money(cap.refinance_gap/cap.haircut)
+      +   ' of turnover away. ' + cap.basis + '</div>'
+      + '</div>';
+  }
+
+  el.innerHTML = html;
+}
+
 /* ---------- BOOT: unlock, then load the feeds written by collect.py ----------
    This repo is PUBLIC, so the feeds are committed encrypted (dashboard/encrypt.py)
    and decrypted here in the browser. The passphrase is never committed, never
@@ -1119,8 +1210,8 @@ async function unlockFeeds(){
   return Promise.resolve([grab('data.json'), grab('campaigns.json'), grab('channels.json'),
                grab('email-campaigns.json'), grab('quiz-cohort.json'),
                grab('leadgen.json'), grab('search-console.json'),
-               grab('rank-tracking.json')])
-   .then(([rows,camps,chans,mail,quiz,lg,gsc,ranks])=>{
+               grab('rank-tracking.json'), grab('balance-sheet.json')])
+   .then(([rows,camps,chans,mail,quiz,lg,gsc,ranks,bsheet])=>{
     if(Array.isArray(rows) && rows.length) DAILY_DATA=rows;
     if(Array.isArray(camps)) CAMPAIGN_DATA=camps;
     if(Array.isArray(chans)) CHANNEL_DATA=chans;
@@ -1129,11 +1220,13 @@ async function unlockFeeds(){
     if(Array.isArray(lg)) LEADGEN_DATA=lg;
     if(Array.isArray(gsc)) GSC_DATA=gsc;
     if(Array.isArray(ranks)) RANK_DATA=ranks;
+    if(bsheet && bsheet.totals) BS_DATA=bsheet;
     if(!DAILY_DATA.length) live.innerHTML='<span class="dot"></span>feed offline';
     renderLeadgen();      // both need QUIZ_DATA and CAMPAIGN_DATA loaded first
     renderQuizCohort();
     renderSearchConsole();  // its own full history, so not tied to the picker
     renderRanks();          // weekly readings, likewise its own series
+    renderBalanceSheet();   // a point in time, so not tied to the picker either
     initPicker();
   });
   }).catch(e=>{

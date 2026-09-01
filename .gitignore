@@ -30,6 +30,9 @@ dashboard/quiz-cohort.json
 dashboard/leadgen.json
 dashboard/search-console.json
 dashboard/rank-tracking.json
+# The balance sheet is the most sensitive feed of the lot: cash at bank,
+# creditor balances and supplier names. Same rule, no exceptions.
+dashboard/balance-sheet.json
 
 # The six dashboard/*.csv files are deliberately NOT ignored. They are INPUTS,
 # not outputs: collect.py falls back to each one when its *_CSV repo secret is

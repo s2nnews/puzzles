@@ -82,6 +82,23 @@ jobs:
           OMNISEND_SEGMENT_ID: ${{ vars.OMNISEND_SEGMENT_ID }}
         run: python dashboard/collect.py
 
+      # Refreshes the stock and Shopify Capital lines of the balance sheet. The
+      # manual lines (cash at bank, creditor balances) are NOT rebuilt here:
+      # they live in the `manual` block of balance-sheet.json, which decrypt.py
+      # restored above, and only Michael edits them.
+      #
+      # continue-on-error deliberately. A failure here leaves the restored
+      # balance-sheet.json untouched on disk, so encrypt.py re-publishes the
+      # last good sheet with its old `as_at` date, which the panel prints in
+      # its own header. That degrades visibly rather than taking the whole
+      # sales refresh down with it.
+      - name: Refresh the balance sheet
+        continue-on-error: true
+        env:
+          SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
+          SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
+        run: python dashboard/balance_sheet.py
+
       # This repo is PUBLIC. The feeds hold daily Shopify trading, so what gets
       # committed is one encrypted blob, never the plaintext. See
       # dashboard/encrypt.py for why a login on the page would not have worked.
