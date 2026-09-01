@@ -9,6 +9,20 @@
     --bg:#0f1720; --panel:#16212e; --panel2:#1c2a3a; --line:#26374b;
     --ink:#e8eef5; --muted:#8fa3b8; --faint:#5f7488;
     --up:#34d39a; --down:#ff6b6b; --warn:#ffb020; --accent:#4f9cf9;
+
+  /* ---- tabs ----
+     The two views answer different questions and are on different clocks: the
+     marketing view is a flow over the selected range, the balance sheet is a
+     stock at an instant. Keeping them on one scroll invited reading the second
+     as if the date picker applied to it. */
+  .tabs{display:flex;gap:4px;margin:14px 0 0;border-bottom:1px solid var(--line)}
+  .tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;
+       color:var(--muted);font:inherit;font-size:14px;padding:9px 15px;cursor:pointer;
+       border-radius:5px 5px 0 0}
+  .tab:hover{color:var(--ink);background:var(--panel)}
+  .tab.active{color:var(--ink);border-bottom-color:var(--accent);background:var(--panel)}
+  .tab .badge{color:var(--faint);font-size:11px;margin-left:6px}
+
     --g:#4f9cf9; --m:#a06bff; --email:#34d39a; --organic:#2dd4bf; --direct:#8fa3b8;
   }
   *{box-sizing:border-box}
@@ -158,7 +172,18 @@
     </div>
   </header>
 
-  <!-- ===================== DATE RANGE PICKER ===================== -->
+  <!-- ===================== TABS ===================== -->
+  <nav class="tabs" role="tablist">
+    <button class="tab active" role="tab" data-tab="marketing" aria-selected="true">Marketing</button>
+    <button class="tab" role="tab" data-tab="balance" aria-selected="false">Balance Sheet<span class="badge" id="tab-bs-date"></span></button>
+  </nav>
+
+<div id="tab-marketing" role="tabpanel">
+
+  <!-- ===================== DATE RANGE PICKER =====================
+       Lives inside the marketing pane on purpose. It drives nothing on the
+       balance sheet, which is a position at an instant, so showing it there
+       would invite reading the sheet as if it were ranged. -->
   <div class="dr">
     <div class="dr-presets">
       <button class="dr-chip" data-r="7">Last 7 days</button>
@@ -187,16 +212,6 @@
 
   <div class="section-title">Marketing efficiency — what did it cost?</div>
   <div class="grid kpis-2" id="kpis-mktg"></div>
-
-  <!-- ===================== BALANCE SHEET =====================
-       Point in time, deliberately NOT wired to the date picker. Everything
-       else on this page is a flow over a range; this is a stock at an instant,
-       and giving it a date range would be meaningless. Same treatment as the
-       Search Console and rank panels, which render off their own series. -->
-  <div class="section-title">The Balance Sheet &mdash; what the business owns and owes</div>
-  <div class="card" id="bs-card">
-    <div id="balance-sheet"></div>
-  </div>
 
   <!-- ===================== PROFIT WATERFALL + CUSTOMER VALUE ===================== -->
   <div class="cols c-2" style="margin-top:14px">
@@ -350,6 +365,15 @@
   </div>
 
   <div class="foot-src" id="footnotes"></div>
+</div><!-- /tab-marketing -->
+
+<div id="tab-balance" role="tabpanel" hidden>
+  <div class="section-title">The Balance Sheet &mdash; what the business owns and owes</div>
+  <div class="card" id="bs-card">
+    <div id="balance-sheet"></div>
+  </div>
+</div><!-- /tab-balance -->
+
 </div>
 
 <script>
@@ -1137,6 +1161,42 @@ function renderBalanceSheet(){
   }
 
   el.innerHTML = html;
+
+  // Stamp the as-at date onto the tab itself. The sheet is a position at an
+  // instant and the manual half only moves when Michael edits it, so a stale
+  // sheet is the likely failure here. Putting the date where the tab is
+  // clicked means it is read before the numbers are, not after.
+  const badge = document.getElementById('tab-bs-date');
+  if(badge) badge.textContent = d.as_at;
+}
+
+/* ---------- TABS ----------
+   The chosen tab is remembered per browser tab, alongside the passphrase, so a
+   refresh lands back where you were rather than always on Marketing.
+
+   Both panes render at boot regardless of which is showing. The balance sheet
+   is cheap to draw and rendering it lazily would mean a render error only
+   surfaced on the click, which is exactly the kind of silent breakage
+   selftest.js exists to catch early. */
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(b => {
+    const on = b.dataset.tab === name;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  const mk = document.getElementById('tab-marketing');
+  const bs = document.getElementById('tab-balance');
+  if(mk) mk.hidden = name !== 'marketing';
+  if(bs) bs.hidden = name !== 'balance';
+  try{ sessionStorage.setItem('pp-dash-tab', name); }catch(e){}
+}
+
+function initTabs(){
+  document.querySelectorAll('.tab').forEach(b =>
+    b.addEventListener('click', () => showTab(b.dataset.tab)));
+  let saved = 'marketing';
+  try{ saved = sessionStorage.getItem('pp-dash-tab') || 'marketing'; }catch(e){}
+  showTab(saved);
 }
 
 /* ---------- BOOT: unlock, then load the feeds written by collect.py ----------
@@ -1227,6 +1287,7 @@ async function unlockFeeds(){
     renderSearchConsole();  // its own full history, so not tied to the picker
     renderRanks();          // weekly readings, likewise its own series
     renderBalanceSheet();   // a point in time, so not tied to the picker either
+    initTabs();             // after the panes exist, so the initial hide sticks
     initPicker();
   });
   }).catch(e=>{

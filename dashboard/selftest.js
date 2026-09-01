@@ -86,7 +86,7 @@ check('buildModel without ctx', () => {
 // one of them missing. That false alarm is itself worth the comment.
 const NAMES = ['renderModel','renderCampaigns','renderTraffic','renderEmail',
   'renderQuizCohort','renderLeadgen','renderSearchConsole','renderRanks',
-  'renderBalanceSheet',
+  'renderBalanceSheet','showTab','initTabs',
   'paintSubStats','emailRevenueIn','costing','buildModel','aggregate'];
 // dropTotalDeltas is deliberately absent: it lives inside initPicker(), so it
 // is not global and a check for it would fail forever.
@@ -251,6 +251,34 @@ check('balance sheet renders and balances', () => {
 
   return BS_DATA.assets.length + ' asset lines, ' + BS_DATA.liabilities.length
     + ' liability lines, net ' + T.net_assets.toFixed(2);
+});
+
+check('tabs show one pane and hide the other', () => {
+  const panes = {};
+  const tabs = [
+    { dataset: { tab: 'marketing' }, classList: { toggle(){}, }, setAttribute(){}, addEventListener(){} },
+    { dataset: { tab: 'balance' },   classList: { toggle(){}, }, setAttribute(){}, addEventListener(){} },
+  ];
+  const realGet = document.getElementById;
+  const realQuery = document.querySelectorAll;
+  document.querySelectorAll = sel => (sel === '.tab' ? tabs : []);
+  document.getElementById = id => {
+    if (id === 'tab-marketing' || id === 'tab-balance')
+      return (panes[id] = panes[id] || { hidden: false });
+    return realGet(id);
+  };
+  try {
+    showTab('balance');
+    if (!panes['tab-marketing'].hidden) throw new Error('marketing pane stayed visible');
+    if (panes['tab-balance'].hidden) throw new Error('balance pane did not open');
+    showTab('marketing');
+    if (panes['tab-marketing'].hidden) throw new Error('marketing pane did not come back');
+    if (!panes['tab-balance'].hidden) throw new Error('balance pane stayed visible');
+  } finally {
+    document.getElementById = realGet;
+    document.querySelectorAll = realQuery;
+  }
+  return 'both directions';
 });
 
 check('email campaign table renders', () => {
