@@ -4,9 +4,9 @@ name: dashboard-data
 #
 # Cadence reasoning: Shopify, Omnisend and ShipStation are read live, so the
 # sales side genuinely moves between runs. The ad and funnel columns come
-# from Porter's Google Sheet, which only refreshes every 3 hours (:00 and
-# :10), so running much more often than that just re-reads the same numbers
-# and adds commit noise. :25 lands shortly after each Porter write.
+# from three committed CSVs that an agent run rebuilds once a day (since
+# 5 Oct 2026; before that, from a Google Sheet a Porter blend wrote to), so
+# they move once a day and the sales side every two hours.
 #
 # Actions minutes are free and unlimited on public repos, so the cost is
 # commit noise rather than money. GitHub runs schedules best-effort and
@@ -61,17 +61,17 @@ jobs:
           OMNISEND_API_KEY: ${{ secrets.OMNISEND_API_KEY }}
           SHIPSTATION_API_KEY: ${{ secrets.SHIPSTATION_API_KEY }}
           SHIPSTATION_API_SECRET: ${{ secrets.SHIPSTATION_API_SECRET }}
-          # Published-CSV URL of the Porter export sheet. Falls back to the
-          # committed dashboard/porter_feed.csv when unset.
-          PORTER_CSV: ${{ secrets.PORTER_CSV }}
-          CAMPAIGNS_CSV: ${{ secrets.CAMPAIGNS_CSV }}
-          CHANNELS_CSV: ${{ secrets.CHANNELS_CSV }}
-          # Google Search Console daily rows. UNSET until the GSC connector is
-          # authorised in Porter and its export is published, and until then
-          # the collector falls back to the committed search-console.csv, which
-          # does NOT advance on its own. The organic chart says on its face how
-          # many days behind it is, so this degrades loudly rather than
-          # silently going stale.
+          # PORTER_CSV, CAMPAIGNS_CSV and CHANNELS_CSV are deliberately NOT
+          # passed any more (5 Oct 2026). They were the published-CSV URLs of
+          # a Google Sheet that a Porter blend wrote to. The owner retired
+          # that route: with them unset, collect.py reads the committed
+          # dashboard/porter_feed.csv, campaigns.csv and channels.csv, which
+          # a daily agent run rebuilds from the analytics and ad accounts
+          # directly. To go back, pass the three secrets here again.
+          #
+          # Search Console daily rows come the same way, from the committed
+          # search-console.csv, which the same daily run advances. The
+          # organic chart says on its face how many days behind it is.
           SEARCH_CONSOLE_CSV: ${{ secrets.SEARCH_CONSOLE_CSV }}
           DAYS: ${{ vars.DASHBOARD_DAYS }}
           OMNISEND_DAYS: ${{ vars.OMNISEND_DAYS }}
