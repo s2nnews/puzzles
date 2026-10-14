@@ -250,9 +250,16 @@ def load_dotenv():
 
 
 def http_retry(call, tries=5):
-    """Run a requests call, retrying on 429/5xx with backoff."""
+    """Run a requests call, retrying on 429/5xx, timeouts and dropped
+    connections with backoff. A timeout on the last try still raises."""
     for attempt in range(tries):
-        resp = call()
+        try:
+            resp = call()
+        except (requests.Timeout, requests.ConnectionError):
+            if attempt == tries - 1:
+                raise
+            time.sleep(2 ** attempt)
+            continue
         if resp.status_code == 429 or resp.status_code >= 500:
             wait = float(resp.headers.get("Retry-After") or 2 ** attempt)
             time.sleep(min(wait, 60))
@@ -1676,16 +1683,28 @@ def main():
     omni_key = os.environ.get("OMNISEND_API_KEY", "").strip()
     omni_days = int(os.environ.get("OMNISEND_DAYS") or 45)
     omni_since = max(since, today - timedelta(days=omni_days))
-    omni = fetch_omnisend(omni_key, omni_since, today) if omni_key else {}
+    # An Omnisend outage (a 502 took the whole run down on 2026-10-13) must
+    # not cost the Shopify and ShipStation refresh. The email columns come
+    # back blank and merge_previous fills them from the last good run.
+    omni_down = False
+    try:
+        omni = fetch_omnisend(omni_key, omni_since, today) if omni_key else {}
+    except SystemExit:
+        omni, omni_down = {}, True
+        print("Omnisend: unreachable this run, email columns carried forward")
     print("Omnisend: %d days" % len(omni) if omni_key
           else "Omnisend: no OMNISEND_API_KEY, leaving email columns blank")
 
     # A point-in-time reading, so it is stamped on today's row only. Older
     # days keep whatever was recorded when they were today, which is what
     # turns this column into a real list-size history over time.
-    list_size = (fetch_omnisend_list_size(
-        omni_key, os.environ.get("OMNISEND_SEGMENT_ID", "").strip())
-        if omni_key else None)
+    list_size = None
+    if omni_key and not omni_down:
+        try:
+            list_size = fetch_omnisend_list_size(
+                omni_key, os.environ.get("OMNISEND_SEGMENT_ID", "").strip())
+        except SystemExit:
+            print("Omnisend: list size unavailable this run")
     if list_size is not None:
         print("Omnisend: list size %d (email subscribers) as at %s"
               % (list_size, today))
@@ -1708,7 +1727,7 @@ def main():
 
     write_campaigns(fetch_campaigns(
         os.environ.get("CAMPAIGNS_CSV", "").strip() or "campaigns.csv"))
-    if omni_key:
+    if omni_key and not omni_down:
         # Keyed on the campaign ID and merged, so the pre-migration Klaviyo
         # sends seeded into this file survive (they carry synthetic
         # klaviyo-<date> IDs; Omnisend cannot know about them). Keying on
