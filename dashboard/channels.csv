@@ -450,188 +450,195 @@ Date,Session default channel group,Sessions,Ecommerce purchases,Purchase revenue
 2026-10-13,Organic Search,44,1,27.99
 2026-10-13,Referral,3,0,0.00
 2026-10-13,Unassigned,5,1,37.00
-2026-10-14,Direct,38,0,0.00
 2026-10-14,Email,110,4,439.26
 2026-10-14,Organic Search,54,1,134.99
 2026-10-14,Organic Social,53,0,0.00
+2026-10-14,Direct,38,0,0.00
 2026-10-14,Unassigned,7,0,0.00
-2026-10-15,Direct,31,0,0.00
 2026-10-15,Email,42,2,179.91
 2026-10-15,Organic Search,34,1,91.10
+2026-10-15,Direct,31,0,0.00
 2026-10-15,Organic Social,5,0,0.00
 2026-10-15,Unassigned,2,0,0.00
-2026-10-16,AI Assistant,1,0,0.00
+2026-10-16,Organic Search,44,1,40.50
 2026-10-16,Direct,25,0,0.00
 2026-10-16,Email,21,2,76.98
-2026-10-16,Organic Search,44,1,40.50
 2026-10-16,Organic Social,3,0,0.00
 2026-10-16,Referral,3,0,0.00
 2026-10-16,Unassigned,3,1,119.00
+2026-10-16,AI Assistant,1,0,0.00
+2026-10-17,Organic Search,51,1,29.95
 2026-10-17,Direct,15,0,0.00
 2026-10-17,Email,12,0,0.00
-2026-10-17,Organic Search,51,1,29.95
-2026-10-17,Organic Social,2,0,0.00
 2026-10-17,Unassigned,3,0,0.00
-2026-10-18,AI Assistant,1,0,0.00
+2026-10-17,Organic Social,2,0,0.00
+2026-10-18,Organic Search,46,1,106.97
 2026-10-18,Direct,22,0,0.00
 2026-10-18,Email,20,0,0.00
-2026-10-18,Organic Search,46,1,106.97
-2026-10-18,Organic Social,2,0,0.00
 2026-10-18,Unassigned,7,0,0.00
-2026-10-19,AI Assistant,1,0,0.00
+2026-10-18,Organic Social,2,0,0.00
+2026-10-18,AI Assistant,1,0,0.00
+2026-10-19,Organic Search,43,0,0.00
 2026-10-19,Direct,28,1,134.84
 2026-10-19,Email,11,0,0.00
-2026-10-19,Organic Search,43,0,0.00
-2026-10-19,Organic Shopping,1,0,0.00
 2026-10-19,Unassigned,3,0,0.00
-2026-10-20,Direct,42,2,60.45
+2026-10-19,AI Assistant,1,0,0.00
+2026-10-19,Organic Shopping,1,0,0.00
 2026-10-20,Email,334,15,1195.36
 2026-10-20,Organic Search,50,0,0.00
-2026-10-20,Organic Shopping,1,0,0.00
-2026-10-20,Organic Social,2,0,0.00
-2026-10-20,Referral,1,0,0.00
+2026-10-20,Direct,42,2,60.45
 2026-10-20,Unassigned,13,4,262.59
-2026-10-21,AI Assistant,1,0,0.00
-2026-10-21,Direct,75,0,0.00
+2026-10-20,Organic Social,2,0,0.00
+2026-10-20,Organic Shopping,1,0,0.00
+2026-10-20,Referral,1,0,0.00
 2026-10-21,Email,82,1,61.18
+2026-10-21,Direct,75,0,0.00
 2026-10-21,Organic Search,42,0,0.00
+2026-10-21,Unassigned,13,0,0.00
+2026-10-21,AI Assistant,1,0,0.00
 2026-10-21,Organic Social,1,0,0.00
 2026-10-21,Paid Search,1,0,0.00
-2026-10-21,Unassigned,13,0,0.00
-2026-10-22,AI Assistant,2,0,0.00
-2026-10-22,Direct,26,0,0.00
-2026-10-22,Email,30,1,29.99
 2026-10-22,Organic Search,56,1,79.98
+2026-10-22,Email,30,1,29.99
+2026-10-22,Direct,26,0,0.00
 2026-10-22,Unassigned,6,0,0.00
-2026-10-23,AI Assistant,1,0,0.00
+2026-10-22,AI Assistant,2,0,0.00
 2026-10-23,Direct,112,0,0.00
-2026-10-23,Email,18,2,137.96
 2026-10-23,Organic Search,60,1,401.90
-2026-10-23,Organic Shopping,3,0,0.00
-2026-10-23,Organic Social,1,0,0.00
+2026-10-23,Email,18,2,137.96
 2026-10-23,Unassigned,5,0,0.00
-2026-10-24,AI Assistant,2,0,0.00
+2026-10-23,Organic Shopping,3,0,0.00
+2026-10-23,AI Assistant,1,0,0.00
+2026-10-23,Organic Social,1,0,0.00
 2026-10-24,Direct,70,0,0.00
-2026-10-24,Email,15,0,0.00
 2026-10-24,Organic Search,62,0,0.00
+2026-10-24,Email,15,0,0.00
+2026-10-24,Unassigned,11,1,39.99
+2026-10-24,AI Assistant,2,0,0.00
 2026-10-24,Organic Social,2,0,0.00
 2026-10-24,Referral,1,0,0.00
-2026-10-24,Unassigned,11,1,39.99
+2026-10-25,Organic Search,89,3,316.50
 2026-10-25,Direct,28,1,154.96
 2026-10-25,Email,14,0,0.00
-2026-10-25,Organic Search,89,3,316.50
-2026-10-25,Organic Shopping,1,0,0.00
-2026-10-25,Referral,2,0,0.00
 2026-10-25,Unassigned,7,0,0.00
-2026-10-26,AI Assistant,2,0,0.00
-2026-10-26,Direct,11,0,0.00
-2026-10-26,Email,13,0,0.00
+2026-10-25,Referral,2,0,0.00
+2026-10-25,Organic Shopping,1,0,0.00
 2026-10-26,Organic Search,80,0,0.00
+2026-10-26,Email,13,0,0.00
+2026-10-26,Direct,11,0,0.00
+2026-10-26,Unassigned,8,0,0.00
+2026-10-26,AI Assistant,2,0,0.00
 2026-10-26,Organic Shopping,2,0,0.00
 2026-10-26,Organic Social,1,0,0.00
-2026-10-26,Unassigned,8,0,0.00
-2026-10-27,AI Assistant,1,0,0.00
-2026-10-27,Direct,22,0,0.00
 2026-10-27,Email,447,11,817.69
 2026-10-27,Organic Search,52,0,0.00
-2026-10-27,Organic Social,1,0,0.00
-2026-10-27,Referral,2,0,0.00
+2026-10-27,Direct,22,0,0.00
 2026-10-27,Unassigned,15,3,290.94
-2026-10-28,AI Assistant,1,0,0.00
-2026-10-28,Direct,19,1,132.96
+2026-10-27,Referral,2,0,0.00
+2026-10-27,AI Assistant,1,0,0.00
+2026-10-27,Organic Social,1,0,0.00
 2026-10-28,Email,93,2,69.98
 2026-10-28,Organic Search,68,1,64.94
-2026-10-28,Organic Shopping,1,1,82.36
+2026-10-28,Direct,19,1,132.96
 2026-10-28,Unassigned,9,0,0.00
-2026-10-29,AI Assistant,1,0,0.00
-2026-10-29,Direct,20,0,0.00
-2026-10-29,Email,51,2,194.94
+2026-10-28,AI Assistant,1,0,0.00
+2026-10-28,Organic Shopping,1,1,82.36
 2026-10-29,Organic Search,62,0,0.00
+2026-10-29,Email,51,2,194.94
+2026-10-29,Direct,20,0,0.00
 2026-10-29,Organic Social,13,0,0.00
 2026-10-29,Unassigned,8,0,0.00
-2026-10-30,AI Assistant,1,0,0.00
-2026-10-30,Direct,24,0,0.00
-2026-10-30,Email,27,1,22.46
+2026-10-29,AI Assistant,1,0,0.00
 2026-10-30,Organic Search,48,1,27.00
-2026-10-30,Organic Social,1,0,0.00
+2026-10-30,Email,27,1,22.46
+2026-10-30,Direct,24,0,0.00
 2026-10-30,Paid Search,3,0,0.00
 2026-10-30,Unassigned,3,0,0.00
-2026-10-31,AI Assistant,1,0,0.00
+2026-10-30,AI Assistant,1,0,0.00
+2026-10-30,Organic Social,1,0,0.00
+2026-10-31,Organic Search,71,1,34.95
 2026-10-31,Direct,18,0,0.00
 2026-10-31,Email,13,1,74.98
-2026-10-31,Organic Search,71,1,34.95
-2026-10-31,Organic Social,1,0,0.00
 2026-10-31,Paid Search,5,0,0.00
 2026-10-31,Unassigned,4,1,154.96
-2026-11-01,AI Assistant,1,0,0.00
+2026-10-31,AI Assistant,1,0,0.00
+2026-10-31,Organic Social,1,0,0.00
+2026-11-01,Organic Search,62,0,0.00
 2026-11-01,Direct,27,0,0.00
 2026-11-01,Email,20,1,39.99
-2026-11-01,Organic Search,62,0,0.00
 2026-11-01,Paid Search,4,0,0.00
 2026-11-01,Unassigned,2,0,0.00
-2026-11-02,AI Assistant,1,0,0.00
+2026-11-01,AI Assistant,1,0,0.00
+2026-11-02,Organic Search,57,1,39.95
 2026-11-02,Direct,25,2,212.95
 2026-11-02,Email,12,0,0.00
-2026-11-02,Organic Search,57,1,39.95
-2026-11-02,Paid Search,3,0,0.00
 2026-11-02,Unassigned,4,0,0.00
-2026-11-03,AI Assistant,3,0,0.00
-2026-11-03,Direct,31,2,119.80
+2026-11-02,Paid Search,3,0,0.00
+2026-11-02,AI Assistant,1,0,0.00
 2026-11-03,Email,237,4,254.60
 2026-11-03,Organic Search,76,1,57.90
-2026-11-03,Organic Social,2,0,0.00
+2026-11-03,Direct,31,2,119.80
 2026-11-03,Paid Search,5,0,0.00
+2026-11-03,AI Assistant,3,0,0.00
 2026-11-03,Unassigned,3,0,0.00
-2026-11-04,AI Assistant,2,0,0.00
-2026-11-04,Direct,45,0,0.00
-2026-11-04,Email,58,1,89.93
+2026-11-03,Organic Social,2,0,0.00
 2026-11-04,Organic Search,59,0,0.00
-2026-11-04,Organic Shopping,1,0,0.00
+2026-11-04,Email,58,1,89.93
+2026-11-04,Direct,45,0,0.00
+2026-11-04,Unassigned,8,2,66.98
 2026-11-04,Organic Social,3,0,0.00
+2026-11-04,AI Assistant,2,0,0.00
+2026-11-04,Organic Shopping,1,0,0.00
 2026-11-04,Paid Search,1,0,0.00
 2026-11-04,Referral,1,0,0.00
-2026-11-04,Unassigned,8,2,66.98
-2026-11-05,AI Assistant,1,0,0.00
-2026-11-05,Direct,29,0,0.00
-2026-11-05,Email,35,3,204.82
 2026-11-05,Organic Search,54,0,0.00
+2026-11-05,Email,35,3,204.82
+2026-11-05,Direct,29,0,0.00
+2026-11-05,Unassigned,4,0,0.00
 2026-11-05,Organic Social,2,0,0.00
 2026-11-05,Referral,2,0,0.00
-2026-11-05,Unassigned,4,0,0.00
-2026-11-06,AI Assistant,1,0,0.00
+2026-11-05,AI Assistant,1,0,0.00
+2026-11-06,Organic Search,70,1,134.99
 2026-11-06,Direct,26,0,0.00
 2026-11-06,Email,10,0,0.00
-2026-11-06,Organic Search,70,1,134.99
+2026-11-06,AI Assistant,1,0,0.00
 2026-11-06,Referral,1,0,0.00
 2026-11-06,Unassigned,1,0,0.00
+2026-11-07,Organic Search,79,1,29.99
 2026-11-07,Direct,40,0,0.00
 2026-11-07,Email,17,0,0.00
-2026-11-07,Organic Search,79,1,29.99
+2026-11-07,Unassigned,7,1,38.00
 2026-11-07,Organic Shopping,1,0,0.00
 2026-11-07,Organic Social,1,0,0.00
-2026-11-07,Unassigned,7,1,38.00
+2026-11-08,Organic Search,97,1,29.95
 2026-11-08,Direct,48,0,0.00
 2026-11-08,Email,14,1,134.97
-2026-11-08,Organic Search,97,1,29.95
+2026-11-08,Unassigned,3,0,0.00
 2026-11-08,Organic Social,1,0,0.00
 2026-11-08,Referral,1,0,0.00
-2026-11-08,Unassigned,3,0,0.00
-2026-11-09,AI Assistant,4,0,0.00
+2026-11-09,Organic Search,64,1,165.96
 2026-11-09,Direct,44,1,29.95
 2026-11-09,Email,14,0,0.00
-2026-11-09,Organic Search,64,1,165.96
+2026-11-09,Unassigned,7,0,0.00
+2026-11-09,AI Assistant,4,0,0.00
 2026-11-09,Organic Shopping,2,0,0.00
 2026-11-09,Organic Social,1,0,0.00
-2026-11-09,Unassigned,7,0,0.00
-2026-11-10,Direct,50,0,0.00
 2026-11-10,Email,321,9,873.12
 2026-11-10,Organic Search,62,4,234.44
+2026-11-10,Direct,50,0,0.00
 2026-11-10,Organic Shopping,7,0,0.00
-2026-11-10,Referral,1,0,0.00
 2026-11-10,Unassigned,5,1,68.98
-2026-11-11,Cross-network,44,1,87.97
-2026-11-11,Direct,26,1,36.00
+2026-11-10,Referral,1,0,0.00
 2026-11-11,Email,90,0,0.00
-2026-11-11,Organic Search,22,0,0.00
-2026-11-11,Organic Shopping,1,0,0.00
-2026-11-11,Unassigned,25,1,179.96
+2026-11-11,Organic Search,69,2,267.93
+2026-11-11,Direct,21,1,36.00
+2026-11-11,Unassigned,5,0,0.00
+2026-11-11,Organic Shopping,2,0,0.00
+2026-11-12,Organic Search,61,1,114.97
+2026-11-12,Direct,45,0,0.00
+2026-11-12,Email,34,1,37.99
+2026-11-12,Unassigned,11,1,44.99
+2026-11-12,AI Assistant,2,0,0.00
+2026-11-12,Cross-network,2,0,0.00
+2026-11-12,Paid Other,1,0,0.00
+2026-11-12,Referral,1,0,0.00
